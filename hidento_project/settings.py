@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +21,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_ub6om8g5j-*q*$-+mb3-e6w!zsresq)517(!)y&7c8#zn65il'
+SECRET_KEY_HOLDER = ''
+try:
+    with open('/etc/hidento_project_config.json') as config_file:
+        config = json.load(config_file)
+        SECRET_KEY_HOLDER = config['SECRET_KEY']
+except FileNotFoundError as error:
+    pass
+SECRET_KEY = SECRET_KEY_HOLDER
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -119,6 +127,9 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
+
+MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 try:
     from .settings_local import *
