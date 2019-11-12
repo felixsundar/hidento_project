@@ -33,7 +33,7 @@ SECRET_KEY = SECRET_KEY_HOLDER
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['13.127.109.102']
+ALLOWED_HOSTS = ['www.hidento.com']
 
 
 # Application definition
