@@ -1,3 +1,52 @@
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 
 # Create your models here.
+
+class HidentoUserManager(BaseUserManager):
+    def create_user(self, username, email, firstname, lastname, password):
+        if not (username and email and firstname and lastname):
+            raise ValueError('Users must have a username, an email address, a firstname and a lastname')
+
+        user = self.model(
+            username = username,
+            email=self.normalize_email(email),
+            firstname = firstname,
+            lastname = lastname
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, username, email, firstname, lastname, password):
+        user = self.create_user(username, email, firstname, lastname, password)
+        #is_staff is the field name which django will check to provide access to admin site. even for superusers.
+        #it provides only access to admin site. if the user didn't have other permissions, admin site will be
+        #accessible but it will be empty
+        user.is_staff = True
+        #is_superuser is a field from PermissionsMixin. if it is true all permissions are granted by default
+        user.is_superuser = True
+        user.save(using=self._db)
+        return user
+
+
+class HidentoUser(AbstractBaseUser, PermissionsMixin):
+    userid = models.BigAutoField(primary_key=True, unique=True)
+    username = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
+    firstname = models.CharField(max_length=255)
+    lastname = models.CharField(max_length=255)
+    gender = models.IntegerField(choices=[(1,'male'), (2,'female'), (3,'others')], blank=True, null=True)
+    date_of_birth = models.DateField(blank=True, null=True)
+    is_staff = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'username'
+    EMAIL_FIELD = 'email'
+    REQUIRED_FIELDS = ['email', 'firstname', 'lastname']
+
+    objects = HidentoUserManager()
+
+    def __str__(self):
+        return self.username
