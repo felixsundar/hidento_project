@@ -50,3 +50,27 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+
+class InstagramCrush(models.Model):
+    hidento_userid = models.ForeignKey(HidentoUser, on_delete=models.CASCADE, unique=True)
+    instagram_userid = models.CharField(max_length=255, unique=True, primary_key=True)
+    instagram_username = models.CharField(max_length=255, unique=True)
+    crush1_username = models.CharField(max_length=255, blank=True, null=True)
+    crush1_time = models.DateTimeField(blank=True, null=True)
+    crush1_active = models.BooleanField(default=False)
+    crush2_username = models.CharField(max_length=255, blank=True, null=True)
+    crush2_time = models.DateTimeField(blank=True, null=True)
+    crush2_active = models.BooleanField(default=False)
+    crush3_username = models.CharField(max_length=255, blank=True, null=True)
+    crush3_time = models.DateTimeField(blank=True, null=True)
+    crush3_active = models.BooleanField(default=False)
+    crush4_username = models.CharField(max_length=255, blank=True, null=True)
+    crush4_time = models.DateTimeField(blank=True, null=True)
+    crush4_active = models.BooleanField(default=False)
+    crush5_username = models.CharField(max_length=255, blank=True, null=True)
+    crush5_time = models.DateTimeField(blank=True, null=True)
+    crush5_active = models.BooleanField(default=False)
+    currently_matched = models.BooleanField(default=False)
+    match_instagram_username = models.CharField(max_length=255, blank=True, null=True)
+    match_time = models.DateTimeField(blank=True, null=True)
