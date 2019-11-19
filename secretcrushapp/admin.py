@@ -6,7 +6,8 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 
-from secretcrushapp.models import HidentoUser
+from secretcrushapp.models import InstagramCrush, HidentoUser
+
 
 class HidentoUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -86,6 +87,7 @@ class HidentoUserAdmin(UserAdmin):
 
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
+admin.site.register(InstagramCrush)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

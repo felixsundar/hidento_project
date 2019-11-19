@@ -92,7 +92,9 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'secretcrushapp.HidentoUser'
-
+AUTHENTICATION_BACKENDS = ['secretcrushapp.views.HidentoUserBackend']
+LOGIN_REDIRECT_URL ='index'
+LOGOUT_REDIRECT_URL = 'index'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
