@@ -22,13 +22,39 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY_HOLDER = ''
+
+EMAIL_HOST_HOLDER = ''
+EMAIL_PORT_HOLDER = 80
+EMAIL_HOST_USER_HOLDER = ''
+EMAIL_HOST_PASSWORD_HOLDER = ''
+EMAIL_USE_TLS_HOLDER = True
+DEFAULT_FROM_EMAIL_HOLDER = ''
+
 try:
     with open('/etc/hidento_project_config.json') as config_file:
         config = json.load(config_file)
+
         SECRET_KEY_HOLDER = config['SECRET_KEY']
+
+        EMAIL_HOST_HOLDER = config['EMAIL_HOST']
+        EMAIL_PORT_HOLDER = config['EMAIL_PORT']
+        EMAIL_HOST_USER_HOLDER = config['EMAIL_HOST_USER']
+        EMAIL_HOST_PASSWORD_HOLDER = config['EMAIL_HOST_PASSWORD']
+        EMAIL_USE_TLS_HOLDER = config['EMAIL_USE_TLS']
+        DEFAULT_FROM_EMAIL_HOLDER = config['DEFAULT_FROM_EMAIL']
 except FileNotFoundError as error:
     pass
+
 SECRET_KEY = SECRET_KEY_HOLDER
+
+EMAIL_HOST = EMAIL_HOST_HOLDER
+EMAIL_PORT = EMAIL_PORT_HOLDER
+EMAIL_HOST_USER = EMAIL_HOST_USER_HOLDER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_HOLDER
+EMAIL_USE_TLS = EMAIL_USE_TLS_HOLDER
+DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL_HOLDER
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -95,6 +121,7 @@ AUTH_USER_MODEL = 'secretcrushapp.HidentoUser'
 AUTHENTICATION_BACKENDS = ['secretcrushapp.views.HidentoUserBackend']
 LOGIN_REDIRECT_URL ='index'
 LOGOUT_REDIRECT_URL = 'index'
+LOGIN_URL = 'login'
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

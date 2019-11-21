@@ -45,7 +45,8 @@ class HidentoUserChangeForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password', 'is_staff', 'is_superuser')
+        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password',
+                  'is_staff', 'is_superuser', 'is_active')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -63,7 +64,8 @@ class HidentoUserAdmin(UserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     #list_display fields are displayed in the table of user details
-    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth', 'is_staff', 'is_superuser')
+    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth',
+                    'is_staff', 'is_superuser', 'is_active')
     #list_filter fields are shown on the side of admin site for filtering based on its values
     list_filter = ('is_superuser', 'is_staff')
     #fieldsets define how the user details are displayed in the edit user details page

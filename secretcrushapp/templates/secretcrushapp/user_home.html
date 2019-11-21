@@ -1,3 +1,13 @@
-This is user home.
+<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp<a href="{% url 'logout' %}"> Logout </a><br><br>
 
-<a href="{% url 'logout' %}"> Logout </a>
+This is user home.
+<br><br>
+Welcome {{ user.username }}
+<br><br>
+{% if user_instagram is None %}
+ <p>Instagram account not linked. Please link your instagram account to register your secret crushes</p>
+{% else %}
+<p> Your crush list will be displayed here</p>
+{% endif %}
+
+View your account details <a href="{% url 'account' %}"> here </a>
