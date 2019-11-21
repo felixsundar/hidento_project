@@ -53,13 +53,16 @@ def getUserHome(request):
 
 def loginView(request):
     if request.user.is_authenticated:
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect(reverse('index'))
     return LoginView.as_view(template_name='secretcrushapp/login.html')(request)
 
+@login_required
 def logoutView(request):
     return LogoutView.as_view(template_name='secretcrushapp/logout.html')(request)
 
 def signupView(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('index'))
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
