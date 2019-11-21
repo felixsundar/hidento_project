@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin, User
 from django.db import models
 
 # Create your models here.
@@ -38,9 +38,10 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
-    gender = models.IntegerField(choices=[(1,'male'), (2,'female'), (3,'others')], blank=True, null=True)
+    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')], blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(verbose_name='active', default=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -53,7 +54,7 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
 
 
 class InstagramCrush(models.Model):
-    hidento_userid = models.ForeignKey(HidentoUser, on_delete=models.CASCADE, unique=True)
+    hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, unique=True)
     instagram_userid = models.CharField(max_length=255, unique=True, primary_key=True)
     instagram_username = models.CharField(max_length=255, unique=True)
     crush1_username = models.CharField(max_length=255, blank=True, null=True)

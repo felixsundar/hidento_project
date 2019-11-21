@@ -1,10 +1,18 @@
-from django.urls import path, include
+from django.urls import path
 
 from . import views
-from django.contrib.auth.views import LoginView, LogoutView
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('login/', views.login_view, name='login'),
-    path('logout/', LogoutView.as_view(template_name='secretcrushapp/logout.html'), name='logout'),
+    path('login/', views.loginView, name='login'),
+    path('signup/', views.signupView, name='signup'),
+    path('account/', views.accountView, name='account'),
+    path('account/edit/', views.accountEditView, name='accountEdit'),
+    path('account/change_password/', views.changePasswordView, name='changePassword'),
+    path('account/change_password/done', views.changePasswordDoneView, name='changePasswordDone'),
+    path('reset_password/', views.resetPasswordView, name='resetPassword'),
+    path('reset_password_done/', views.resetPasswordDoneView, name='resetPasswordDone'),
+    path('confirm_reset_password/<uidb64>/<token>/', views.confirmResetPasswordView, name='confirmResetPassword'),
+    path('complete_reset_password/', views.completeResetPasswordView, name='completeResetPassword'),
+    path('logout/', views.logoutView, name='logout'),
 ]
