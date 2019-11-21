@@ -1,0 +1,16 @@
+<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp<a href="{% url 'logout' %}"> Logout </a><br><br>
+
+<h2>Account Details:</h2>   <a href="{% url 'accountEdit' %}"> Edit Account </a>
+<br><br><br>
+Username: {{user.username}}<br><br>
+Firstname: {{user.firstname}}<br><br>
+Lastname: {{user.lastname}}<br><br>
+Email: {{user.email}}<br><br>
+Date of Birth: {{user.date_of_birth}}<br><br>
+Gender: {{user.get_gender_display}}<br><br>
+Password: <a href="{% url 'changePassword' %}"> Change Password </a><br><br>
+Instagram: {% if instagram_username is None %}
+"Add Instagram Account link"
+{% else %}
+{{ instagram_username }}
+{% endif %}
