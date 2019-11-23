@@ -10,7 +10,7 @@ Date of Birth: {{user.date_of_birth}}<br><br>
 Gender: {{user.get_gender_display}}<br><br>
 Password: <a href="{% url 'changePassword' %}"> Change Password </a><br><br>
 Instagram: {% if instagram_username is None %}
-"Add Instagram Account link"
+<a href="{% url 'linkInstagram' %}"> Link Instagram Account</a>
 {% else %}
 {{ instagram_username }}
 {% endif %}

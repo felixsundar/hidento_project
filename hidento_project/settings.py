@@ -29,6 +29,7 @@ EMAIL_HOST_USER_HOLDER = ''
 EMAIL_HOST_PASSWORD_HOLDER = ''
 EMAIL_USE_TLS_HOLDER = True
 DEFAULT_FROM_EMAIL_HOLDER = ''
+INSTAGRAM_APP_SECRET_HOLDER = ''
 
 try:
     with open('/etc/hidento_project_config.json') as config_file:
@@ -42,6 +43,8 @@ try:
         EMAIL_HOST_PASSWORD_HOLDER = config['EMAIL_HOST_PASSWORD']
         EMAIL_USE_TLS_HOLDER = config['EMAIL_USE_TLS']
         DEFAULT_FROM_EMAIL_HOLDER = config['DEFAULT_FROM_EMAIL']
+
+        INSTAGRAM_APP_SECRET_HOLDER = config['INSTAGRAM_APP_SECRET']
 except FileNotFoundError as error:
     pass
 
@@ -53,6 +56,8 @@ EMAIL_HOST_USER = EMAIL_HOST_USER_HOLDER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_HOLDER
 EMAIL_USE_TLS = EMAIL_USE_TLS_HOLDER
 DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL_HOLDER
+
+INSTAGRAM_APP_SECRET = INSTAGRAM_APP_SECRET_HOLDER
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -122,6 +127,14 @@ AUTHENTICATION_BACKENDS = ['secretcrushapp.views.HidentoUserBackend']
 LOGIN_REDIRECT_URL ='index'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+#Instagram related settings
+INSTAGRAM_APP_ID = 568134807270658
+INSTAGRAM_AUTHORIZE_URL = 'https://api.instagram.com/oauth/authorize'
+INSTAGRAM_AUTHORIZE_REDIRECT_URL = 'https://www.hidento.com/account/instagram/auth/'
+INSTAGRAM_TOKEN_URL = 'https://api.instagram.com/oauth/access_token'
+INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
