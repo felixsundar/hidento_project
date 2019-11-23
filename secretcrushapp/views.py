@@ -1,3 +1,6 @@
+from urllib.parse import quote
+
+import requests
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, logout_then_login, PasswordResetView, \
@@ -7,8 +10,11 @@ from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.http import urlencode
 from secretcrushapp.models import HidentoUser, InstagramCrush
 from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers
+
+from hidento_project import settings
 
 
 class HidentoUserBackend(ModelBackend):
@@ -128,3 +134,50 @@ def confirmResetPasswordView(request, uidb64, token):
 
 def completeResetPasswordView(request):
     return PasswordResetCompleteView.as_view(template_name='secretcrushapp/completeResetPassword.html')(request)
+
+@login_required
+def linkInstagramView(request):
+    return HttpResponseRedirect(constructInstagramApiUrl())
+
+def constructInstagramApiUrl():
+    queryParams = urlencode({
+        'app_id': settings.INSTAGRAM_APP_ID,
+        'redirect_uri': quote(settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL, safe=''),
+        'scope': 'user_profile,user_media',
+        'response_type': 'code'
+    })
+    return settings.INSTAGRAM_AUTHORIZE_URL + '?' + queryParams
+
+@login_required
+def authInstagramView(request):
+    full_code = request.GET.get('code')
+    code = full_code[0:-2] #remove the trailing '#_' in the code
+    data = {
+        'app_id': settings.INSTAGRAM_APP_ID,
+        'app_secret': settings.INSTAGRAM_APP_SECRET,
+        'grant_type': 'authorization_code',
+        'redirect_uri': settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL,
+        'code': code
+    }
+    token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
+    token_response_data = token_response.json()
+    print('\n\n\n\n\ntoken response json:\n\n' + token_response_data)
+    user_details_response = getInstagramUserDetails(token_response_data['user_id'], token_response_data['access_token'])
+    user_details_response_data = user_details_response.json()
+    print('\n\n\n\n\nuserdetails response json:\n\n' + user_details_response_data)
+    user = request.user
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        user_instagram = InstagramCrush(hidento_userid=user)
+    user_instagram.instagram_userid = user_details_response_data['id']
+    user_instagram.instagram_username = user_details_response_data['username']
+    user_instagram.save()
+    return HttpResponseRedirect(reverse('account'))
+
+def getInstagramUserDetails(user_id, access_token):
+    url = settings.INSTAGRAM_USERNODE_URL + user_id
+    params = {
+        'fields': 'id,username',
+        'access_token': access_token
+    }
+    return requests.get(url=url, params=params)

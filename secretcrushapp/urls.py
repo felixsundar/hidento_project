@@ -14,5 +14,7 @@ urlpatterns = [
     path('reset_password_done/', views.resetPasswordDoneView, name='resetPasswordDone'),
     path('confirm_reset_password/<uidb64>/<token>/', views.confirmResetPasswordView, name='confirmResetPassword'),
     path('complete_reset_password/', views.completeResetPasswordView, name='completeResetPassword'),
+    path('account/instagram/link/', views.linkInstagramView, name='linkInstagram'),
+    path('account/instagram/auth/', views.authInstagramView, name='authInstagram'),
     path('logout/', views.logoutView, name='logout'),
 ]
