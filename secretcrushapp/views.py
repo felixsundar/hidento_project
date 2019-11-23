@@ -142,7 +142,7 @@ def linkInstagramView(request):
 def constructInstagramApiUrl():
     queryParams = urlencode({
         'app_id': settings.INSTAGRAM_APP_ID,
-        'redirect_uri': quote(settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL, safe=''),
+        'redirect_uri': settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL,
         'scope': 'user_profile,user_media',
         'response_type': 'code'
     })
