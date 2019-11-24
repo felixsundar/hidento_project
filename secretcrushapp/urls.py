@@ -16,5 +16,6 @@ urlpatterns = [
     path('complete_reset_password/', views.completeResetPasswordView, name='completeResetPassword'),
     path('account/instagram/link/', views.linkInstagramView, name='linkInstagram'),
     path('account/instagram/auth/', views.authInstagramView, name='authInstagram'),
+    path('account/instagram/remove/', views.removeInstagramView, name='removeInstagram'),
     path('logout/', views.logoutView, name='logout'),
 ]

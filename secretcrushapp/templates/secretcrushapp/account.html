@@ -12,5 +12,5 @@ Password: <a href="{% url 'changePassword' %}"> Change Password </a><br><br>
 Instagram: {% if instagram_username is None %}
 <a href="{% url 'linkInstagram' %}"> Link Instagram Account</a>
 {% else %}
-{{ instagram_username }}
+{{ instagram_username }} &nbsp&nbsp <a href="{% url 'removeInstagram' %}"> Remove Instagram Account</a>
 {% endif %}
