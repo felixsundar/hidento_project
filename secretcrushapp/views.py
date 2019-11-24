@@ -16,7 +16,7 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers
 from hidento_project import settings
 
 #logger = logging.getLogger(__name__)
-logging.basicConfig(filename='secretcrushapp_log.log', level=logging.DEBUG)
+logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 
 class HidentoUserBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
