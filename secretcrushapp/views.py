@@ -152,10 +152,8 @@ def constructInstagramApiUrl():
 
 @login_required
 def authInstagramView(request):
-    full_code = request.GET.get('code')
-    logging.debug("\n\n\n\n\nfull code: {}".format(full_code))
-    code = full_code[0:-2] #remove the trailing '#_' in the code
-    logging.debug("\n\n\n\n\ntrimmed code: {}".format(code))
+    code = request.GET.get('code')
+    logging.debug("\n\n\n\n\ncode: {}".format(code))
     data = {
         'app_id': settings.INSTAGRAM_APP_ID,
         'app_secret': settings.INSTAGRAM_APP_SECRET,
