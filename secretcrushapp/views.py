@@ -15,7 +15,8 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers
 
 from hidento_project import settings
 
-logger = logging.getLogger(__name__)
+#logger = logging.getLogger(__name__)
+logging.basicConfig(filename='secretcrushapp_log.log', level=logging.DEBUG)
 
 class HidentoUserBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
@@ -81,6 +82,7 @@ def signupView(request):
 @login_required
 def accountView(request):
     user_instagram = request.user.instagramDetails.first()
+    logging.debug("this log is from account view for {}".format(request.user))
     instagram_username = None
     if user_instagram is not None:
         instagram_username = user_instagram.instagram_username
@@ -161,10 +163,12 @@ def authInstagramView(request):
     }
     token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
     token_response_data = token_response.json()
-    logger.debug('token response from instagram:\n\n\n\n\n', str(token_response_data), '\n\n\n\n')
+    logging.debug("\n\n\n\n\ntoken response from instagram: {}".format(token_response_data))
+    #logger.debug('token response from instagram:\n\n\n\n\n', str(token_response_data), '\n\n\n\n')
     user_details_response = getInstagramUserDetails(token_response_data['user_id'], token_response_data['access_token'])
     user_details_response_data = user_details_response.json()
-    logger.debug('user details response from instagram:\n\n\n', user_details_response_data, '\n\n\n\n')
+    logging.debug("\n\n\n\n\nuser details response from instagram: {}".format(user_details_response_data))
+    #logger.debug('user details response from instagram:\n\n\n', user_details_response_data, '\n\n\n\n')
     user = request.user
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:
