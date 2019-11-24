@@ -138,24 +138,6 @@ INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
 
 #Logging settings
 LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'file': {
-#             'level': 'DEBUG',
-#             'class': 'logging.FileHandler',
-#             'filename': '/home/ubuntu/logs/django_debug.log',
-#         },
-#     },
-#     'loggers': {
-#         'secretcrushapp': {
-#             'handlers': ['file'],
-#             'level': 'DEBUG',
-#             'propagate': True,
-#         },
-#     },
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

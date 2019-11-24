@@ -54,7 +54,7 @@ def getUserHome(request):
     user_instagram = request.user.instagramDetails.first()
     context = {
         'user':request.user,
-        'user_crush':user_instagram
+        'user_instagram':user_instagram
     }
     return render(request, 'secretcrushapp/user_home.html', context=context)
 
@@ -82,7 +82,6 @@ def signupView(request):
 @login_required
 def accountView(request):
     user_instagram = request.user.instagramDetails.first()
-    logging.debug("this log is from account view for {}".format(request.user))
     instagram_username = None
     if user_instagram is not None:
         instagram_username = user_instagram.instagram_username
@@ -152,8 +151,9 @@ def constructInstagramApiUrl():
 
 @login_required
 def authInstagramView(request):
+    user = request.user
     code = request.GET.get('code')
-    logging.debug("\n\n\n\n\ncode: {}".format(code))
+    logging.debug("instagram authorization code for user {}:\n {}".format(user, code))
     data = {
         'app_id': settings.INSTAGRAM_APP_ID,
         'app_secret': settings.INSTAGRAM_APP_SECRET,
@@ -161,23 +161,18 @@ def authInstagramView(request):
         'redirect_uri': settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL,
         'code': code
     }
-    logging.debug("\n\n\n\n\npost data: {}".format(data))
     token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
     token_response_data = token_response.json()
-    logging.debug("\n\n\n\n\ntoken response from instagram: {}".format(token_response_data))
-    #logger.debug('token response from instagram:\n\n\n\n\n', str(token_response_data), '\n\n\n\n')
+    logging.debug("token response from instagram for user {}:\n {}".format(user, token_response_data))
     user_details_response = getInstagramUserDetails(token_response_data['user_id'], token_response_data['access_token'])
     user_details_response_data = user_details_response.json()
-    logging.debug("\n\n\n\n\nuser details response from instagram: {}".format(user_details_response_data))
-    #logger.debug('user details response from instagram:\n\n\n', user_details_response_data, '\n\n\n\n')
-    user = request.user
+    logging.debug("user details response from instagram for user {}:\n {}".format(user, user_details_response_data))
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:
         user_instagram = InstagramCrush(hidento_userid=user)
     user_instagram.instagram_userid = user_details_response_data['id']
     user_instagram.instagram_username = user_details_response_data['username']
     user_instagram.save()
-    logging.debug("\n\n\n\n\nuser instagramCrush after saving: {}".format(user_instagram))
     return HttpResponseRedirect(reverse('account'))
 
 def getInstagramUserDetails(user_id, access_token):
@@ -186,6 +181,4 @@ def getInstagramUserDetails(user_id, access_token):
         'fields': 'id,username',
         'access_token': access_token
     }
-    logging.debug("\n\n\n\n\nuser details url: {}".format(url))
-    logging.debug("\n\n\n\n\nuser details q params: {}".format(params))
     return requests.get(url=url, params=params)
