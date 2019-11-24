@@ -181,7 +181,7 @@ def authInstagramView(request):
     return HttpResponseRedirect(reverse('account'))
 
 def getInstagramUserDetails(user_id, access_token):
-    url = settings.INSTAGRAM_USERNODE_URL + user_id
+    url = settings.INSTAGRAM_USERNODE_URL + str(user_id)
     params = {
         'fields': 'id,username',
         'access_token': access_token
