@@ -182,3 +182,10 @@ def getInstagramUserDetails(user_id, access_token):
         'access_token': access_token
     }
     return requests.get(url=url, params=params)
+
+@login_required
+def removeInstagramView(request):
+    user_instagram = request.user.instagramDetails.first()
+    if user_instagram is not None:
+        user_instagram.delete()
+    return HttpResponseRedirect(reverse('account'))
