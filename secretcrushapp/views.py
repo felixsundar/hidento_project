@@ -153,7 +153,9 @@ def constructInstagramApiUrl():
 @login_required
 def authInstagramView(request):
     full_code = request.GET.get('code')
+    logging.debug("\n\n\n\n\nfull code: {}".format(full_code))
     code = full_code[0:-2] #remove the trailing '#_' in the code
+    logging.debug("\n\n\n\n\ntrimmed code: {}".format(code))
     data = {
         'app_id': settings.INSTAGRAM_APP_ID,
         'app_secret': settings.INSTAGRAM_APP_SECRET,
@@ -161,6 +163,7 @@ def authInstagramView(request):
         'redirect_uri': settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL,
         'code': code
     }
+    logging.debug("\n\n\n\n\npost data: {}".format(data))
     token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
     token_response_data = token_response.json()
     logging.debug("\n\n\n\n\ntoken response from instagram: {}".format(token_response_data))
@@ -176,6 +179,7 @@ def authInstagramView(request):
     user_instagram.instagram_userid = user_details_response_data['id']
     user_instagram.instagram_username = user_details_response_data['username']
     user_instagram.save()
+    logging.debug("\n\n\n\n\nuser instagramCrush after saving: {}".format(user_instagram))
     return HttpResponseRedirect(reverse('account'))
 
 def getInstagramUserDetails(user_id, access_token):
@@ -184,4 +188,6 @@ def getInstagramUserDetails(user_id, access_token):
         'fields': 'id,username',
         'access_token': access_token
     }
+    logging.debug("\n\n\n\n\nuser details url: {}".format(url))
+    logging.debug("\n\n\n\n\nuser details q params: {}".format(params))
     return requests.get(url=url, params=params)
