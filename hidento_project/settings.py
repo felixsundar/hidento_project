@@ -135,6 +135,27 @@ INSTAGRAM_AUTHORIZE_REDIRECT_URL = 'https://www.hidento.com/account/instagram/au
 INSTAGRAM_TOKEN_URL = 'https://api.instagram.com/oauth/access_token'
 INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
 
+
+#Logging settings
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/tmp/logs/django_debug.log',
+        },
+    },
+    'loggers': {
+        'secretcrushapp': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

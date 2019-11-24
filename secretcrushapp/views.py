@@ -1,5 +1,4 @@
-from urllib.parse import quote
-
+import logging
 import requests
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.decorators import login_required
@@ -16,6 +15,7 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers
 
 from hidento_project import settings
 
+logger = logging.getLogger(__name__)
 
 class HidentoUserBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
@@ -161,8 +161,10 @@ def authInstagramView(request):
     }
     token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
     token_response_data = token_response.json()
+    logger.info('token response from instagram:\n\n\n\n\n', str(token_response_data), '\n\n\n\n')
     user_details_response = getInstagramUserDetails(token_response_data['user_id'], token_response_data['access_token'])
     user_details_response_data = user_details_response.json()
+    logger.debug('user details response from instagram:\n\n\n', user_details_response_data, '\n\n\n\n')
     user = request.user
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:
