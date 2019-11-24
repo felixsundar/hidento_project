@@ -161,7 +161,7 @@ def authInstagramView(request):
     }
     token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
     token_response_data = token_response.json()
-    logger.info('token response from instagram:\n\n\n\n\n', str(token_response_data), '\n\n\n\n')
+    logger.debug('token response from instagram:\n\n\n\n\n', str(token_response_data), '\n\n\n\n')
     user_details_response = getInstagramUserDetails(token_response_data['user_id'], token_response_data['access_token'])
     user_details_response_data = user_details_response.json()
     logger.debug('user details response from instagram:\n\n\n', user_details_response_data, '\n\n\n\n')
