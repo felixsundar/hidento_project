@@ -137,7 +137,7 @@ INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
 
 
 #Logging settings
-# LOG_FILE_PATH = '/home/ubuntu/logs/django_debug.log'
+LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
