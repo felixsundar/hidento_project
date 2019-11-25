@@ -21,38 +21,22 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY_HOLDER = ''
-
-EMAIL_HOST_HOLDER = ''
-EMAIL_PORT_HOLDER = 80
-EMAIL_HOST_USER_HOLDER = ''
-EMAIL_HOST_PASSWORD_HOLDER = ''
-EMAIL_USE_TLS_HOLDER = True
-DEFAULT_FROM_EMAIL_HOLDER = ''
-
 try:
     with open('/etc/hidento_project_config.json') as config_file:
         config = json.load(config_file)
 
-        SECRET_KEY_HOLDER = config['SECRET_KEY']
+        SECRET_KEY = config['SECRET_KEY']
 
-        EMAIL_HOST_HOLDER = config['EMAIL_HOST']
-        EMAIL_PORT_HOLDER = config['EMAIL_PORT']
-        EMAIL_HOST_USER_HOLDER = config['EMAIL_HOST_USER']
-        EMAIL_HOST_PASSWORD_HOLDER = config['EMAIL_HOST_PASSWORD']
-        EMAIL_USE_TLS_HOLDER = config['EMAIL_USE_TLS']
-        DEFAULT_FROM_EMAIL_HOLDER = config['DEFAULT_FROM_EMAIL']
+        EMAIL_HOST = config['EMAIL_HOST']
+        EMAIL_PORT = config['EMAIL_PORT']
+        EMAIL_HOST_USER = config['EMAIL_HOST_USER']
+        EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
+        EMAIL_USE_TLS = config['EMAIL_USE_TLS']
+        DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
+
+        INSTAGRAM_APP_SECRET = config['INSTAGRAM_APP_SECRET']
 except FileNotFoundError as error:
     pass
-
-SECRET_KEY = SECRET_KEY_HOLDER
-
-EMAIL_HOST = EMAIL_HOST_HOLDER
-EMAIL_PORT = EMAIL_PORT_HOLDER
-EMAIL_HOST_USER = EMAIL_HOST_USER_HOLDER
-EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD_HOLDER
-EMAIL_USE_TLS = EMAIL_USE_TLS_HOLDER
-DEFAULT_FROM_EMAIL = DEFAULT_FROM_EMAIL_HOLDER
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
@@ -122,6 +106,18 @@ AUTHENTICATION_BACKENDS = ['secretcrushapp.views.HidentoUserBackend']
 LOGIN_REDIRECT_URL ='index'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'login'
+
+#Instagram related settings
+INSTAGRAM_APP_ID = 568134807270658
+INSTAGRAM_AUTHORIZE_URL = 'https://api.instagram.com/oauth/authorize'
+INSTAGRAM_AUTHORIZE_REDIRECT_URL = 'https://www.hidento.com/account/instagram/auth/'
+INSTAGRAM_TOKEN_URL = 'https://api.instagram.com/oauth/access_token'
+INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
+
+
+#Logging settings
+LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 

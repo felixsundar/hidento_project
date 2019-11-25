@@ -54,8 +54,8 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
 
 
 class InstagramCrush(models.Model):
-    hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, unique=True)
-    instagram_userid = models.CharField(max_length=255, unique=True, primary_key=True)
+    hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, primary_key=True)
+    instagram_userid = models.CharField(max_length=255, unique=True)
     instagram_username = models.CharField(max_length=255, unique=True)
     crush1_username = models.CharField(max_length=255, blank=True, null=True)
     crush1_time = models.DateTimeField(blank=True, null=True)
