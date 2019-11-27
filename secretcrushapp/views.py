@@ -10,14 +10,20 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
+from django.utils.timezone import now
 from secretcrushapp.models import HidentoUser, InstagramCrush
-from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers
+from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm
 
 from hidento_project import settings
+from hidento_project.secretcrushapp.forms import EditCrushForm
 
-#logger = logging.getLogger(__name__)
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
-
+INSTAGRAM_NOT_LINKED = 'Instagram account not linked. Link Instagram account to add secret crush'
+CRUSH_LIST_FULL = 'You already have 5 secret crushes. Remove one of them to add a new crush'
+CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty'
+CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list'
+CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list'
+PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist'
 class HidentoUserBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         user = self.loginUsingUsername(username, password)
@@ -74,7 +80,7 @@ def signupView(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/login/')
+            return HttpResponseRedirect(reverse('login'))
     else:
         form = SignUpForm()
     return render(request, 'secretcrushapp/signup.html', {'form': form})
@@ -189,3 +195,191 @@ def removeInstagramView(request):
     if user_instagram is not None:
         user_instagram.delete()
     return HttpResponseRedirect(reverse('account'))
+
+@login_required
+def addCrushView(request):
+    user_instagram = request.user.instagramDetails.first()
+    error_or_lowestPriority = validateUserInstagramForAdd(user_instagram)
+    if isinstance(error_or_lowestPriority, dict):
+        context = {
+            'error': error_or_lowestPriority
+        }
+        return render(request, 'secretcrushapp/add_crush.html', context)
+
+    if request.method == 'POST':
+        form = AddCrushForm(error_or_lowestPriority,request.POST)
+        if form.is_valid() and validateAndAddCrush(form, user_instagram, error_or_lowestPriority):
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        form = AddCrushForm(error_or_lowestPriority)
+    context = {
+        'form': form,
+    }
+    return render(request, 'secretcrushapp/add_crush.html', context)
+
+def validateUserInstagramForAdd(user_instagram):
+    if user_instagram is None:
+        return {
+            'code':1,
+            'message':INSTAGRAM_NOT_LINKED
+        }
+    lowest_priority = findVacantPosition(user_instagram)
+    if lowest_priority == 0:
+        return {
+            'code':2,
+            'message':CRUSH_LIST_FULL
+        }
+    return lowest_priority
+def validateAndAddCrush(form, user_instagram, vacant_position):
+    if not validateNewCrush(form, user_instagram, form.cleaned_data['crushUsername'], vacant_position):
+        return False
+    user_instagram.__dict__['crush' + str(vacant_position) + '_username'] = form.cleaned_data['crushUsername']
+    user_instagram.__dict__['crush' + str(vacant_position) + '_nickname'] = form.cleaned_data['crushNickname']
+    user_instagram.__dict__['crush' + str(vacant_position) + '_message'] = form.cleaned_data['crushMessage']
+    user_instagram.__dict__['crush' + str(vacant_position) + '_whomToInform'] = form.cleaned_data['whomToInform']
+    user_instagram.__dict__['crush' + str(vacant_position) + '_active'] = True
+    user_instagram.__dict__['crush' + str(vacant_position) + '_time'] = now()
+    moveAccordingToPriority(user_instagram, vacant_position, int(form.cleaned_data['priorityPosition']))
+    user_instagram.save()
+    return True
+
+def validateNewCrush(form, user_instagram, crushUsername, lowest_priority):
+    if user_instagram is None: #this check is already done in validateUserInstagram. it is redundant but for safety
+        form.add_error('__all__', INSTAGRAM_NOT_LINKED)
+        return False
+    if findVacantPosition(user_instagram) == 0: #this check is already done in validateUserInstagram. it is redundant but for safety
+        form.add_error('__all__', CRUSH_LIST_FULL)
+        return False
+    if crushAlreadyPresent(user_instagram, crushUsername):
+        form.add_error('crushUsername', CRUSH_ALREADY_PRESENT)
+    if int(form.cleaned_data['priorityPosition']) > lowest_priority:
+        form.add_error('priorityPosition', PRIORITY_EXCEEDS_LIMIT)
+    return True if form.errors is None else False
+
+def findVacantPosition(user_instagram):
+    for position in range(1,6):
+        if user_instagram.__dict__['crush' + str(position) + '_username'] is None:
+            return position
+    return 0 #return 0 if all positions are filled
+
+def crushAlreadyPresent(user_instagram, crushUsername):
+    for position in range(1,6):
+        if user_instagram.__dict__['crush' + str(position) + '_username'] == crushUsername:
+            return True
+    return False
+
+
+def moveAccordingToPriority(user_instagram, initial_position, final_position):
+    if initial_position == final_position:
+        return
+    if initial_position < final_position:
+        for position in range(initial_position, final_position):
+            swapCrushPositions(user_instagram, position, position+1)
+    else:
+        for position in reversed(range(final_position+1, initial_position+1)):
+            swapCrushPositions(user_instagram, position, position-1)
+
+def swapCrushPositions(user_instagram, position1, position2):
+    temp_username = user_instagram.__dict__[getCrushField(position1, 'username')]
+    temp_nickname = user_instagram.__dict__[getCrushField(position1, 'nickname')]
+    temp_message = user_instagram.__dict__[getCrushField(position1, 'message')]
+    temp_whomToInform = user_instagram.__dict__[getCrushField(position1, 'whomToInform')]
+    temp_active = user_instagram.__dict__[getCrushField(position1, 'active')]
+    temp_time = user_instagram.__dict__[getCrushField(position1, 'time')]
+
+    user_instagram.__dict__[getCrushField(position1, 'username')] = user_instagram.__dict__[getCrushField(position2, 'username')]
+    user_instagram.__dict__[getCrushField(position1, 'nickname')] = user_instagram.__dict__[getCrushField(position2, 'nickname')]
+    user_instagram.__dict__[getCrushField(position1, 'message')] = user_instagram.__dict__[getCrushField(position2, 'message')]
+    user_instagram.__dict__[getCrushField(position1, 'whomToInform')] = user_instagram.__dict__[getCrushField(position2, 'whomToInform')]
+    user_instagram.__dict__[getCrushField(position1, 'active')] = user_instagram.__dict__[getCrushField(position2, 'active')]
+    user_instagram.__dict__[getCrushField(position1, 'time')] = user_instagram.__dict__[getCrushField(position2, 'time')]
+
+    user_instagram.__dict__[getCrushField(position2, 'username')] = temp_username
+    user_instagram.__dict__[getCrushField(position2, 'nickname')] = temp_nickname
+    user_instagram.__dict__[getCrushField(position2, 'message')] = temp_message
+    user_instagram.__dict__[getCrushField(position2, 'whomToInform')] = temp_whomToInform
+    user_instagram.__dict__[getCrushField(position2, 'active')] = temp_active
+    user_instagram.__dict__[getCrushField(position2, 'time')] = temp_time
+
+def getCrushField(position, fieldname):
+    return 'crush' + str(position) + '_' + fieldname
+
+@login_required
+def editCrushView(request, crushUsername):
+    user_instagram = request.user.instagramDetails.first()
+    error_or_lowestPriority = validateUserInstagramForEdit(user_instagram, crushUsername)
+    if isinstance(error_or_lowestPriority, dict):
+        context = {
+            'error': error_or_lowestPriority
+        }
+        return render(request, 'secretcrushapp/edit_crush.html', context)
+    if request.method == 'POST':
+        form = EditCrushForm(error_or_lowestPriority, request.POST)
+        if form.is_valid() and validateAndEditCrush(user_instagram, form, error_or_lowestPriority):
+            return HttpResponseRedirect(reverse('index'))
+    else:
+        data = getCrushData(user_instagram, crushUsername)
+        form = EditCrushForm(error_or_lowestPriority, data)
+    context = {
+        'form': form,
+    }
+    return render(request, 'secretcrushapp/edit_crush.html', context)
+
+def validateUserInstagramForEdit(user_instagram, crushUsername):
+    if user_instagram is None:
+        return {
+            'code':1,
+            'message':INSTAGRAM_NOT_LINKED
+        }
+    vacant_position = findVacantPosition(user_instagram)
+    if vacant_position == 1:
+        return {
+            'code':2,
+            'message':CRUSH_LIST_EMPTY
+        }
+    if not crushAlreadyPresent(user_instagram, crushUsername):
+        return {
+            'code':3,
+            'message':CRUSH_NOT_PRESENT
+        }
+    return 5 if vacant_position == 0 else vacant_position-1
+
+def validateAndEditCrush(user_instagram, form, lowest_priority):
+    crushPosition = validateEditCrush(user_instagram, form, lowest_priority)
+    if crushPosition == 0:
+        return False
+    user_instagram.__dict__[getCrushField(crushPosition, 'nickname')] = form.cleaned_data['crushNickname']
+    user_instagram.__dict__[getCrushField(crushPosition, 'message')] = form.cleaned_data['crushMessage']
+    user_instagram.__dict__[getCrushField(crushPosition, 'active')] = form.cleaned_data['active']
+    user_instagram.__dict__[getCrushField(crushPosition, 'whomToInform')] = form.cleaned_data['whomToInform']
+    moveAccordingToPriority(user_instagram, crushPosition, form.cleaned_data['priorityPosition'])
+    user_instagram.save()
+    return True
+
+
+def validateEditCrush(user_instagram, form, lowest_priority):
+    crushPosition = getCrushPosition(user_instagram, form.cleaned_data['crushUsername'])
+    if crushPosition == 0:
+        form.add_error('crushUsername', CRUSH_NOT_PRESENT)
+        return 0
+    if form.cleaned_data['priorityPosition'] > lowest_priority:
+        form.add_error('priorityPosition', PRIORITY_EXCEEDS_LIMIT)
+        return 0
+    return crushPosition
+
+def getCrushData(user_instagram, crushUsername):
+    position = getCrushPosition(user_instagram, crushUsername)
+    return {
+        'crushUsername':user_instagram.__dict__[getCrushField(position, 'username')],
+        'crushNickname': user_instagram.__dict__[getCrushField(position, 'nickname')],
+        'crushMessage': user_instagram.__dict__[getCrushField(position, 'message')],
+        'whomToInform': user_instagram.__dict__[getCrushField(position, 'whomToInform')],
+        'active': user_instagram.__dict__[getCrushField(position, 'active')],
+        'priorityPosition': position,
+    }
+
+def getCrushPosition(user_instagram, crushUsername):
+    for position in range(1, 6):
+        if user_instagram.__dict__[getCrushField(1, 'username')] == crushUsername:
+            return position
+    return 0

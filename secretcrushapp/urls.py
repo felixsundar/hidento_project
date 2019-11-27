@@ -17,5 +17,7 @@ urlpatterns = [
     path('account/instagram/link/', views.linkInstagramView, name='linkInstagram'),
     path('account/instagram/auth/', views.authInstagramView, name='authInstagram'),
     path('account/instagram/remove/', views.removeInstagramView, name='removeInstagram'),
+    path('crush/addnew/', views.addCrushView, name='addCrush'),
+    path('crush/edit/<crushUsername>/', views.editCrushView, name='editCrush'),
     path('logout/', views.logoutView, name='logout'),
 ]

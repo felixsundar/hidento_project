@@ -1,4 +1,5 @@
-<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp<a href="{% url 'logout' %}"> Logout </a><br><br>
+<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp <a href="{% url 'account' %}"> Account Details </a>&nbsp&nbsp
+<a href="{% url 'logout' %}"> Logout </a><br><br>
 
 This is user home.
 <br><br>
@@ -7,7 +8,10 @@ Welcome {{ user.username }}
 {% if user_instagram is None %}
  <p>Instagram account not linked. Please link your instagram account to register your secret crushes</p>
 {% else %}
-<p> Your crush list will be displayed here</p>
+<a href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
+<p>Instagram Crush object details:</p><br><br>
+{% for name, value in user_instagram.get_fields %}
+    {{ name }} => {{ value }}<br>
+{% endfor %}
 {% endif %}
 
-View your account details <a href="{% url 'account' %}"> here </a>
