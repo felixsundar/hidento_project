@@ -3,15 +3,21 @@
 
 This is user home.
 <br><br>
-Welcome {{ user.username }}
+Welcome {{ user_firstname }}
 <br><br>
-{% if user_instagram is None %}
- <p>Instagram account not linked. Please link your instagram account to register your secret crushes</p>
+{% if instagram_crushes is None %}
+ <p>Instagram account not linked. Please link your instagram account to register your secret crushes</p><br>
+ <a href="{% url 'linkInstagram' %}"> Link Instagram </a>
 {% else %}
-<a href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
-<p>Instagram Crush object details:</p><br><br>
-{% for name, value in user_instagram.get_fields %}
-    {{ name }} => {{ value }}<br>
-{% endfor %}
+    {% if not instagram_crushes %}
+        <p>You have not added any secret crushes</p>
+    {% else %}
+        <h2>Your Secret Crushes</h2><br><br>
+        {% for crush in instagram_crushes %}
+            Crush Username => {{ crush.crushUsername }}&nbsp&nbsp <a href="{% url 'editCrush' crush.crushUsername %}">Edit</a>
+            <br>
+            Crush Nickname => {{ crush.crushNickname }}<br><br>
+        {% endfor %}
+    {% endif %}
+    <a href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
 {% endif %}
-

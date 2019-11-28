@@ -12,17 +12,16 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from secretcrushapp.models import HidentoUser, InstagramCrush
-from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm
+from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm
 
 from hidento_project import settings
-from hidento_project.secretcrushapp.forms import EditCrushForm
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 INSTAGRAM_NOT_LINKED = 'Instagram account not linked. Link Instagram account to add secret crush'
 CRUSH_LIST_FULL = 'You already have 5 secret crushes. Remove one of them to add a new crush'
 CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty'
 CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list'
-CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list'
+CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list. Select one from your crush list'
 PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist'
 class HidentoUserBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
@@ -59,11 +58,24 @@ def index(request):
 def getUserHome(request):
     user_instagram = request.user.instagramDetails.first()
     context = {
-        'user':request.user,
-        'user_instagram':user_instagram
+        'user_firstname':request.user.firstname,
+        'instagram_crushes':getInstagramCrushes(user_instagram)
     }
     return render(request, 'secretcrushapp/user_home.html', context=context)
 
+def getInstagramCrushes(user_instagram):
+    if user_instagram is None:
+        return None
+    instagramCrushes = []
+    for position in range(1,6):
+        crushUsername = user_instagram.__dict__[getCrushField(position, 'username')]
+        if crushUsername is not None:
+            instagramCrushes.append({
+                'crushUsername':crushUsername,
+                'crushNickname':user_instagram.__dict__[getCrushField(position, 'nickname')],
+                'is_active':user_instagram.__dict__[getCrushField(position, 'active')]
+            })
+    return instagramCrushes
 def loginView(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
@@ -231,7 +243,7 @@ def validateUserInstagramForAdd(user_instagram):
         }
     return lowest_priority
 def validateAndAddCrush(form, user_instagram, vacant_position):
-    if not validateNewCrush(form, user_instagram, form.cleaned_data['crushUsername'], vacant_position):
+    if not validateCrushForAdd(form, user_instagram, form.cleaned_data['crushUsername'], vacant_position):
         return False
     user_instagram.__dict__['crush' + str(vacant_position) + '_username'] = form.cleaned_data['crushUsername']
     user_instagram.__dict__['crush' + str(vacant_position) + '_nickname'] = form.cleaned_data['crushNickname']
@@ -243,7 +255,7 @@ def validateAndAddCrush(form, user_instagram, vacant_position):
     user_instagram.save()
     return True
 
-def validateNewCrush(form, user_instagram, crushUsername, lowest_priority):
+def validateCrushForAdd(form, user_instagram, crushUsername, lowest_priority):
     if user_instagram is None: #this check is already done in validateUserInstagram. it is redundant but for safety
         form.add_error('__all__', INSTAGRAM_NOT_LINKED)
         return False
@@ -254,7 +266,7 @@ def validateNewCrush(form, user_instagram, crushUsername, lowest_priority):
         form.add_error('crushUsername', CRUSH_ALREADY_PRESENT)
     if int(form.cleaned_data['priorityPosition']) > lowest_priority:
         form.add_error('priorityPosition', PRIORITY_EXCEEDS_LIMIT)
-    return True if form.errors is None else False
+    return False if form.errors else True
 
 def findVacantPosition(user_instagram):
     for position in range(1,6):
@@ -310,18 +322,20 @@ def editCrushView(request, crushUsername):
     error_or_lowestPriority = validateUserInstagramForEdit(user_instagram, crushUsername)
     if isinstance(error_or_lowestPriority, dict):
         context = {
-            'error': error_or_lowestPriority
+            'error': error_or_lowestPriority,
+            'crushUsername':crushUsername,
         }
         return render(request, 'secretcrushapp/edit_crush.html', context)
     if request.method == 'POST':
         form = EditCrushForm(error_or_lowestPriority, request.POST)
-        if form.is_valid() and validateAndEditCrush(user_instagram, form, error_or_lowestPriority):
+        if form.is_valid() and validateAndEditCrush(user_instagram, crushUsername, form, error_or_lowestPriority):
             return HttpResponseRedirect(reverse('index'))
     else:
         data = getCrushData(user_instagram, crushUsername)
         form = EditCrushForm(error_or_lowestPriority, data)
     context = {
         'form': form,
+        'crushUsername': crushUsername,
     }
     return render(request, 'secretcrushapp/edit_crush.html', context)
 
@@ -344,33 +358,32 @@ def validateUserInstagramForEdit(user_instagram, crushUsername):
         }
     return 5 if vacant_position == 0 else vacant_position-1
 
-def validateAndEditCrush(user_instagram, form, lowest_priority):
-    crushPosition = validateEditCrush(user_instagram, form, lowest_priority)
-    if crushPosition == 0:
+def validateAndEditCrush(user_instagram, crushUsername, form, lowest_priority):
+    if not validateCrushForEdit(user_instagram, crushUsername, form, lowest_priority):
         return False
+    crushPosition = getCrushPosition(user_instagram, crushUsername)
+
     user_instagram.__dict__[getCrushField(crushPosition, 'nickname')] = form.cleaned_data['crushNickname']
     user_instagram.__dict__[getCrushField(crushPosition, 'message')] = form.cleaned_data['crushMessage']
     user_instagram.__dict__[getCrushField(crushPosition, 'active')] = form.cleaned_data['active']
     user_instagram.__dict__[getCrushField(crushPosition, 'whomToInform')] = form.cleaned_data['whomToInform']
-    moveAccordingToPriority(user_instagram, crushPosition, form.cleaned_data['priorityPosition'])
+    moveAccordingToPriority(user_instagram, crushPosition, int(form.cleaned_data['priorityPosition']))
     user_instagram.save()
     return True
 
 
-def validateEditCrush(user_instagram, form, lowest_priority):
-    crushPosition = getCrushPosition(user_instagram, form.cleaned_data['crushUsername'])
-    if crushPosition == 0:
-        form.add_error('crushUsername', CRUSH_NOT_PRESENT)
-        return 0
-    if form.cleaned_data['priorityPosition'] > lowest_priority:
+def validateCrushForEdit(user_instagram, crushUsername, form, lowest_priority):
+    if not crushAlreadyPresent(user_instagram, crushUsername): #this check already done in validateUserInstagramForEdit. it is redundant but for safety
+        form.add_error('__all__', CRUSH_NOT_PRESENT)
+        return False
+    if int(form.cleaned_data['priorityPosition']) > lowest_priority:
         form.add_error('priorityPosition', PRIORITY_EXCEEDS_LIMIT)
-        return 0
-    return crushPosition
+        return False
+    return True
 
 def getCrushData(user_instagram, crushUsername):
     position = getCrushPosition(user_instagram, crushUsername)
     return {
-        'crushUsername':user_instagram.__dict__[getCrushField(position, 'username')],
         'crushNickname': user_instagram.__dict__[getCrushField(position, 'nickname')],
         'crushMessage': user_instagram.__dict__[getCrushField(position, 'message')],
         'whomToInform': user_instagram.__dict__[getCrushField(position, 'whomToInform')],
@@ -380,6 +393,6 @@ def getCrushData(user_instagram, crushUsername):
 
 def getCrushPosition(user_instagram, crushUsername):
     for position in range(1, 6):
-        if user_instagram.__dict__[getCrushField(1, 'username')] == crushUsername:
+        if user_instagram.__dict__[getCrushField(position, 'username')] == crushUsername:
             return position
     return 0

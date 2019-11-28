@@ -65,10 +65,8 @@ class EditCrushForm(Form):
         )
 
     def getPosition(self, position):
-        self.has_error()
         return (position, str(position)+' - Highest' if position == 1 else str(position))
 
-    crushUsername = forms.CharField(label='Instagram Username of your crush', max_length=255, required=True)
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
     crushMessage = forms.CharField(label='Your Message', max_length=3000, required=False)
     whomToInform = forms.ChoiceField(
