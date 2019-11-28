@@ -4,6 +4,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, logout_then_login, PasswordResetView, \
     PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render
 
 # Create your views here.
@@ -326,13 +327,15 @@ def editCrushView(request, crushUsername):
             'crushUsername':crushUsername,
         }
         return render(request, 'secretcrushapp/edit_crush.html', context)
+    data = getCrushData(user_instagram, crushUsername)
+    form = EditCrushForm(error_or_lowestPriority, data)
     if request.method == 'POST':
         form = EditCrushForm(error_or_lowestPriority, request.POST)
         if form.is_valid() and validateAndEditCrush(user_instagram, crushUsername, form, error_or_lowestPriority):
             return HttpResponseRedirect(reverse('index'))
-    else:
-        data = getCrushData(user_instagram, crushUsername)
-        form = EditCrushForm(error_or_lowestPriority, data)
+    elif request.method == 'DELETE':
+        deleteCrush(user_instagram, crushUsername)
+        return HttpResponseRedirect(reverse('index'))
     context = {
         'form': form,
         'crushUsername': crushUsername,
@@ -396,3 +399,28 @@ def getCrushPosition(user_instagram, crushUsername):
         if user_instagram.__dict__[getCrushField(position, 'username')] == crushUsername:
             return position
     return 0
+
+def deleteCrush(user_instagram, crushUsername):
+    position = getCrushPosition(user_instagram, crushUsername)
+    user_instagram.__dict__[getCrushField(position, 'username')] = None
+    user_instagram.__dict__[getCrushField(position, 'nickname')] = None
+    user_instagram.__dict__[getCrushField(position, 'message')] = None
+    user_instagram.__dict__[getCrushField(position, 'active')] = False
+    user_instagram.__dict__[getCrushField(position, 'time')] = None
+    user_instagram.__dict__[getCrushField(position, 'whomToInform')] = 1
+    user_instagram.save()
+
+@login_required
+def deleteCrushView(request, crushUsername):
+    if request.method != 'POST':
+        raise PermissionDenied
+    user_instagram = request.user.instagramDetails.first()
+    error_or_lowestPriority = validateUserInstagramForEdit(user_instagram, crushUsername)
+    if isinstance(error_or_lowestPriority, dict):
+        context = {
+            'error': error_or_lowestPriority,
+            'crushUsername': crushUsername,
+        }
+        return render(request, 'secretcrushapp/edit_crush.html', context)
+    deleteCrush(user_instagram, crushUsername)
+    return HttpResponseRedirect(reverse('index'))

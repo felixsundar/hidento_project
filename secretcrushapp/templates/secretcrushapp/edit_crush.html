@@ -18,4 +18,8 @@
     <button type="submit">Save Changes</button>
   </form>
   <a href="{% url 'index' %}"><button>Cancel</button></a>
+  <form method="post" action="{% url 'deleteCrush' crushUsername %}">
+    {% csrf_token %}
+    <button type="submit">Delete Crush</button>
+  </form>
 {% endif %}
