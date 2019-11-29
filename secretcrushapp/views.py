@@ -434,6 +434,7 @@ def deleteCrush(user_instagram, crushUsername):
     user_instagram.__dict__[getCrushField(position, 'active')] = False
     user_instagram.__dict__[getCrushField(position, 'time')] = None
     user_instagram.__dict__[getCrushField(position, 'whomToInform')] = 1
+    moveAccordingToPriority(user_instagram, position, 5)
     user_instagram.save()
 
 @login_required
