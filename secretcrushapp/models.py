@@ -92,6 +92,8 @@ class InstagramCrush(models.Model):
     match_time = models.DateTimeField(blank=True, null=True)
     match_stablized = models.BooleanField(default=False)
     inform_this_user = models.BooleanField(default=False)
+    match_nickname = models.CharField(max_length=255, blank=True, null=True)
+    match_message = models.CharField(max_length=3000, blank=True, null=True)
 
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in InstagramCrush._meta.fields]

@@ -157,6 +157,14 @@ def completeResetPasswordView(request):
 
 @login_required
 def linkInstagramView(request):
+    user_instagram = request.user.instagramDetails.first()
+    if user_instagram is not None:
+        context = {
+            'code':1,
+        }
+        return render(request, 'secretcrushapp/link_instagram.html', context)
+    if request.GET.get('mode') == 'forceLink':
+        request.session['mode']='forceLink'
     return HttpResponseRedirect(constructInstagramApiUrl())
 
 def constructInstagramApiUrl():
@@ -186,6 +194,12 @@ def authInstagramView(request):
     user_details_response = getInstagramUserDetails(token_response_data['user_id'], token_response_data['access_token'])
     user_details_response_data = user_details_response.json()
     logging.debug("user details response from instagram for user {}:\n {}".format(user, user_details_response_data))
+    if checkInstagramUsername(request, user_details_response_data['username']):
+        context = {
+            'code': 2,
+            'instagram_username':user_details_response_data['username'],
+        }
+        return render(request, 'secretcrushapp/link_instagram.html', context)
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:
         user_instagram = InstagramCrush(hidento_userid=user)
@@ -193,6 +207,16 @@ def authInstagramView(request):
     user_instagram.instagram_username = user_details_response_data['username']
     user_instagram.save()
     return HttpResponseRedirect(reverse('account'))
+
+def checkInstagramUsername(request, instagramUsername):
+    user_instagram = InstagramCrush.objects.get(instagram_username = instagramUsername)
+    if user_instagram is None:
+        return False
+    if request.session.pop('mode', None) == 'forceLink':
+        user_instagram.delete()
+        return False
+    return True
+
 
 def getInstagramUserDetails(user_id, access_token):
     url = settings.INSTAGRAM_USERNODE_URL + str(user_id)
@@ -204,6 +228,8 @@ def getInstagramUserDetails(user_id, access_token):
 
 @login_required
 def removeInstagramView(request):
+    if request.method != 'POST':
+        raise PermissionDenied
     user_instagram = request.user.instagramDetails.first()
     if user_instagram is not None:
         user_instagram.delete()
