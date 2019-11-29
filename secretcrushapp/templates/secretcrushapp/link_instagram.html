@@ -1,0 +1,11 @@
+<a href="{% url 'index' %}"> Home </a>&nbsp&nbsp
+<a href="{% url 'logout' %}"> Logout </a><br><br>
+
+{% if code == 1 %}
+<p>Your account is already linked with an Instagram account. Remove the account to add a new one</p><br>
+<a href="{% url 'account' %}"> My Account </a>
+{% elif code == 2 %}
+<p>The Instagram account you are trying to link - <b>{{instagram_username}}</b>, is already linked with a different Hidento account.</p><br>
+<p>Do you want to change it to link to this account instead? </p>
+<a href="{% url 'linkInstagram' %}?mode=forceLink"><button>Yes</button> </a>&nbsp&nbsp&nbsp&nbsp
+<a href="{% url 'account' %}"><button>No</button> </a>
