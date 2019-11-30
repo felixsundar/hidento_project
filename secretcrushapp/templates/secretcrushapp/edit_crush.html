@@ -1,0 +1,25 @@
+<a href="{% url 'index' %}"> Home </a>&nbsp&nbsp <a href="{% url 'logout' %}"> Logout </a><br><br>
+
+  <h2>Edit Secret Crush</h2><br><br>
+<p>Crush Instagram Username: &nbsp {{crushUsername}}</p>
+{% if error is not None%}
+  <p>{{error.message}}</p><br>
+  {% if error.code == 1 %}
+    <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
+  {% elif error.code == 2 %}
+    <a href="{% url 'addCrush' %}"> Add Secret Crush </a>
+  {% elif error.code == 3 %}
+    <a href="{% url 'index' %}"> Go to Crushlist </a>
+  {% endif %}
+{% else %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save Changes</button>
+  </form>
+  <a href="{% url 'index' %}"><button>Cancel</button></a>
+  <form method="post" action="{% url 'deleteCrush' crushUsername %}">
+    {% csrf_token %}
+    <button type="submit">Delete Crush</button>
+  </form>
+{% endif %}
