@@ -1,8 +1,12 @@
+import threading
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin, User
 from django.db import models
 
 # Create your models here.
+from secretcrushapp import matching
+
 
 class HidentoUserManager(BaseUserManager):
     def create_user(self, username, email, firstname, lastname, password):
@@ -87,7 +91,6 @@ class InstagramCrush(models.Model):
     crush5_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush5_time = models.DateTimeField(blank=True, null=True)
     crush5_active = models.BooleanField(default=False)
-    currently_matched = models.BooleanField(default=False)
     match_instagram_username = models.CharField(max_length=255, blank=True, null=True)
     match_time = models.DateTimeField(blank=True, null=True)
     match_stablized = models.BooleanField(default=False)
@@ -97,3 +100,28 @@ class InstagramCrush(models.Model):
 
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in InstagramCrush._meta.fields]
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        instance._loaded_values = dict(zip(field_names, values))
+        return instance
+
+    def save(self, *args, **kwargs):
+        modified = False
+        if self._state.adding or self.isPreferenceListModified():
+            modified = True
+        super().save(*args, **kwargs)
+        if modified:
+            matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid,))
+            matching_thread.start()
+
+    def isPreferenceListModified(self):
+        for position in range(1,6):
+            if self.__dict__[getCrushField(position, 'username')] != self._loaded_values[getCrushField(position, 'username')] \
+                or self.__dict__[getCrushField(position, 'active')] != self._loaded_values[getCrushField(position, 'active')]:
+                return True
+        return False
+
+def getCrushField(position, fieldname):
+        return 'crush' + str(position) + '_' + fieldname

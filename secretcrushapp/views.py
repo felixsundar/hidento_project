@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, logout_then_login, PasswordResetView, \
     PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.shortcuts import render
 
 # Create your views here.
@@ -24,6 +25,7 @@ CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty'
 CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list'
 CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list. Select one from your crush list'
 PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist'
+CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as a crush'
 class HidentoUserBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         user = self.loginUsingUsername(username, password)
@@ -236,8 +238,9 @@ def removeInstagramView(request):
     return HttpResponseRedirect(reverse('account'))
 
 @login_required
+@transaction.atomic
 def addCrushView(request):
-    user_instagram = request.user.instagramDetails.first()
+    user_instagram = request.user.instagramDetails.select_for_update().first()
     error_or_lowestPriority = validateUserInstagramForAdd(user_instagram)
     if isinstance(error_or_lowestPriority, dict):
         context = {
@@ -272,12 +275,12 @@ def validateUserInstagramForAdd(user_instagram):
 def validateAndAddCrush(form, user_instagram, vacant_position):
     if not validateCrushForAdd(form, user_instagram, form.cleaned_data['crushUsername'], vacant_position):
         return False
-    user_instagram.__dict__['crush' + str(vacant_position) + '_username'] = form.cleaned_data['crushUsername']
-    user_instagram.__dict__['crush' + str(vacant_position) + '_nickname'] = form.cleaned_data['crushNickname']
-    user_instagram.__dict__['crush' + str(vacant_position) + '_message'] = form.cleaned_data['crushMessage']
-    user_instagram.__dict__['crush' + str(vacant_position) + '_whomToInform'] = form.cleaned_data['whomToInform']
-    user_instagram.__dict__['crush' + str(vacant_position) + '_active'] = True
-    user_instagram.__dict__['crush' + str(vacant_position) + '_time'] = now()
+    user_instagram.__dict__[getCrushField(vacant_position, 'username')] = form.cleaned_data['crushUsername']
+    user_instagram.__dict__[getCrushField(vacant_position, 'nickname')] = form.cleaned_data['crushNickname']
+    user_instagram.__dict__[getCrushField(vacant_position, 'message')] = form.cleaned_data['crushMessage']
+    user_instagram.__dict__[getCrushField(vacant_position, 'whomToInform')] = form.cleaned_data['whomToInform']
+    user_instagram.__dict__[getCrushField(vacant_position, 'active')] = True
+    user_instagram.__dict__[getCrushField(vacant_position, 'time')] = now()
     moveAccordingToPriority(user_instagram, vacant_position, int(form.cleaned_data['priorityPosition']))
     user_instagram.save()
     return True
@@ -291,6 +294,8 @@ def validateCrushForAdd(form, user_instagram, crushUsername, lowest_priority):
         return False
     if crushAlreadyPresent(user_instagram, crushUsername):
         form.add_error('crushUsername', CRUSH_ALREADY_PRESENT)
+    if user_instagram.instagram_username == crushUsername:
+        form.add_error('crushUsername', CRUSH_AND_YOURNAME_SAME)
     if int(form.cleaned_data['priorityPosition']) > lowest_priority:
         form.add_error('priorityPosition', PRIORITY_EXCEEDS_LIMIT)
     return False if form.errors else True
@@ -344,8 +349,9 @@ def getCrushField(position, fieldname):
     return 'crush' + str(position) + '_' + fieldname
 
 @login_required
+@transaction.atomic
 def editCrushView(request, crushUsername):
-    user_instagram = request.user.instagramDetails.first()
+    user_instagram = request.user.instagramDetails.select_for_update().first()
     error_or_lowestPriority = validateUserInstagramForEdit(user_instagram, crushUsername)
     if isinstance(error_or_lowestPriority, dict):
         context = {
@@ -438,10 +444,11 @@ def deleteCrush(user_instagram, crushUsername):
     user_instagram.save()
 
 @login_required
+@transaction.atomic
 def deleteCrushView(request, crushUsername):
     if request.method != 'POST':
         raise PermissionDenied
-    user_instagram = request.user.instagramDetails.first()
+    user_instagram = request.user.instagramDetails.select_for_update().first()
     error_or_lowestPriority = validateUserInstagramForEdit(user_instagram, crushUsername)
     if isinstance(error_or_lowestPriority, dict):
         context = {
