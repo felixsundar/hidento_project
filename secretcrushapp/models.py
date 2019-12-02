@@ -63,31 +63,31 @@ class InstagramCrush(models.Model):
     instagram_username = models.CharField(max_length=255, unique=True)
     crush1_username = models.CharField(max_length=255, blank=True, null=True)
     crush1_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush1_message = models.CharField(max_length=3000, blank=True, null=True)
+    crush1_message = models.TextField(max_length=3000, blank=True, null=True)
     crush1_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush1_time = models.DateTimeField(blank=True, null=True)
     crush1_active = models.BooleanField(default=False)
     crush2_username = models.CharField(max_length=255, blank=True, null=True)
     crush2_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush2_message = models.CharField(max_length=3000, blank=True, null=True)
+    crush2_message = models.TextField(max_length=3000, blank=True, null=True)
     crush2_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush2_time = models.DateTimeField(blank=True, null=True)
     crush2_active = models.BooleanField(default=False)
     crush3_username = models.CharField(max_length=255, blank=True, null=True)
     crush3_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush3_message = models.CharField(max_length=3000, blank=True, null=True)
+    crush3_message = models.TextField(max_length=3000, blank=True, null=True)
     crush3_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush3_time = models.DateTimeField(blank=True, null=True)
     crush3_active = models.BooleanField(default=False)
     crush4_username = models.CharField(max_length=255, blank=True, null=True)
     crush4_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush4_message = models.CharField(max_length=3000, blank=True, null=True)
+    crush4_message = models.TextField(max_length=3000, blank=True, null=True)
     crush4_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush4_time = models.DateTimeField(blank=True, null=True)
     crush4_active = models.BooleanField(default=False)
     crush5_username = models.CharField(max_length=255, blank=True, null=True)
     crush5_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush5_message = models.CharField(max_length=3000, blank=True, null=True)
+    crush5_message = models.TextField(max_length=3000, blank=True, null=True)
     crush5_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush5_time = models.DateTimeField(blank=True, null=True)
     crush5_active = models.BooleanField(default=False)
@@ -96,7 +96,7 @@ class InstagramCrush(models.Model):
     match_stablized = models.BooleanField(default=False)
     inform_this_user = models.BooleanField(default=False)
     match_nickname = models.CharField(max_length=255, blank=True, null=True)
-    match_message = models.CharField(max_length=3000, blank=True, null=True)
+    match_message = models.TextField(max_length=3000, blank=True, null=True)
 
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in InstagramCrush._meta.fields]
@@ -109,12 +109,21 @@ class InstagramCrush(models.Model):
 
     def save(self, *args, **kwargs):
         modified = False
+        if self.instagramDetailsModified():
+            raise ValueError('Instagram account details cannot be modified. To change instagram account, '
+                             'remove and link instagram again')
         if self._state.adding or self.isPreferenceListModified():
             modified = True
         super().save(*args, **kwargs)
         if modified:
             matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid,))
             matching_thread.start()
+
+    def instagramDetailsModified(self):
+        if self.__dict__['instagram_username'] != self._loaded_values['instagram_username'] \
+            or self.__dict__['instagram_userid'] != self._loaded_values['instagram_userid']:
+            return True
+        return False
 
     def isPreferenceListModified(self):
         for position in range(1,6):
