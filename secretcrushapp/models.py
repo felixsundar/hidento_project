@@ -5,6 +5,7 @@ from django.contrib.auth.models import PermissionsMixin, User
 from django.db import models
 
 # Create your models here.
+from django.utils.timezone import now
 from secretcrushapp import matching
 
 
@@ -21,6 +22,7 @@ class HidentoUserManager(BaseUserManager):
         )
 
         user.set_password(password)
+        user.joined_time = now()
         user.save(using=self._db)
         return user
 
@@ -46,6 +48,7 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
     date_of_birth = models.DateField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(verbose_name='active', default=True)
+    joined_time = models.DateTimeField(blank=True, null=True)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -93,6 +96,9 @@ class InstagramCrush(models.Model):
     crush5_active = models.BooleanField(default=False)
     match_instagram_username = models.CharField(max_length=255, blank=True, null=True)
     match_time = models.DateTimeField(blank=True, null=True)
+    old_match_instagram_username = models.CharField(max_length=255, blank=True, null=True)
+    old_match_time = models.DateTimeField(blank=True, null=True)
+    old_match_broken_time = models.DateTimeField(blank=True, null=True)
     match_stablized = models.BooleanField(default=False)
     inform_this_user = models.BooleanField(default=False)
     match_nickname = models.CharField(max_length=255, blank=True, null=True)
@@ -108,15 +114,13 @@ class InstagramCrush(models.Model):
         return instance
 
     def save(self, *args, **kwargs):
-        modified = False
         if self.instagramDetailsModified():
             raise ValueError('Instagram account details cannot be modified. To change instagram account, '
-                             'remove and link instagram again')
-        if self._state.adding or self.isPreferenceListModified():
-            modified = True
+                             'remove and link instagram again.')
+        crushListModified = self._state.adding or self.isPreferenceListModified()
         super().save(*args, **kwargs)
-        if modified:
-            matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid,))
+        if crushListModified:
+            matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid, 1, set(self.hidento_userid), None))
             matching_thread.start()
 
     def instagramDetailsModified(self):

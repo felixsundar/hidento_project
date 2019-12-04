@@ -7,47 +7,69 @@ from django.utils.timezone import now
 from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
-def startMatching(user):
-    if user is None:
+def startMatching(user, stage, losersSet, latestUser):
+    if user is None or ((stage == 3 or stage == 4) and user == latestUser):
         return
     with transaction.atomic():
-        user_instagram = user.instagramDetails.select_for_update().first()
-        if user_instagram is None:
+        from secretcrushapp.models import InstagramCrush
+        try:
+            user_instagram = user.instagramDetails.select_for_update().first()
+        except InstagramCrush.DoesNotExist:
             return
         firstLoser = None
         if currentMatchRemoved(user_instagram):
             firstLoser = breakCurrentMatch(user_instagram)
-        newMatchAvailable = tryToMakeNewMatch(user_instagram)
-        if newMatchAvailable is not None:
-            if user_instagram.match_instagram_username is not None:
-                firstLoser = breakCurrentMatch(user_instagram)
-            secondLoser = makeMatch(user_instagram, newMatchAvailable)
-            newMatchAvailable.save()
+        newOrBetterMatchAvailable = tryToMakeNewMatch(user_instagram)
+        if newOrBetterMatchAvailable is not None:
+            if stage == 2:
+                latestUser = getLatestUser(user, newOrBetterMatchAvailable.hidento_userid, latestUser)
+            if newOrBetterMatchAvailable.hidento_userid in losersSet:
+                losersSet=set()
+                stage += 1
+            losers = makeMatch(user_instagram, newOrBetterMatchAvailable)
+            if losers[0] is not None:
+                firstLoser = losers[0]
+            secondLoser = losers[1]
+            newOrBetterMatchAvailable.save()
             if secondLoser is not None:
                 secondLoser.save()
-                secondLoserThread = threading.Thread(target=startMatching, args=(secondLoser.hidento_userid,))
+                losersSet.add(secondLoser.hidento_userid)
+                secondLoserThread = threading.Thread(target=startMatching, args=(secondLoser.hidento_userid, stage, losersSet, latestUser))
                 secondLoserThread.start()
         user_instagram.save()
         if firstLoser is not None:
             firstLoser.save()
-            firstLoserThread = threading.Thread(target=startMatching, args=(firstLoser.hidento_userid,))
+            firstLoserThread = threading.Thread(target=startMatching, args=(firstLoser.hidento_userid, 1, set(firstLoser.hidento_userid), None)
             firstLoserThread.start()
 
-
-def makeMatch(user_instagram, availableCrush):
-    loser = breakCurrentMatch(availableCrush)
+def makeMatch(user_instagram, crushToMatch):
     match_time = now()
-    positionInFirst = getCrushPosition(user_instagram, availableCrush.instagram_username)
-    availableCrush.match_instagram_username = user_instagram.instagram_username
-    availableCrush.match_nickname = user_instagram.__dict__[getCrushField(positionInFirst, 'nickname')]
-    availableCrush.match_message = user_instagram.__dict__[getCrushField(positionInFirst, 'message')]
-    availableCrush.match_time = match_time
-    positionInSecond = getCrushPosition(availableCrush, user_instagram.instagram_username)
-    user_instagram.match_instagram_username = availableCrush.instagram_username
-    user_instagram.match_nickname = availableCrush.__dict__[getCrushField(positionInFirst, 'nickname')]
-    user_instagram.match_message = availableCrush.__dict__[getCrushField(positionInFirst, 'message')]
-    user_instagram.match_time = match_time
-    return loser
+    useOldMatchTime = isNewMatchSameAsOldAndWithinOneHourOfBrokenTime(user_instagram, crushToMatch.instagram_username, match_time)
+    firstLoser = breakCurrentMatch(user_instagram)
+    secondLoser = breakCurrentMatch(crushToMatch)
+    crushToMatch.match_instagram_username = user_instagram.instagram_username
+    user_instagram.match_instagram_username = crushToMatch.instagram_username
+    if useOldMatchTime is not None:
+        user_instagram.match_time = useOldMatchTime
+        crushToMatch.match_time = useOldMatchTime
+    else:
+        user_instagram.match_time = match_time
+        crushToMatch.match_time = match_time
+    return (firstLoser, secondLoser)
+
+def isNewMatchSameAsOldAndWithinOneHourOfBrokenTime(user_instagram, new_instagram_username, match_time):
+    if user_instagram.old_match_instagram_username is not None \
+        and user_instagram.old_match_instagram_username == new_instagram_username \
+        and oldMatchBrokenLessThanOneHourBefore(user_instagram.old_match_broken_time, match_time):
+        return user_instagram.old_match_time
+    return None
+
+def oldMatchBrokenLessThanOneHourBefore(broken_time, now_time):
+    time_difference = now_time - broken_time
+    duration_in_minutes = divmod(time_difference.total_seconds(), 60)[0]
+    if duration_in_minutes <= 60:
+        return True
+    return False
 
 def getCrushPosition(user_instagram, crushUsername):
     for position in range(1,6):
@@ -68,15 +90,15 @@ def breakCurrentMatch(user_instagram):
         matchToBreak = InstagramCrush.objects.select_for_update().get(instagram_username=user_instagram.match_instagram_username)
     except InstagramCrush.DoesNotExist:
         matchToBreak = None
+    breaking_time = now()
     if matchToBreak is not None:
         matchToBreak.match_instagram_username = None
         matchToBreak.match_time = None
-        matchToBreak.match_nickname = None
-        matchToBreak.match_message = None
+    user_instagram.old_match_instagram_username = user_instagram.match_instagram_username
+    user_instagram.old_match_time = user_instagram.match_time
+    user_instagram.old_match_broken_time = breaking_time
     user_instagram.match_instagram_username = None
     user_instagram.match_time = None
-    user_instagram.match_nickname = None
-    user_instagram.match_message = None
     return matchToBreak
 
 def tryToMakeNewMatch(user_instagram):
@@ -119,3 +141,13 @@ def currentMatchPriorityPosition(user_instagram):
 
 def getCrushField(position, fieldname):
     return 'crush' + str(position) + '_' + fieldname
+
+def getLatestUser(user1, user2, user3):
+    if user1.joined_time > user2.joined_time:
+        latestUser = user1
+    else:
+        latestUser = user2
+    if user3 is not None:
+        if user3.joined_time > latestUser.joined_time:
+            latestUser = user3
+    return latestUser
