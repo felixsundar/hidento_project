@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
+from django.utils.timezone import now
 
 from secretcrushapp.models import InstagramCrush, HidentoUser
 
@@ -31,6 +32,7 @@ class HidentoUserCreationForm(forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.joined_time = now()
         if commit:
             user.save()
         return user
@@ -45,7 +47,7 @@ class HidentoUserChangeForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password',
+        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password', 'joined_time',
                   'is_staff', 'is_superuser', 'is_active')
 
     def clean_password(self):
@@ -64,14 +66,14 @@ class HidentoUserAdmin(UserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     #list_display fields are displayed in the table of user details
-    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth',
+    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth', 'joined_time',
                     'is_staff', 'is_superuser', 'is_active')
     #list_filter fields are shown on the side of admin site for filtering based on its values
     list_filter = ('is_superuser', 'is_staff')
     #fieldsets define how the user details are displayed in the edit user details page
     fieldsets = (
         ('Credentials', {'fields': ('username', 'email', 'password')}),
-        ('Personal info', {'fields': ('firstname', 'lastname', 'date_of_birth', 'gender')}),
+        ('Personal info', {'fields': ('firstname', 'lastname', 'date_of_birth', 'gender', 'joined_time')}),
         ('Permissions', {'fields': ('is_staff', 'is_superuser')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin

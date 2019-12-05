@@ -9,6 +9,7 @@ from hidento_project import settings
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 def startMatching(user, stage, losersSet, latestUser):
     if user is None or ((stage == 3 or stage == 4) and user == latestUser):
+        logging.debug('Latest User - {} is trying make match at stage - {}. Stopping the cycle.'.format(user, stage))
         return
     with transaction.atomic():
         from secretcrushapp.models import InstagramCrush
@@ -24,8 +25,13 @@ def startMatching(user, stage, losersSet, latestUser):
             if stage == 2:
                 latestUser = getLatestUser(user, newOrBetterMatchAvailable.hidento_userid, latestUser)
             if newOrBetterMatchAvailable.hidento_userid in losersSet:
+                if stage == 1:
+                    logging.debug('Cycle detected at stage 1 at user - {}'.format(newOrBetterMatchAvailable.hidento_userid))
+                if stage == 2:
+                    logging.debug('Latest User found - {}'.format(latestUser))
                 losersSet=set()
                 stage += 1
+                logging.debug('Entering stage - {}'.format(stage))
             losers = makeMatch(user_instagram, newOrBetterMatchAvailable)
             if losers[0] is not None:
                 firstLoser = losers[0]
@@ -39,7 +45,7 @@ def startMatching(user, stage, losersSet, latestUser):
         user_instagram.save()
         if firstLoser is not None:
             firstLoser.save()
-            firstLoserThread = threading.Thread(target=startMatching, args=(firstLoser.hidento_userid, 1, set(firstLoser.hidento_userid), None)
+            firstLoserThread = threading.Thread(target=startMatching, args=(firstLoser.hidento_userid, 1, {firstLoser.hidento_userid}, None))
             firstLoserThread.start()
 
 def makeMatch(user_instagram, crushToMatch):
@@ -114,7 +120,7 @@ def tryToMakeNewMatch(user_instagram):
             except InstagramCrush.DoesNotExist:
                 continue
             if crushIsAvailableForMatch(crushInstagram, user_instagram.instagram_username):
-                if user_instagram.match_instagram_username is None or position < currentMatchPriorityPosition(crushInstagram):
+                if user_instagram.match_instagram_username is None or position < currentMatchPriorityPosition(user_instagram):
                     return crushInstagram
                 return None
     return None

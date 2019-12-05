@@ -1,4 +1,6 @@
+import logging
 import threading
+import time
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin, User
@@ -7,8 +9,11 @@ from django.db import models
 # Create your models here.
 from django.utils.timezone import now
 from secretcrushapp import matching
+from secretcrushapp import testcase
 
+from hidento_project import settings
 
+logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 class HidentoUserManager(BaseUserManager):
     def create_user(self, username, email, firstname, lastname, password):
         if not (username and email and firstname and lastname):
@@ -48,7 +53,7 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
     date_of_birth = models.DateField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(verbose_name='active', default=True)
-    joined_time = models.DateTimeField(blank=True, null=True)
+    joined_time = models.DateTimeField(blank=False, null=False)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
@@ -118,22 +123,34 @@ class InstagramCrush(models.Model):
             raise ValueError('Instagram account details cannot be modified. To change instagram account, '
                              'remove and link instagram again.')
         crushListModified = self._state.adding or self.isPreferenceListModified()
+        runtestcase = False
+        if self._state.adding and self.instagram_username == 'a':
+            self.crush1_username = 'e'
+            self.crush1_active = True
+            self.crush2_username = 'b'
+            self.crush2_active = True
+            runtestcase = True
         super().save(*args, **kwargs)
         if crushListModified:
-            matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid, 1, set(self.hidento_userid), None))
+            matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid, 1, {self.hidento_userid}, None))
             matching_thread.start()
+        if runtestcase:
+            testcase_thread = threading.Thread(target=testcase.createTestcases)
+            testcase_thread.start()
 
     def instagramDetailsModified(self):
-        if self.__dict__['instagram_username'] != self._loaded_values['instagram_username'] \
-            or self.__dict__['instagram_userid'] != self._loaded_values['instagram_userid']:
-            return True
+        if not self._state.adding:
+            if self.instagram_username != self._loaded_values['instagram_username'] \
+                or self.instagram_userid != self._loaded_values['instagram_userid']:
+                return True
         return False
 
     def isPreferenceListModified(self):
-        for position in range(1,6):
-            if self.__dict__[getCrushField(position, 'username')] != self._loaded_values[getCrushField(position, 'username')] \
-                or self.__dict__[getCrushField(position, 'active')] != self._loaded_values[getCrushField(position, 'active')]:
-                return True
+        if not self._state.adding:
+            for position in range(1,6):
+                if self.__dict__[getCrushField(position, 'username')] != self._loaded_values[getCrushField(position, 'username')] \
+                    or self.__dict__[getCrushField(position, 'active')] != self._loaded_values[getCrushField(position, 'active')]:
+                    return True
         return False
 
 def getCrushField(position, fieldname):
