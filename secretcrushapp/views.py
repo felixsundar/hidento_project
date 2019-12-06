@@ -55,16 +55,20 @@ class HidentoUserBackend(ModelBackend):
 
 def index(request):
     if request.user.is_authenticated:
-        return getUserHome(request)
+        context = {
+            'user_firstname':request.user.firstname,
+        }
+        return render(request, 'secretcrushapp/user_home.html', context=context)
     return LoginView.as_view(template_name='secretcrushapp/website_home.html')(request)
 
-def getUserHome(request):
+@login_required
+def crushListView(request):
     user_instagram = request.user.instagramDetails.first()
     context = {
         'user_firstname':request.user.firstname,
         'instagram_crushes':getInstagramCrushes(user_instagram)
     }
-    return render(request, 'secretcrushapp/user_home.html', context=context)
+    return render(request, 'secretcrushapp/crush_list.html', context=context)
 
 def getInstagramCrushes(user_instagram):
     if user_instagram is None:
@@ -79,6 +83,31 @@ def getInstagramCrushes(user_instagram):
                 'is_active':user_instagram.__dict__[getCrushField(position, 'active')]
             })
     return instagramCrushes
+
+@login_required
+@transaction.atomic
+def matchView(request):
+    user_instagram = request.user.instagramDetails.first()
+    if user_instagram is None or not (user_instagram.match_stablized and user_instagram.inform_this_user):
+        matchDetails = None
+    else:
+        matchDetails = {
+            'match_instagram_username':user_instagram.match_instagram_username,
+            'user_nickname_for_match':getMatchNickname(user_instagram),
+            'match_nickname_for_user':user_instagram.match_nickname,
+            'match_message_for_user':user_instagram.match_message,
+            'instagramProfileLink': 'https://www.instagram.com/' + user_instagram.match_instagram_username,
+        }
+    context = {
+        'user_firstname':request.user.firstname,
+        'matchDetails':matchDetails,
+    }
+    return render(request, 'secretcrushapp/match.html', context=context)
+
+def getMatchNickname(user_instagram):
+    matchPosition = getCrushPosition(user_instagram, user_instagram.match_instagram_username)
+    return user_instagram.__dict__[getCrushField(matchPosition, 'nickname')]
+
 def loginView(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
@@ -458,3 +487,15 @@ def deleteCrushView(request, crushUsername):
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
     return HttpResponseRedirect(reverse('index'))
+
+def privacyView(request):
+    return render(request, 'secretcrushapp/privacy.html')
+
+def termsView(request):
+    return render(request, 'secretcrushapp/terms.html')
+
+def howitworksView(request):
+    return render(request, 'secretcrushapp/howitworks.html')
+
+def faqView(request):
+    return render(request, 'secretcrushapp/faq.html')
