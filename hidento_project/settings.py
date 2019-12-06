@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'hidento_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
+            'read_default_file': '/etc/postgresql/my.cnf',
         },
     }
 }
