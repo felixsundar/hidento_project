@@ -6,6 +6,8 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('login/', views.loginView, name='login'),
     path('signup/', views.signupView, name='signup'),
+    path('crushes/', views.crushListView, name='crushList'),
+    path('match/', views.matchView, name='match'),
     path('account/', views.accountView, name='account'),
     path('account/edit/', views.accountEditView, name='accountEdit'),
     path('account/change_password/', views.changePasswordView, name='changePassword'),
@@ -21,4 +23,8 @@ urlpatterns = [
     path('crush/edit/<crushUsername>/', views.editCrushView, name='editCrush'),
     path('crush/delete/<crushUsername>/', views.deleteCrushView, name='deleteCrush'),
     path('logout/', views.logoutView, name='logout'),
+    path('privacy/', views.privacyView, name='privacy'),
+    path('terms/', views.termsView, name='terms'),
+    path('howitworks/', views.howitworksView, name='howitworks'),
+    path('faq/', views.faqView, name='faq'),
 ]

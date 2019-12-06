@@ -1,0 +1,24 @@
+<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp <a href="{% url 'account' %}"> Account Details </a>&nbsp&nbsp
+<a href="{% url 'logout' %}"> Logout </a><br><br>
+
+<br><br>
+Hi {{ user_firstname }}
+
+{% if matchDetails is None %}
+ <p>You don't have any matches yet. </p><br>
+{% else %}
+    <h2>Congratulations!!! You have a match!</h2>
+    You are matched with {{ matchDetails.match_instagram_username }}
+    {% if matchDetails.user_nickname_for_match is not None %}
+        ({{ matchDetails.user_nickname_for_match }})
+    {% endif %}
+
+    {% if matchDetails.match_nickname_for_user is not None %}
+        Your match has a nickname for you - {{ matchDetails.match_nickname_for_user }})
+    {% endif %}
+
+    {% if matchDetails.match_message_for_user is not None %}
+        Your match has a message for you - {{ matchDetails.match_message_for_user }})
+    {% endif %}
+    <a target="_blank" href="{{ matchDetails.instagramProfileLink }}"> Visit Instagram Profile </a>
+{% endif %}
