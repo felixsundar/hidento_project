@@ -240,8 +240,9 @@ def authInstagramView(request):
     return HttpResponseRedirect(reverse('account'))
 
 def checkInstagramUsername(request, instagramUsername):
-    user_instagram = InstagramCrush.objects.get(instagram_username = instagramUsername)
-    if user_instagram is None:
+    try:
+        user_instagram = InstagramCrush.objects.get(instagram_username = instagramUsername)
+    except InstagramCrush.DoesNotExist:
         return False
     if request.session.pop('mode', None) == 'forceLink':
         user_instagram.delete()
