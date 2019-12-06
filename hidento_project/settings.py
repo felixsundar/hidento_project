@@ -36,11 +36,16 @@ try:
 
         INSTAGRAM_APP_SECRET = config['INSTAGRAM_APP_SECRET']
 
-        DB_NAME = config['DB_NAME']
-        DB_USER = config['DB_USER']
-        DB_PASSWORD = config['DB_PASSWORD']
-        DB_HOST = config['DB_HOST']
-        DB_PORT = config['DB_PORT']
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': config['DB_NAME'],
+                'USER': config['DB_USER'],
+                'PASSWORD': config['DB_PASSWORD'],
+                'HOST': config['DB_HOST'],
+                'PORT': config['DB_PORT'],
+            }
+        }
 except FileNotFoundError as error:
     pass
 
@@ -101,17 +106,6 @@ WSGI_APPLICATION = 'hidento_project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT,
-    }
-}
 
 AUTH_USER_MODEL = 'secretcrushapp.HidentoUser'
 AUTHENTICATION_BACKENDS = ['secretcrushapp.views.HidentoUserBackend']
