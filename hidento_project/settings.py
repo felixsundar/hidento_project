@@ -35,6 +35,12 @@ try:
         DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
 
         INSTAGRAM_APP_SECRET = config['INSTAGRAM_APP_SECRET']
+
+        DB_NAME = config['DB_NAME']
+        DB_USER = config['DB_USER']
+        DB_PASSWORD = config['DB_PASSWORD']
+        DB_HOST = config['DB_HOST']
+        DB_PORT = config['DB_PORT']
 except FileNotFoundError as error:
     pass
 
@@ -43,7 +49,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.hidento.com']
+ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com']
 
 
 # Application definition
@@ -99,9 +105,11 @@ WSGI_APPLICATION = 'hidento_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'OPTIONS': {
-            'read_default_file': '/etc/postgresql/my.cnf',
-        },
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
 
