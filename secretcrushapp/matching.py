@@ -40,12 +40,12 @@ def startMatching(user, stage, losersSet, latestUser):
             if secondLoser is not None:
                 secondLoser.save()
                 losersSet.add(secondLoser.hidento_userid)
-                secondLoserThread = threading.Thread(target=startMatching, args=(secondLoser.hidento_userid, stage, losersSet, latestUser))
+                secondLoserThread = threading.Thread(target=startMatching, daemon=True, args=(secondLoser.hidento_userid, stage, losersSet, latestUser))
                 secondLoserThread.start()
         user_instagram.save()
         if firstLoser is not None:
             firstLoser.save()
-            firstLoserThread = threading.Thread(target=startMatching, args=(firstLoser.hidento_userid, 1, {firstLoser.hidento_userid}, None))
+            firstLoserThread = threading.Thread(target=startMatching, daemon=True, args=(firstLoser.hidento_userid, 1, {firstLoser.hidento_userid}, None))
             firstLoserThread.start()
 
 def makeMatch(user_instagram, crushToMatch):

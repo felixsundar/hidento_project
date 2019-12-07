@@ -132,10 +132,10 @@ class InstagramCrush(models.Model):
             runtestcase = True
         super().save(*args, **kwargs)
         if crushListModified:
-            matching_thread = threading.Thread(target=matching.startMatching, args=(self.hidento_userid, 1, {self.hidento_userid}, None))
+            matching_thread = threading.Thread(target=matching.startMatching, daemon=True, args=(self.hidento_userid, 1, {self.hidento_userid}, None))
             matching_thread.start()
         if runtestcase:
-            testcase_thread = threading.Thread(target=testcase.createTestcases)
+            testcase_thread = threading.Thread(target=testcase.createTestcases, daemon=True)
             testcase_thread.start()
 
     def instagramDetailsModified(self):

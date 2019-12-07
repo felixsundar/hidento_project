@@ -67,7 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_user_agents',
-    'secretcrushapp',
+    'secretcrushapp.apps.SecretcrushappConfig',
 ]
 
 USER_AGENTS_CACHE = 'default'
