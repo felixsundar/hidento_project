@@ -77,12 +77,6 @@ def oldMatchBrokenLessThanOneHourBefore(broken_time, now_time):
         return True
     return False
 
-def getCrushPosition(user_instagram, crushUsername):
-    for position in range(1,6):
-        if user_instagram.__dict__[getCrushField(position, 'username')] == crushUsername:
-            return position
-    return 0
-
 def currentMatchRemoved(user_instagram):
     if user_instagram.match_instagram_username is not None and currentMatchPriorityPosition(user_instagram) == 0:
         return True
@@ -100,11 +94,13 @@ def breakCurrentMatch(user_instagram):
     if matchToBreak is not None:
         matchToBreak.match_instagram_username = None
         matchToBreak.match_time = None
+        matchToBreak.match_stablized = False
     user_instagram.old_match_instagram_username = user_instagram.match_instagram_username
     user_instagram.old_match_time = user_instagram.match_time
     user_instagram.old_match_broken_time = breaking_time
     user_instagram.match_instagram_username = None
     user_instagram.match_time = None
+    user_instagram.match_stablized = False
     return matchToBreak
 
 def tryToMakeNewMatch(user_instagram):

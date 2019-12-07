@@ -153,5 +153,8 @@ class InstagramCrush(models.Model):
                     return True
         return False
 
+    def delete(self, using=None, keep_parents=False):
+        loser = matching.breakCurrentMatch(self)
+
 def getCrushField(position, fieldname):
         return 'crush' + str(position) + '_' + fieldname

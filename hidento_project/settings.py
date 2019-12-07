@@ -124,6 +124,9 @@ INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
 #Logging settings
 LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
 
+#App settings
+STABLIZATION_PERIOD = 10
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
