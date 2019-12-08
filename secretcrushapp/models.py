@@ -1,12 +1,13 @@
 import logging
 import threading
-import time
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import PermissionsMixin, User
-from django.db import models
+from django.contrib.auth.models import PermissionsMixin
+from django.db import models, transaction
 
 # Create your models here.
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils.timezone import now
 from secretcrushapp import matching
 from secretcrushapp import testcase
@@ -153,8 +154,17 @@ class InstagramCrush(models.Model):
                     return True
         return False
 
-    def delete(self, using=None, keep_parents=False):
-        loser = matching.breakCurrentMatch(self)
-
 def getCrushField(position, fieldname):
         return 'crush' + str(position) + '_' + fieldname
+
+@receiver(post_delete, sender=InstagramCrush, dispatch_uid='instagramPostDelete')
+def userInstagramPostDelete(sender, **kwargs):
+    user_instagram = kwargs['instance']
+    logging.debug('post delete signal working for user instagram - {}'.format(user_instagram.instagram_username))
+    with transaction.atomic():
+        loser = matching.breakCurrentMatch(user_instagram)
+        if loser is not None:
+            loser.save()
+            matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
+                                               args=(loser.hidento_userid, 1, {loser.hidento_userid}, None))
+            matching_thread.start()

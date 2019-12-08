@@ -15,12 +15,12 @@ from hidento_project.settings import STABLIZATION_PERIOD
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 
 def startStablizerThread():
-    stablizerThread = threading.Thread(target=runStablizer, daemon=True)
+    stablizerThread = threading.Thread(target=runStablizer, daemon=True, name='stablizer thread 78')
     stablizerThread.start()
 
 def runStablizer():
     while True:
-        logging.debug('stablizing thread going into sleep at {}'.format(now()))
+        logging.debug('stablizing thread going into sleep at {}. thread name = {}'.format(now(), threading.current_thread().name))
         time.sleep(10)
         stablize()
 
@@ -28,12 +28,13 @@ def stablize():
     logging.debug('starting to stablize the matches at {}'.format(now()))
     for user_instagram in InstagramCrush.objects.only('instagram_username').filter(match_instagram_username__isnull=False).iterator(500):
         with transaction.atomic():
-            matched_instagrams = InstagramCrush.objects.select_for_update().filter(Q(intagram_username=user_instagram.instagram_username)
+            matched_instagrams = InstagramCrush.objects.select_for_update().filter(Q(instagram_username=user_instagram.instagram_username)
                                                                               | Q(match_instagram_username=user_instagram.instagram_username))
             matched_instagrams_list = list(matched_instagrams)
-            if not matched_instagrams_valid(matched_instagrams_list, user_instagram.instagram_username) \
-                    or match_already_stablized(matched_instagrams_list):
+            if not matched_instagrams_valid(matched_instagrams_list, user_instagram.instagram_username):
                 continue
+            if match_already_stablized(matched_instagrams_list):
+                pass
             if match_has_matured(matched_instagrams_list):
                 stablizeMatch(matched_instagrams_list)
                 matched_instagrams_list[0].save()
@@ -87,6 +88,8 @@ def match_already_stablized(matched_instagrams_list):
     if matched_instagrams_list[0].match_stablized == True or matched_instagrams_list[1].match_stablized == True:
         logging.debug('Matching stablized for only one user or Matching made with stablized user. User instagram names'
                       ' - {} and {}'.format(matched_instagrams_list[0].instagram_username, matched_instagrams_list[1].instagram_username))
+        matched_instagrams_list[0].match_stablized = True
+        matched_instagrams_list[1].match_stablized = True
         return True
     return False
 
@@ -96,7 +99,7 @@ def getPersonToInform(matched_instagrams_list):
     wishOf0 = matched_instagrams_list[0].__dict__[getCrushField(positionOf1in0, 'whomToInform')]
     wishOf1 = matched_instagrams_list[1].__dict__[getCrushField(positionOf0in1, 'whomToInform')]
     if (wishOf0 == 1 and wishOf1 == 1) or (wishOf0 == 2 and wishOf1 == 2):
-        return randint(1,2)
+        return randint(0,1)
     if wishOf0 == 2:
         return 1
     return 0

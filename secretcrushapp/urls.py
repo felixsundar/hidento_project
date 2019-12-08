@@ -10,6 +10,7 @@ urlpatterns = [
     path('match/', views.matchView, name='match'),
     path('account/', views.accountView, name='account'),
     path('account/edit/', views.accountEditView, name='accountEdit'),
+    path('account/delete/', views.accountDeleteView, name='accountDelete'),
     path('account/change_password/', views.changePasswordView, name='changePassword'),
     path('account/change_password/done', views.changePasswordDoneView, name='changePasswordDone'),
     path('reset_password/', views.resetPasswordView, name='resetPassword'),

@@ -7,3 +7,8 @@
     <button type="submit">Submit</button>
   </form>
   <a href="{% url 'account' %}"><button>Cancel</button></a>
+<br><br>
+  <form method="post" action="{% url 'accountDelete' %}">
+    {% csrf_token %}
+    <button type="submit">Delete My Account</button>
+  </form>

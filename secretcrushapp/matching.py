@@ -20,6 +20,8 @@ def startMatching(user, stage, losersSet, latestUser):
         firstLoser = None
         if currentMatchRemoved(user_instagram):
             firstLoser = breakCurrentMatch(user_instagram)
+        if user_instagram.match_stablized:
+            return
         newOrBetterMatchAvailable = tryToMakeNewMatch(user_instagram)
         if newOrBetterMatchAvailable is not None:
             if stage == 2:
@@ -95,12 +97,14 @@ def breakCurrentMatch(user_instagram):
         matchToBreak.match_instagram_username = None
         matchToBreak.match_time = None
         matchToBreak.match_stablized = False
+        matchToBreak.inform_this_user = False
     user_instagram.old_match_instagram_username = user_instagram.match_instagram_username
     user_instagram.old_match_time = user_instagram.match_time
     user_instagram.old_match_broken_time = breaking_time
     user_instagram.match_instagram_username = None
     user_instagram.match_time = None
     user_instagram.match_stablized = False
+    user_instagram.inform_this_user = False
     return matchToBreak
 
 def tryToMakeNewMatch(user_instagram):

@@ -1,4 +1,6 @@
 import logging
+import threading
+
 import requests
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.decorators import login_required
@@ -131,6 +133,7 @@ def signupView(request):
 
 @login_required
 def accountView(request):
+    printcurrentthreads()
     user_instagram = request.user.instagramDetails.first()
     instagram_username = None
     if user_instagram is not None:
@@ -141,7 +144,14 @@ def accountView(request):
     }
     return render(request, 'secretcrushapp/account.html', context=context)
 
+def printcurrentthreads():
+    tlist = threading.enumerate()
+    logging.debug('Currently alive thread list:')
+    for t in tlist:
+        logging.debug('thread name - {}'.format(t.name))
+
 @login_required
+@transaction.atomic
 def accountEditView(request):
     user = request.user
     if request.method == 'POST':
@@ -155,6 +165,14 @@ def accountEditView(request):
         'form': form,
     }
     return render(request, 'secretcrushapp/account_edit.html', context)
+
+@login_required
+@transaction.atomic
+def accountDeleteView(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    request.user.delete()
+    return HttpResponseRedirect(reverse('index'))
 
 @login_required
 def changePasswordView(request):
