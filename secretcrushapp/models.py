@@ -107,6 +107,7 @@ class InstagramCrush(models.Model):
     old_match_broken_time = models.DateTimeField(blank=True, null=True)
     match_stablized = models.BooleanField(default=False)
     inform_this_user = models.BooleanField(default=False)
+    match_stablized_time = models.DateTimeField(blank=True, null=True)
     match_nickname = models.CharField(max_length=255, blank=True, null=True)
     match_message = models.TextField(max_length=3000, blank=True, null=True)
 

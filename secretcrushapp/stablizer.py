@@ -10,7 +10,7 @@ from django.utils.timezone import now
 from hidento_project import settings
 from secretcrushapp.models import InstagramCrush
 
-from hidento_project.settings import STABLIZATION_PERIOD
+from hidento_project.settings import STABLIZATION_PERIOD, STABLE_PERIOD
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 
@@ -34,11 +34,26 @@ def stablize():
             if not matched_instagrams_valid(matched_instagrams_list, user_instagram.instagram_username):
                 continue
             if match_already_stablized(matched_instagrams_list):
-                pass
+                if stable_period_is_over(matched_instagrams_list):
+                    destablizeMatch(matched_instagrams_list)
+                    save_matched_instagrams(matched_instagrams_list)
+                    startMatchingThreads(matched_instagrams_list)
+                continue
             if match_has_matured(matched_instagrams_list):
                 stablizeMatch(matched_instagrams_list)
-                matched_instagrams_list[0].save()
-                matched_instagrams_list[1].save()
+                save_matched_instagrams(matched_instagrams_list)
+
+def save_matched_instagrams(matched_instagrams_list):
+    matched_instagrams_list[0].save()
+    matched_instagrams_list[1].save()
+
+def stable_period_is_over(matched_instagrams_list):
+    if time_difference_in_days(matched_instagrams_list[0].match_stablized_time, now()) > STABLE_PERIOD:
+        return True
+    return False
+
+def startMatchingThreads(matched_instagrams_list):
+    pass
 
 def matched_instagrams_valid(matched_instagrams_list, instagramUsername):
     match_length = len(matched_instagrams_list)
@@ -63,12 +78,13 @@ def match_has_matured(matched_instagrams_list):
         logging.debug('System in inconsistent state. Match time of matched users not same for instagram users {} and {}' \
                       .format(matched_instagrams_list[0].instagram_username, matched_instagrams_list[1].instagram_username))
         return False
-    time_difference = now() - matched_instagrams_list[0].match_time
-    duration_in_days = divmod(time_difference.total_seconds(), 86400)[0]
-    if duration_in_days >= STABLIZATION_PERIOD:
+    if time_difference_in_days(matched_instagrams_list[0].match_time, now()) >= STABLIZATION_PERIOD:
         return True
     return False
 
+def time_difference_in_days(initial_time, final_time):
+    time_difference = final_time - initial_time
+    return divmod(time_difference.total_seconds(), 86400)[0]
 
 def stablizeMatch(matched_instagrams_list):
     matched_instagrams_list[0].match_stablized = True
@@ -79,6 +95,9 @@ def stablizeMatch(matched_instagrams_list):
     positionOf0in1 = currentMatchPosition(matched_instagrams_list[0])
     matched_instagrams_list[0].match_nickname = matched_instagrams_list[1].__dict__[getCrushField(positionOf0in1, 'nickname')]
     matched_instagrams_list[0].match_message = matched_instagrams_list[1].__dict__[getCrushField(positionOf0in1, 'message')]
+    stablizing_time = now()
+    matched_instagrams_list[0].match_stablized_time = stablizing_time
+    matched_instagrams_list[1].match_stablized_time = stablizing_time
     personToInform = getPersonToInform(matched_instagrams_list)
     matched_instagrams_list[personToInform].inform_this_user = True
 
@@ -88,10 +107,21 @@ def match_already_stablized(matched_instagrams_list):
     if matched_instagrams_list[0].match_stablized == True or matched_instagrams_list[1].match_stablized == True:
         logging.debug('Matching stablized for only one user or Matching made with stablized user. User instagram names'
                       ' - {} and {}'.format(matched_instagrams_list[0].instagram_username, matched_instagrams_list[1].instagram_username))
-        matched_instagrams_list[0].match_stablized = True
-        matched_instagrams_list[1].match_stablized = True
-        return True
+        destablizeMatch(matched_instagrams_list[0])
+        destablizeMatch(matched_instagrams_list[1])
     return False
+
+def destablizeMatch(matched_instagrams_list):
+    matched_instagrams_list[0].match_stablized = False
+    matched_instagrams_list[0].match_stablized_time = None
+    matched_instagrams_list[0].inform_this_user = False
+    matched_instagrams_list[0].match_nickname = None
+    matched_instagrams_list[0].match_message = None
+    matched_instagrams_list[1].match_stablized = False
+    matched_instagrams_list[1].match_stablized_time = None
+    matched_instagrams_list[1].inform_this_user = False
+    matched_instagrams_list[1].match_nickname = None
+    matched_instagrams_list[1].match_message = None
 
 def getPersonToInform(matched_instagrams_list):
     positionOf1in0 = currentMatchPosition(matched_instagrams_list[0])

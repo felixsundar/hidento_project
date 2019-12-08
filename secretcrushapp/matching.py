@@ -96,16 +96,23 @@ def breakCurrentMatch(user_instagram):
     if matchToBreak is not None:
         matchToBreak.match_instagram_username = None
         matchToBreak.match_time = None
-        matchToBreak.match_stablized = False
-        matchToBreak.inform_this_user = False
+        destablizeMatch(matchToBreak)
     user_instagram.old_match_instagram_username = user_instagram.match_instagram_username
     user_instagram.old_match_time = user_instagram.match_time
     user_instagram.old_match_broken_time = breaking_time
     user_instagram.match_instagram_username = None
     user_instagram.match_time = None
-    user_instagram.match_stablized = False
-    user_instagram.inform_this_user = False
+    destablizeMatch(user_instagram)
     return matchToBreak
+
+def destablizeMatch(user_instagram):
+    if user_instagram is None:
+        return
+    user_instagram.match_stablized = False
+    user_instagram.match_stablized_time = None
+    user_instagram.inform_this_user = False
+    user_instagram.match_nickname = None
+    user_instagram.match_message = None
 
 def tryToMakeNewMatch(user_instagram):
     if user_instagram is None or user_instagram.match_stablized:
