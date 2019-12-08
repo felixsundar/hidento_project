@@ -37,7 +37,7 @@ def stablize():
                 if stable_period_is_over(matched_instagrams_list):
                     destablizeMatch(matched_instagrams_list)
                     save_matched_instagrams(matched_instagrams_list)
-                    startMatchingThreads(matched_instagrams_list)
+                    rematch(matched_instagrams_list)
                 continue
             if match_has_matured(matched_instagrams_list):
                 stablizeMatch(matched_instagrams_list)
@@ -52,8 +52,21 @@ def stable_period_is_over(matched_instagrams_list):
         return True
     return False
 
-def startMatchingThreads(matched_instagrams_list):
-    pass
+def rematch(matched_instagrams_list):
+    match_starter_thread = threading.Thread(target=startMatchingThreadsWithInterval, daemon=True, args=(matched_instagrams_list))
+    match_starter_thread.start()
+
+def startMatchingThreadsWithInterval(matched_instagrams_list):
+    from secretcrushapp import matching
+    matching_thread1 = threading.Thread(target=matching.startMatching, daemon=True,
+                                        args=(matched_instagrams_list[0].hidento_userid, 1,
+                                              {matched_instagrams_list[0].hidento_userid}, None))
+    matching_thread1.start()
+    time.sleep(4)
+    matching_thread2 = threading.Thread(target=matching.startMatching, daemon=True,
+                                        args=(matched_instagrams_list[1].hidento_userid, 1,
+                                              {matched_instagrams_list[1].hidento_userid}, None))
+    matching_thread2.start()
 
 def matched_instagrams_valid(matched_instagrams_list, instagramUsername):
     match_length = len(matched_instagrams_list)
@@ -122,6 +135,9 @@ def destablizeMatch(matched_instagrams_list):
     matched_instagrams_list[1].inform_this_user = False
     matched_instagrams_list[1].match_nickname = None
     matched_instagrams_list[1].match_message = None
+    reset_match_time = now()
+    matched_instagrams_list[0].match_time = reset_match_time
+    matched_instagrams_list[1].match_time = reset_match_time
 
 def getPersonToInform(matched_instagrams_list):
     positionOf1in0 = currentMatchPosition(matched_instagrams_list[0])

@@ -65,6 +65,11 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+class Controls(models.Model):
+    control_id = models.CharField(max_length=255, unique=True, primary_key=True)
+    stablization_days = models.IntegerField()
+    stable_days = models.IntegerField()
+    stablization_thread = models.IntegerField(choices=())
 
 class InstagramCrush(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, primary_key=True)
