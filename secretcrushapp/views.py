@@ -15,7 +15,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ
 from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm
 
 from hidento_project import settings
@@ -514,7 +514,9 @@ def termsView(request):
     return render(request, 'secretcrushapp/terms.html')
 
 def howitworksView(request):
-    return render(request, 'secretcrushapp/howitworks.html')
+    howitworkspoints = HowItWorks.objects.filter(is_enabled=True).order_by('-priority_value')
+    return render(request, 'secretcrushapp/howitworks.html', context={'howitworkspoints':howitworkspoints})
 
 def faqView(request):
-    return render(request, 'secretcrushapp/faq.html')
+    faqs = FAQ.objects.filter(is_enabled=True).order_by('-priority_value')
+    return render(request, 'secretcrushapp/faq.html', context={'faqs':faqs})

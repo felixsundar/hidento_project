@@ -11,20 +11,20 @@ class SignUpForm(UserCreationForm):
     lastname = forms.CharField(label="Last Name", required=True)
     username = forms.CharField(label="Username", required=True)
     email = forms.EmailField(label="Email", required=True)
-    password1 = forms.CharField(
-        label="Password",
-        strip=False,
-        widget=forms.PasswordInput,
-    )
-    password2 = forms.CharField(
-        label="Password confirmation",
-        widget=forms.PasswordInput,
-        strip=False,
-    )
+    gender = forms.ChoiceField(label='Gender',required=True,
+                               choices=[(1,'Male'), (2,'Female'), (3,'Others')],
+                               widget=forms.RadioSelect)
+    password1 = forms.CharField(label=" New Password", strip=False, widget=forms.PasswordInput)
+    password2 = None
+    # password2 = forms.CharField(
+    #     label="Password confirmation",
+    #     widget=forms.PasswordInput,
+    #     strip=False,
+    # )
 
     class Meta:
         model = get_user_model()
-        fields = ('firstname', 'lastname', 'username', 'email')
+        fields = ('firstname', 'lastname', 'username', 'email', 'gender')
 
 class HidentoUserChangeFormForUsers(ModelForm):
     class Meta:
@@ -55,6 +55,12 @@ class AddCrushForm(Form):
         initial=1,
         widget=forms.RadioSelect
     )
+
+    def clean_crushUsername(self):
+        crush_instagram_username = self.cleaned_data['crushUsername']
+        if ' ' in crush_instagram_username:
+            raise forms.ValidationError('Instagram usernames cannot contain space')
+        return crush_instagram_username
 
 class EditCrushForm(Form):
     def __init__(self, lowest_priority, *args, **kwargs):

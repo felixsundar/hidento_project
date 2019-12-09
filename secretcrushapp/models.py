@@ -3,11 +3,13 @@ import threading
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.core.mail import send_mail
 from django.db import models, transaction
 
 # Create your models here.
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, pre_save, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.timezone import now
 from secretcrushapp import matching
 from secretcrushapp import testcase
@@ -16,24 +18,24 @@ from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 class HidentoUserManager(BaseUserManager):
-    def create_user(self, username, email, firstname, lastname, password):
-        if not (username and email and firstname and lastname):
+    def create_user(self, username, email, firstname, lastname, gender, password):
+        if not (username and email and firstname and lastname and gender):
             raise ValueError('Users must have a username, an email address, a firstname and a lastname')
 
         user = self.model(
             username = username,
             email=self.normalize_email(email),
             firstname = firstname,
-            lastname = lastname
+            lastname = lastname,
+            gender = gender
         )
 
         user.set_password(password)
-        user.joined_time = now()
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, firstname, lastname, password):
-        user = self.create_user(username, email, firstname, lastname, password)
+    def create_superuser(self, username, email, firstname, lastname, gender, password):
+        user = self.create_user(username, email, firstname, lastname, gender, password)
         #is_staff is the field name which django will check to provide access to admin site. even for superusers.
         #it provides only access to admin site. if the user didn't have other permissions, admin site will be
         #accessible but it will be empty
@@ -43,33 +45,97 @@ class HidentoUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-
 class HidentoUser(AbstractBaseUser, PermissionsMixin):
     userid = models.BigAutoField(primary_key=True, unique=True)
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
-    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')], blank=True, null=True)
+    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')])
     date_of_birth = models.DateField(blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(verbose_name='active', default=True)
-    joined_time = models.DateTimeField(blank=False, null=False)
+    joined_time = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'firstname', 'lastname']
+    REQUIRED_FIELDS = ['email', 'firstname', 'lastname', 'gender']
 
     objects = HidentoUserManager()
 
     def __str__(self):
         return self.username
 
+@receiver(pre_save, sender=HidentoUser, dispatch_uid='hidentoUserPreSave')
+def hidentoUserPreSave(sender, **kwargs):
+    hidentoUser = kwargs['instance']
+    if hidentoUser.is_superuser or hidentoUser.is_staff:
+        if hidentoUser.username != 'admin':
+            raise Exception('Users cannot be upgraded to admins')
+
+@receiver(post_save, sender=HidentoUser, dispatch_uid='hidentoUserPostSave')
+def hidentoUserPostSave(sender, **kwargs):
+    hidentoUser = kwargs['instance']
+    if hidentoUser.is_superuser or hidentoUser.is_staff:
+        if hidentoUser.username != 'admin':
+            hidentoUser.is_staff = False
+            hidentoUser.is_superuser = False
+            hidentoUser.save()
+
 class Controls(models.Model):
     control_id = models.CharField(max_length=255, unique=True, primary_key=True)
-    stablization_days = models.IntegerField()
-    stable_days = models.IntegerField()
-    stablization_thread = models.IntegerField(choices=())
+    stablization_days = models.IntegerField(default=7)
+    stable_days = models.IntegerField(default=14)
+    stablizer_thread = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Start Stablizer thread')], default=1)
+    stablizer_thread_status = models.IntegerField(choices=[(1, 'Stablizer thread running'), (2, 'Stablizer thread not running'),
+                                                           (3, 'Check stablizer thread')], default=2)
+    total_matches = models.BigIntegerField(default=0)
+    total_stable_matches = models.BigIntegerField(default=0)
+    total_unstable_matches = models.BigIntegerField(default=0)
+    total_users = models.BigIntegerField(default=0)
+    total_users_with_instagram_linked = models.BigIntegerField(default=0)
+    total_male_users = models.BigIntegerField(default=0)
+    total_female_users = models.BigIntegerField(default=0)
+    total_other_gender_users = models.BigIntegerField(default=0)
+    count_updated_time = models.DateTimeField(blank=True, null=True)
+    count_users_and_matches = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Count Now')], default=1)
+
+
+    def save(self, *args, **kwargs):
+        if self.stablizer_thread == 2:
+            if not stablizer_thread_running():
+                from secretcrushapp import stablizer
+                stablizer.startStablizerThread()
+        self.stablizer_thread = 1
+        if self.stablizer_thread_status == 3:
+            if stablizer_thread_running():
+                self.stablizer_thread_status = 1
+            else:
+                self.stablizer_thread_status = 2
+        if self.count_users_and_matches == 2:
+            total_matched_instagrams = InstagramCrush.objects.filter(match_instagram_username__isnull=False).count()
+            total_stable_matched_instagrams = InstagramCrush.objects.filter(match_instagram_username__isnull=False,
+                                                                            match_stablized=True).count()
+            total_unstable_matched_instagrams = InstagramCrush.objects.filter(match_instagram_username__isnull=False,
+                                                                            match_stablized=False).count()
+            self.total_matches = total_matched_instagrams//2
+            self.total_stable_matches = total_stable_matched_instagrams//2
+            self.total_unstable_matches = total_unstable_matched_instagrams//2
+            self.total_users = HidentoUser.objects.all().count()
+            self.total_users_with_instagram_linked = InstagramCrush.objects.all().count()
+            self.total_male_users = HidentoUser.objects.filter(gender=1).count()
+            self.total_female_users = HidentoUser.objects.filter(gender=2).count()
+            self.total_other_gender_users = HidentoUser.objects.filter(gender=3).count()
+            self.count_updated_time = now()
+        self.count_users_and_matches = 1
+        super().save(*args, **kwargs)
+
+def stablizer_thread_running():
+    thread_list = threading.enumerate()
+    for thread in thread_list:
+        if thread.name == 'stablizer_thread':
+            return True
+    return False
 
 class InstagramCrush(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, primary_key=True)
@@ -174,3 +240,62 @@ def userInstagramPostDelete(sender, **kwargs):
             matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
                                                args=(loser.hidento_userid, 1, {loser.hidento_userid}, None))
             matching_thread.start()
+
+class ContactHidento(models.Model):
+    fullname = models.CharField(max_length=255, null=False)
+    email = models.EmailField(max_length=255, null=False)
+    message = models.TextField(max_length=3000, null=False)
+    reply_email_subject = models.CharField(max_length=300, null=True, blank=True)
+    reply_email_message = models.TextField(max_length=6000, null=True, blank=True)
+    action = models.IntegerField(choices=[(3, 'Do Nothing'), (2, 'Send Reply and Move to Replied'),
+                                          (1, 'Move to Replied'), (4, 'Delete')], default=3)
+
+    def save(self, *args, **kwargs):
+        if self.action == 1 or self.action == 2:
+            self.moveToReplied()
+        elif self.action == 4:
+            self.delete()
+        else:
+            super().save(*args, **kwargs)
+
+    def moveToReplied(self):
+        replied = ContactHidentoReplied()
+        replied.fullname = self.fullname
+        replied.email = self.email
+        replied.message = self.message
+        replied.reply_email_subject = self.reply_email_subject
+        replied.reply_email_message = self.reply_email_message
+        replied.action = self.action
+        replied.save()
+        self.delete()
+
+class ContactHidentoReplied(models.Model):
+    fullname = models.CharField(max_length=255, null=False)
+    email = models.EmailField(max_length=255, null=False)
+    message = models.TextField(max_length=3000, null=False)
+    reply_email_subject = models.CharField(max_length=300, null=True, blank=True)
+    reply_email_message = models.TextField(max_length=6000, null=True, blank=True)
+    action = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Send Reply'), (3, 'Delete')], default=1)
+
+    def save(self, *args, **kwargs):
+        if self.action == 3:
+            self.delete()
+        else:
+            if self.action == 2:
+                if self.reply_email_message is not None and self.reply_email_subject is not None:
+                    send_mail(subject=self.reply_email_subject, message=self.reply_email_message,
+                              from_email=settings.SUPPORT_FROM_EMAIL, recipient_list=[self.email], fail_silently=True)
+            self.action = 1
+            super().save(*args, **kwargs)
+
+class HowItWorks(models.Model):
+    heading = models.TextField(max_length=3000, null=False)
+    explanation = models.TextField(max_length=10000, null=False)
+    is_enabled = models.BooleanField(default=True)
+    priority_value = models.IntegerField(null=False, default=1)
+
+class FAQ(models.Model):
+    question = models.TextField(max_length=3000, null=False)
+    answer = models.TextField(max_length=10000, null=False)
+    is_enabled = models.BooleanField(default=True)
+    priority_value = models.IntegerField(null=False, default=1)

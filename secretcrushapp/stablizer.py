@@ -8,23 +8,32 @@ from django.db.models import Q
 from django.utils.timezone import now
 
 from hidento_project import settings
-from secretcrushapp.models import InstagramCrush
+from secretcrushapp.models import InstagramCrush, Controls
 
-from hidento_project.settings import STABLIZATION_PERIOD, STABLE_PERIOD
+from hidento_project.settings import STABLIZATION_PERIOD, STABLE_PERIOD, CONTROLS_RECORD_ID
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 
 def startStablizerThread():
-    stablizerThread = threading.Thread(target=runStablizer, daemon=True, name='stablizer thread 78')
+    stablizerThread = threading.Thread(target=runStablizer, daemon=True, name='stablizer_thread')
     stablizerThread.start()
 
 def runStablizer():
+    logging.debug('Stablizer thread activated.')
     while True:
-        logging.debug('stablizing thread going into sleep at {}. thread name = {}'.format(now(), threading.current_thread().name))
+        logging.debug('stablizing thread going into sleep at {}'.format(now()))
         time.sleep(10)
-        stablize()
+        try:
+            controls = Controls.objects.get(control_id=CONTROLS_RECORD_ID)
+        except Controls.DoesNotExist:
+            stablization_days = STABLIZATION_PERIOD
+            stable_days = STABLE_PERIOD
+        else:
+            stablization_days = controls.stablization_days
+            stable_days = controls.stable_days
+        stablize(stablization_days, stable_days)
 
-def stablize():
+def stablize(stablization_days, stable_days):
     logging.debug('starting to stablize the matches at {}'.format(now()))
     for user_instagram in InstagramCrush.objects.only('instagram_username').filter(match_instagram_username__isnull=False).iterator(500):
         with transaction.atomic():
@@ -34,12 +43,12 @@ def stablize():
             if not matched_instagrams_valid(matched_instagrams_list, user_instagram.instagram_username):
                 continue
             if match_already_stablized(matched_instagrams_list):
-                if stable_period_is_over(matched_instagrams_list):
+                if stable_period_is_over(matched_instagrams_list, stable_days):
                     destablizeMatch(matched_instagrams_list)
                     save_matched_instagrams(matched_instagrams_list)
                     rematch(matched_instagrams_list)
                 continue
-            if match_has_matured(matched_instagrams_list):
+            if match_has_matured(matched_instagrams_list, stablization_days):
                 stablizeMatch(matched_instagrams_list)
                 save_matched_instagrams(matched_instagrams_list)
 
@@ -47,13 +56,13 @@ def save_matched_instagrams(matched_instagrams_list):
     matched_instagrams_list[0].save()
     matched_instagrams_list[1].save()
 
-def stable_period_is_over(matched_instagrams_list):
-    if time_difference_in_days(matched_instagrams_list[0].match_stablized_time, now()) > STABLE_PERIOD:
+def stable_period_is_over(matched_instagrams_list, stable_days):
+    if time_difference_in_days(matched_instagrams_list[0].match_stablized_time, now()) > stable_days:
         return True
     return False
 
 def rematch(matched_instagrams_list):
-    match_starter_thread = threading.Thread(target=startMatchingThreadsWithInterval, daemon=True, args=(matched_instagrams_list))
+    match_starter_thread = threading.Thread(target=startMatchingThreadsWithInterval, daemon=True, args=(matched_instagrams_list,))
     match_starter_thread.start()
 
 def startMatchingThreadsWithInterval(matched_instagrams_list):
@@ -86,12 +95,12 @@ def matched_instagrams_valid(matched_instagrams_list, instagramUsername):
         return True
     return False
 
-def match_has_matured(matched_instagrams_list):
+def match_has_matured(matched_instagrams_list, stablization_days):
     if matched_instagrams_list[0].match_time != matched_instagrams_list[1].match_time:
         logging.debug('System in inconsistent state. Match time of matched users not same for instagram users {} and {}' \
                       .format(matched_instagrams_list[0].instagram_username, matched_instagrams_list[1].instagram_username))
         return False
-    if time_difference_in_days(matched_instagrams_list[0].match_time, now()) >= STABLIZATION_PERIOD:
+    if time_difference_in_days(matched_instagrams_list[0].match_time, now()) >= stablization_days:
         return True
     return False
 

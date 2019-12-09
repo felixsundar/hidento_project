@@ -33,6 +33,7 @@ try:
         EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
         EMAIL_USE_TLS = config['EMAIL_USE_TLS']
         DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
+        SUPPORT_FROM_EMAIL = config['SUPPORT_FROM_EMAIL']
 
         INSTAGRAM_APP_SECRET = config['INSTAGRAM_APP_SECRET']
 
@@ -125,8 +126,9 @@ INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
 LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
 
 #App settings
-STABLIZATION_PERIOD = 0
-STABLE_PERIOD = 10
+STABLIZATION_PERIOD = 7
+STABLE_PERIOD = 14
+CONTROLS_RECORD_ID = 'master_controls'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
