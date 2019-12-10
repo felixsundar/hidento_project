@@ -5,10 +5,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
-from django.utils.timezone import now
 
-from secretcrushapp.models import InstagramCrush, HidentoUser
-
+from secretcrushapp.models import InstagramCrush, HidentoUser, Controls, ContactHidento, HowItWorks, FAQ
 
 class HidentoUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -18,7 +16,7 @@ class HidentoUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('username', 'email', 'firstname', 'lastname')
+        fields = ('username', 'email', 'firstname', 'lastname', 'gender')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -32,7 +30,6 @@ class HidentoUserCreationForm(forms.ModelForm):
         # Save the provided password in hashed format
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        user.joined_time = now()
         if commit:
             user.save()
         return user
@@ -82,16 +79,24 @@ class HidentoUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'firstname', 'lastname', 'password1', 'password2')}
+            'fields': ('username', 'email', 'firstname', 'lastname', 'gender', 'password1', 'password2')}
         ),
     )
     search_fields = ('username', 'email', 'firstname', 'lastname')
     ordering = ('username', 'email', 'firstname', 'lastname')
     filter_horizontal = ()
 
+class ContactHidentoAdmin(admin.ModelAdmin):
+    search_fields = ('email', 'fullname', 'message')
+    list_filter = ('is_replied', 'is_successfully_replied', 'is_important')
+
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
 admin.site.register(InstagramCrush)
+admin.site.register(Controls)
+admin.site.register(ContactHidento, ContactHidentoAdmin)
+admin.site.register(HowItWorks)
+admin.site.register(FAQ)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

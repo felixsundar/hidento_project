@@ -9,16 +9,19 @@ Hi {{ user_firstname }}
 {% else %}
     <h2>Congratulations!!! You have a match!</h2>
     You are matched with {{ matchDetails.match_instagram_username }}
-    {% if matchDetails.user_nickname_for_match is not None %}
+    {% if matchDetails.user_nickname_for_match %}
         ({{ matchDetails.user_nickname_for_match }})
     {% endif %}
 
-    {% if matchDetails.match_nickname_for_user is not None %}
-        Your match has a nickname for you - {{ matchDetails.match_nickname_for_user }})
+    {% if matchDetails.match_nickname_for_user %}
+        Your match has a nickname for you - {{ matchDetails.match_nickname_for_user }}
     {% endif %}
 
-    {% if matchDetails.match_message_for_user is not None %}
-        Your match has a message for you - {{ matchDetails.match_message_for_user }})
+    {% if matchDetails.match_message_for_user %}
+        Your match has a message for you - {{ matchDetails.match_message_for_user }}
     {% endif %}
     <a target="_blank" href="{{ matchDetails.instagramProfileLink }}"> Visit Instagram Profile </a>
 {% endif %}
+
+<br><br><br><br>
+{{ request.user.lastname }}

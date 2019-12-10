@@ -10,6 +10,7 @@ urlpatterns = [
     path('match/', views.matchView, name='match'),
     path('account/', views.accountView, name='account'),
     path('account/edit/', views.accountEditView, name='accountEdit'),
+    path('account/delete/', views.accountDeleteView, name='accountDelete'),
     path('account/change_password/', views.changePasswordView, name='changePassword'),
     path('account/change_password/done', views.changePasswordDoneView, name='changePasswordDone'),
     path('reset_password/', views.resetPasswordView, name='resetPassword'),
@@ -27,4 +28,5 @@ urlpatterns = [
     path('terms/', views.termsView, name='terms'),
     path('howitworks/', views.howitworksView, name='howitworks'),
     path('faq/', views.faqView, name='faq'),
+    path('contactus/', views.contactusView, name='contactUs')
 ]

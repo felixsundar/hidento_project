@@ -1,5 +1,9 @@
 import logging
+import threading
+
 import requests
+from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView, logout_then_login, PasswordResetView, \
@@ -13,8 +17,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush
-from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento
+from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm
 
 from hidento_project import settings
 
@@ -124,6 +128,7 @@ def signupView(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Account created successfully')
             return HttpResponseRedirect(reverse('login'))
     else:
         form = SignUpForm()
@@ -131,6 +136,7 @@ def signupView(request):
 
 @login_required
 def accountView(request):
+    printcurrentthreads()
     user_instagram = request.user.instagramDetails.first()
     instagram_username = None
     if user_instagram is not None:
@@ -141,7 +147,14 @@ def accountView(request):
     }
     return render(request, 'secretcrushapp/account.html', context=context)
 
+def printcurrentthreads():
+    tlist = threading.enumerate()
+    logging.debug('Currently alive thread list:')
+    for t in tlist:
+        logging.debug('thread name - {}'.format(t.name))
+
 @login_required
+@transaction.atomic
 def accountEditView(request):
     user = request.user
     if request.method == 'POST':
@@ -157,34 +170,50 @@ def accountEditView(request):
     return render(request, 'secretcrushapp/account_edit.html', context)
 
 @login_required
+@transaction.atomic
+def accountDeleteView(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    request.user.delete()
+    messages.success(request, 'Your account has been removed')
+    return HttpResponseRedirect(reverse('index'))
+
+@login_required
 def changePasswordView(request):
     return PasswordChangeView.as_view(template_name='secretcrushapp/changePassword.html', success_url=reverse('changePasswordDone'))(request)
 
 @login_required
 def changePasswordDoneView(request):
-    return logout_then_login(request)
-
+    if request.META.get('HTTP_REFERER') is None:
+        return HttpResponseRedirect(reverse('changePassword'))
+    logout(request)
+    messages.success(request, 'Password changed successfully. Login with your new Password.')
+    return HttpResponseRedirect(reverse('login'))
 
 def resetPasswordView(request):
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('changePassword'))
     return PasswordResetView.as_view(template_name='secretcrushapp/resetPassword.html',
                                      email_template_name='secretcrushapp/resetPasswordEmail.html',
                                      subject_template_name='secretcrushapp/resetPasswordSubject.txt',
                                      success_url=reverse('resetPasswordDone')
                                      )(request)
 
-
 def resetPasswordDoneView(request):
+    if request.META.get('HTTP_REFERER') is None:
+        return HttpResponseRedirect(reverse('resetPassword'))
     return PasswordResetDoneView.as_view(template_name='secretcrushapp/resetPasswordDone.html')(request)
-
 
 def confirmResetPasswordView(request, uidb64, token):
     return PasswordResetConfirmView.as_view(template_name='secretcrushapp/confirmResetPassword.html',
                                             success_url=reverse('completeResetPassword'),
                                             )(request, uidb64=uidb64, token=token)
 
-
 def completeResetPasswordView(request):
-    return PasswordResetCompleteView.as_view(template_name='secretcrushapp/completeResetPassword.html')(request)
+    if request.META.get('HTTP_REFERER') is None:
+        return HttpResponseRedirect(reverse('resetPassword'))
+    messages.success(request, 'Password reset complete. Login with your new Password.')
+    return HttpResponseRedirect(reverse('login'))
 
 @login_required
 def linkInstagramView(request):
@@ -210,6 +239,12 @@ def constructInstagramApiUrl():
 @login_required
 def authInstagramView(request):
     user = request.user
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is not None:
+        context = {
+            'code': 1,
+        }
+        return render(request, 'secretcrushapp/link_instagram.html', context)
     code = request.GET.get('code')
     logging.debug("instagram authorization code for user {}:\n {}".format(user, code))
     data = {
@@ -231,13 +266,12 @@ def authInstagramView(request):
             'instagram_username':user_details_response_data['username'],
         }
         return render(request, 'secretcrushapp/link_instagram.html', context)
-    user_instagram = user.instagramDetails.first()
-    if user_instagram is None:
-        user_instagram = InstagramCrush(hidento_userid=user)
+    user_instagram = InstagramCrush(hidento_userid=user)
     user_instagram.instagram_userid = user_details_response_data['id']
     user_instagram.instagram_username = user_details_response_data['username']
     user_instagram.save()
-    return HttpResponseRedirect(reverse('account'))
+    messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
+    return HttpResponseRedirect(reverse('crushList'))
 
 def checkInstagramUsername(request, instagramUsername):
     try:
@@ -249,7 +283,6 @@ def checkInstagramUsername(request, instagramUsername):
         return False
     return True
 
-
 def getInstagramUserDetails(user_id, access_token):
     url = settings.INSTAGRAM_USERNODE_URL + str(user_id)
     params = {
@@ -259,13 +292,15 @@ def getInstagramUserDetails(user_id, access_token):
     return requests.get(url=url, params=params)
 
 @login_required
+@transaction.atomic
 def removeInstagramView(request):
     if request.method != 'POST':
         raise PermissionDenied
     user_instagram = request.user.instagramDetails.first()
     if user_instagram is not None:
         user_instagram.delete()
-    return HttpResponseRedirect(reverse('account'))
+        messages.success(request, 'Your Instagram has been removed successfully and your crush list is cleared.')
+    return HttpResponseRedirect(reverse('crushList'))
 
 @login_required
 @transaction.atomic
@@ -281,7 +316,8 @@ def addCrushView(request):
     if request.method == 'POST':
         form = AddCrushForm(error_or_lowestPriority,request.POST)
         if form.is_valid() and validateAndAddCrush(form, user_instagram, error_or_lowestPriority):
-            return HttpResponseRedirect(reverse('index'))
+            messages.success(request, 'New secret crush has been added successfully')
+            return HttpResponseRedirect(reverse('crushList'))
     else:
         form = AddCrushForm(error_or_lowestPriority)
     context = {
@@ -394,7 +430,7 @@ def editCrushView(request, crushUsername):
     if request.method == 'POST':
         form = EditCrushForm(error_or_lowestPriority, request.POST)
         if form.is_valid() and validateAndEditCrush(user_instagram, crushUsername, form, error_or_lowestPriority):
-            return HttpResponseRedirect(reverse('index'))
+            return HttpResponseRedirect(reverse('crushList'))
     elif request.method == 'DELETE':
         deleteCrush(user_instagram, crushUsername)
         return HttpResponseRedirect(reverse('index'))
@@ -487,7 +523,8 @@ def deleteCrushView(request, crushUsername):
         }
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
-    return HttpResponseRedirect(reverse('index'))
+    messages.success(request, 'Secret crush deleted successfully')
+    return HttpResponseRedirect(reverse('crushList'))
 
 def privacyView(request):
     return render(request, 'secretcrushapp/privacy.html')
@@ -496,7 +533,23 @@ def termsView(request):
     return render(request, 'secretcrushapp/terms.html')
 
 def howitworksView(request):
-    return render(request, 'secretcrushapp/howitworks.html')
+    howitworkspoints = HowItWorks.objects.filter(is_enabled=True).order_by('-priority_value')
+    return render(request, 'secretcrushapp/howitworks.html', context={'howitworkspoints':howitworkspoints})
 
 def faqView(request):
-    return render(request, 'secretcrushapp/faq.html')
+    faqs = FAQ.objects.filter(is_enabled=True).order_by('-priority_value')
+    return render(request, 'secretcrushapp/faq.html', context={'faqs':faqs})
+
+def contactusView(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Query submitted successfully')
+            return HttpResponseRedirect(reverse('contactUs'))
+    else:
+        form = ContactForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'secretcrushapp/contact_form.html', context)

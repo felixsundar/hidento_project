@@ -6,7 +6,7 @@
   {% if error.code == 1%}
     <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
   {% else %}
-    <a href="{% url 'index' %}"> Go to Crushlist </a>
+    <a href="{% url 'crushList' %}"> Go to Crushlist </a>
   {% endif %}
 {% else %}
   <form method="post">
@@ -14,5 +14,5 @@
     {{ form.as_p }}
     <button type="submit">Add Crush</button>
   </form>
-  <a href="{% url 'index' %}"><button>Cancel</button></a>
+  <a href="{% url 'crushList' %}"><button>Cancel</button></a>
 {% endif %}
