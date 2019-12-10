@@ -202,10 +202,14 @@ class InstagramCrush(models.Model):
             self.crush1_active = True
             self.crush2_username = 'b'
             self.crush2_active = True
+            self.crush1_nickname = 'atoen'
+            self.crush1_message = 'atoem'
+            self.crush2_nickname = 'atobn'
+            self.crush2_message = 'atobm'
             runtestcase = True
         super().save(*args, **kwargs)
         if crushListModified:
-            matching_thread = threading.Thread(target=matching.startMatching, daemon=True, args=(self.hidento_userid, 1, {self.hidento_userid}, None))
+            matching_thread = threading.Thread(target=matching.startMatching, daemon=True, args=(self.hidento_userid,))
             matching_thread.start()
         if runtestcase:
             testcase_thread = threading.Thread(target=testcase.createTestcases, daemon=True)
@@ -238,7 +242,7 @@ def userInstagramPostDelete(sender, **kwargs):
         if loser is not None:
             loser.save()
             matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
-                                               args=(loser.hidento_userid, 1, {loser.hidento_userid}, None))
+                                               args=(loser.hidento_userid,))
             matching_thread.start()
 
 class ContactHidento(models.Model):
