@@ -245,48 +245,28 @@ class ContactHidento(models.Model):
     fullname = models.CharField(max_length=255, null=False)
     email = models.EmailField(max_length=255, null=False)
     message = models.TextField(max_length=3000, null=False)
+    contact_time = models.DateTimeField(default=timezone.now)
     reply_email_subject = models.CharField(max_length=300, null=True, blank=True)
     reply_email_message = models.TextField(max_length=6000, null=True, blank=True)
-    action = models.IntegerField(choices=[(3, 'Do Nothing'), (2, 'Send Reply and Move to Replied'),
-                                          (1, 'Move to Replied'), (4, 'Delete')], default=3)
-
-    def save(self, *args, **kwargs):
-        if self.action == 1 or self.action == 2:
-            self.moveToReplied()
-        elif self.action == 4:
-            self.delete()
-        else:
-            super().save(*args, **kwargs)
-
-    def moveToReplied(self):
-        replied = ContactHidentoReplied()
-        replied.fullname = self.fullname
-        replied.email = self.email
-        replied.message = self.message
-        replied.reply_email_subject = self.reply_email_subject
-        replied.reply_email_message = self.reply_email_message
-        replied.action = self.action
-        replied.save()
-        self.delete()
-
-class ContactHidentoReplied(models.Model):
-    fullname = models.CharField(max_length=255, null=False)
-    email = models.EmailField(max_length=255, null=False)
-    message = models.TextField(max_length=3000, null=False)
-    reply_email_subject = models.CharField(max_length=300, null=True, blank=True)
-    reply_email_message = models.TextField(max_length=6000, null=True, blank=True)
+    replied_time = models.DateTimeField(blank=True, null=True)
+    is_successfully_replied = models.BooleanField(default=False)
+    is_replied = models.BooleanField(default=False)
+    is_important = models.BooleanField(default=False)
     action = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Send Reply'), (3, 'Delete')], default=1)
 
     def save(self, *args, **kwargs):
-        if self.action == 3:
+        if (not self._state.adding) and self.action == 3:
             self.delete()
-        else:
-            if self.action == 2:
-                if self.reply_email_message is not None and self.reply_email_subject is not None:
-                    send_mail(subject=self.reply_email_subject, message=self.reply_email_message,
-                              from_email=settings.SUPPORT_FROM_EMAIL, recipient_list=[self.email], fail_silently=True)
-            self.action = 1
-            super().save(*args, **kwargs)
+            return
+        if self.action == 2:
+            if self.reply_email_message is not None and self.reply_email_subject is not None:
+                sent_status = send_mail(subject=self.reply_email_subject, message=self.reply_email_message,
+                          from_email=settings.SUPPORT_FROM_EMAIL, recipient_list=[self.email], fail_silently=True)
+                self.is_successfully_replied = True if sent_status == 1 else False
+                self.is_replied = True
+                self.replied_time = now()
+        self.action = 1
+        super().save(*args, **kwargs)
 
 class HowItWorks(models.Model):
     heading = models.TextField(max_length=3000, null=False)

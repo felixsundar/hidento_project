@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 
-from secretcrushapp.models import InstagramCrush, HidentoUser, Controls, ContactHidentoReplied, ContactHidento, HowItWorks, FAQ
+from secretcrushapp.models import InstagramCrush, HidentoUser, Controls, ContactHidento, HowItWorks, FAQ
 
 class HidentoUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -86,12 +86,15 @@ class HidentoUserAdmin(UserAdmin):
     ordering = ('username', 'email', 'firstname', 'lastname')
     filter_horizontal = ()
 
+class ContactHidentoAdmin(admin.ModelAdmin):
+    search_fields = ('email', 'fullname', 'message')
+    list_filter = ('is_replied', 'is_successfully_replied', 'is_important')
+
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
 admin.site.register(InstagramCrush)
 admin.site.register(Controls)
-admin.site.register(ContactHidento)
-admin.site.register(ContactHidentoReplied)
+admin.site.register(ContactHidento, ContactHidentoAdmin)
 admin.site.register(HowItWorks)
 admin.site.register(FAQ)
 # ... and, since we're not using Django's built-in permissions,

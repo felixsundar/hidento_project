@@ -28,4 +28,5 @@ urlpatterns = [
     path('terms/', views.termsView, name='terms'),
     path('howitworks/', views.howitworksView, name='howitworks'),
     path('faq/', views.faqView, name='faq'),
+    path('contactus/', views.contactusView, name='contactUs')
 ]

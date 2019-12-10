@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   </head>
-  <body bgcolor="#add8e6">
+  <body bgcolor="#00ddbb">
 <section class="hero is-fullheight is-default is-bold">
         <div class="hero-head">
             <nav class="navbar">
@@ -53,6 +53,7 @@ Hi {{ user_firstname }}<br><br>
             <div class="container">
                 <div class="tabs is-right">
                     <ul>
+                        <li><a href="{% url 'contactUs' %}">Contact Us</a></li>
                         <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
                         <li><a href="{% url 'terms' %}">Terms of Service</a></li>
                     </ul>

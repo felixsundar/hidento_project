@@ -3,28 +3,20 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
 
-from secretcrushapp.models import HidentoUser
+from secretcrushapp.models import HidentoUser, ContactHidento
 
 
 class SignUpForm(UserCreationForm):
-    firstname = forms.CharField(label="First Name", required=True)
-    lastname = forms.CharField(label="Last Name", required=True)
-    username = forms.CharField(label="Username", required=True)
-    email = forms.EmailField(label="Email", required=True)
-    gender = forms.ChoiceField(label='Gender',required=True,
-                               choices=[(1,'Male'), (2,'Female'), (3,'Others')],
-                               widget=forms.RadioSelect)
-    password1 = forms.CharField(label=" New Password", strip=False, widget=forms.PasswordInput)
+    password1 = forms.CharField(
+        label="Password",
+        strip=False,
+        widget=forms.PasswordInput,
+    )
     password2 = None
-    # password2 = forms.CharField(
-    #     label="Password confirmation",
-    #     widget=forms.PasswordInput,
-    #     strip=False,
-    # )
 
     class Meta:
         model = get_user_model()
-        fields = ('firstname', 'lastname', 'username', 'email', 'gender')
+        fields = ('firstname', 'lastname', 'email', 'gender')
 
 class HidentoUserChangeFormForUsers(ModelForm):
     class Meta:
@@ -74,10 +66,15 @@ class EditCrushForm(Form):
         return (position, str(position)+' - Highest' if position == 1 else str(position))
 
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
-    crushMessage = forms.CharField(label='Your Message', max_length=3000, required=False)
+    crushMessage = forms.CharField(label='Your Message', max_length=3000, required=False, widget=forms.Textarea)
     whomToInform = forms.ChoiceField(
         label='Who should be informed, if matched?',
         choices=[(1, 'Choose at random'), (2, 'Inform my crush')],
         widget=forms.RadioSelect
     )
     active = forms.BooleanField(label='Active Status')
+
+class ContactForm(ModelForm):
+    class Meta:
+        model = ContactHidento
+        fields = ('fullname', 'email', 'message')
