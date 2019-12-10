@@ -47,8 +47,8 @@ class HidentoUserManager(BaseUserManager):
 
 class HidentoUser(AbstractBaseUser, PermissionsMixin):
     userid = models.BigAutoField(primary_key=True, unique=True)
-    username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
+    username = models.CharField(max_length=255, unique=True, blank=False, null=False)
+    email = models.EmailField(verbose_name='email address', max_length=255, unique=True, blank=False, null=False)
     firstname = models.CharField(max_length=255)
     lastname = models.CharField(max_length=255)
     gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')])
@@ -232,7 +232,7 @@ def getCrushField(position, fieldname):
 @receiver(post_delete, sender=InstagramCrush, dispatch_uid='instagramPostDelete')
 def userInstagramPostDelete(sender, **kwargs):
     user_instagram = kwargs['instance']
-    logging.debug('post delete signal working for user instagram - {}'.format(user_instagram.instagram_username))
+    logging.debug('post delete signal called for user instagram - {}'.format(user_instagram.instagram_username))
     with transaction.atomic():
         loser = matching.breakCurrentMatch(user_instagram)
         if loser is not None:

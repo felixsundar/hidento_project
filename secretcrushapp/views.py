@@ -126,7 +126,6 @@ def signupView(request):
         return HttpResponseRedirect(reverse('index'))
     if request.method == 'POST':
         form = SignUpForm(request.POST)
-        form.data['username'] = 'new_user2'
         if form.is_valid():
             form.save()
             messages.success(request, 'Account created successfully')
@@ -187,7 +186,6 @@ def changePasswordView(request):
 def changePasswordDoneView(request):
     if request.META.get('HTTP_REFERER') is None:
         return HttpResponseRedirect(reverse('changePassword'))
-    logging.debug('http referer for change password done is {}'.format(request.META.get('HTTP_REFERER')))
     logout(request)
     messages.success(request, 'Password changed successfully. Login with your new Password.')
     return HttpResponseRedirect(reverse('login'))

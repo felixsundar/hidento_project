@@ -1,22 +1,46 @@
 from django import forms
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
 
 from secretcrushapp.models import HidentoUser, ContactHidento
 
-
-class SignUpForm(UserCreationForm):
-    password1 = forms.CharField(
-        label="Password",
-        strip=False,
-        widget=forms.PasswordInput,
-    )
-    password2 = None
+class SignUpForm(ModelForm):
+    password = forms.CharField(label="Password", strip=False, widget=forms.PasswordInput,)
 
     class Meta:
         model = get_user_model()
         fields = ('firstname', 'lastname', 'email', 'gender')
+
+    def _post_clean(self):
+        super()._post_clean()
+        # Validate the password after self.instance is updated with form data
+        # by super().
+        password = self.cleaned_data.get('password')
+        try:
+            password_validation.validate_password(password, self.instance)
+        except forms.ValidationError as error:
+            self.add_error('password', error)
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        user.username = generateUsername(self.cleaned_data['firstname'], self.cleaned_data['lastname'])
+        if commit:
+            user.save()
+        return user
+
+def generateUsername(firstname, lastname):
+    username = firstname.lower() + '_' + lastname.lower()
+    number = 0
+    newUsername = username
+    try:
+        while True:
+            HidentoUser.objects.get(username=newUsername)
+            number = number + 1
+            newUsername = username + str(number)
+    except:
+        return newUsername
 
 class HidentoUserChangeFormForUsers(ModelForm):
     class Meta:
