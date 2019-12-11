@@ -19,10 +19,8 @@ def startStablizerThread():
     stablizerThread.start()
 
 def runStablizer():
-    logging.debug('Stablizer thread activated.')
     while True:
-        logging.debug('stablizing thread going into sleep at {}'.format(now()))
-        time.sleep(10)
+        time.sleep(60)
         try:
             controls = Controls.objects.get(control_id=CONTROLS_RECORD_ID)
         except Controls.DoesNotExist:
@@ -37,7 +35,6 @@ def runStablizer():
             pass
 
 def stablize(stablization_days, stable_days):
-    logging.debug('starting to stablize the matches at {}'.format(now()))
     for user_instagram in InstagramCrush.objects.only('instagram_username').filter(match_instagram_username__isnull=False).iterator(500):
         try:
             stablizeOrDestablize(user_instagram.instagram_username, stablization_days, stable_days)

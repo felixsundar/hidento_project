@@ -18,7 +18,6 @@ def startMatching(user):
             return
         firstLoser, gainer, secondLoser = findMatchForUser(user)
         if firstLoser is not None:
-            logging.debug('First loser thread called........................................................')
             firstLoserThread = threading.Thread(target=startMatching, daemon=True, args=(firstLoser.hidento_userid,))
             firstLoserThread.start()
         if gainer is not None:

@@ -236,7 +236,6 @@ def getCrushField(position, fieldname):
 @receiver(post_delete, sender=InstagramCrush, dispatch_uid='instagramPostDelete')
 def userInstagramPostDelete(sender, **kwargs):
     user_instagram = kwargs['instance']
-    logging.debug('post delete signal called for user instagram - {}'.format(user_instagram.instagram_username))
     with transaction.atomic():
         loser = matching.breakCurrentMatch(user_instagram)
         if loser is not None:
