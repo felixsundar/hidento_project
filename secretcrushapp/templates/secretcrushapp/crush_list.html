@@ -1,7 +1,7 @@
-<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp <a href="{% url 'account' %}"> Account Details </a>&nbsp&nbsp
-<a href="{% url 'logout' %}"> Logout </a><br><br>
+{% extends 'secretcrushapp/base_with_user.html' %}
 
-<br><br>
+{% block content %}
+<br>
 {% if messages %}
   <ul class="messages">
     {% for message in messages %}
@@ -27,3 +27,4 @@ Hi {{ user_firstname }}
     {% endif %}
     <a href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
 {% endif %}
+{% endblock %}

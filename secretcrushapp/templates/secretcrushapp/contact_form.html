@@ -1,3 +1,6 @@
+{% extends 'secretcrushapp/base_with_user.html' %}
+
+{% block content %}
 <h2>Contact Us</h2>
 You can get some quick information in <a href="{% url 'howitworks' %}"> How It Works </a> and <a href="{% url 'faq' %}"> FAQ </a>.
 Please check them before contacting us.
@@ -15,3 +18,4 @@ Please check them before contacting us.
   {{ form.as_p }}
   <button type="submit">Submit</button>
 </form>
+{% endblock %}

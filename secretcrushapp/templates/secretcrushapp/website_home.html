@@ -1,5 +1,6 @@
-<a href="{% url 'index' %}"> Home </a><br><br>
+{% extends 'secretcrushapp/base_without_user.html' %}
 
+{% block content %}
 {% if messages %}
   <ul class="messages">
     {% for message in messages %}
@@ -27,3 +28,5 @@
 <br><br>
 Don't have an account? <a href="{% url 'signup' %}"> Signup </a><br>
 <a href="{% url 'resetPassword' %}"> Lost Password? </a>
+
+{% endblock %}

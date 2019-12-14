@@ -1,5 +1,6 @@
-<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp<a href="{% url 'logout' %}"> Logout </a><br><br>
+{% extends 'secretcrushapp/base_with_user.html' %}
 
+{% block content %}
 <h2>Account Details:</h2>   <a href="{% url 'accountEdit' %}"> Edit Account </a>
 <br><br><br>
 Username: {{user.username}}<br><br>
@@ -17,3 +18,4 @@ Instagram: {% if instagram_username is None %}
     <button type="submit">Remove Instagram Account</button>
 </form>
 {% endif %}
+{% endblock %}

@@ -1,3 +1,6 @@
-<a href="{% url 'index' %}"> Home </a><br><br>
+{% extends 'secretcrushapp/base_with_user.html' %}
+
+{% block content %}
 You have successfully logged out.<br>
 <a href="{% url 'login' %}"> Login Again </a>
+{% endblock %}

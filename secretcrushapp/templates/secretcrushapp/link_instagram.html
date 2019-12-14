@@ -1,6 +1,6 @@
-<a href="{% url 'index' %}"> Home </a>&nbsp&nbsp
-<a href="{% url 'logout' %}"> Logout </a><br><br>
+{% extends 'secretcrushapp/base_with_user.html' %}
 
+{% block content %}
 {% if code == 1 %}
 <p>Your account is already linked with an Instagram account. Remove the account to add a new one</p><br>
 <a href="{% url 'account' %}"> My Account </a>
@@ -10,3 +10,4 @@
 <a href="{% url 'linkInstagram' %}?mode=forceLink"><button>Yes</button> </a>&nbsp&nbsp&nbsp&nbsp
 <a href="{% url 'account' %}"><button>No</button> </a>
 {% endif %}
+{% endblock %}
