@@ -1,5 +1,6 @@
-<a href="{% url 'index' %}"> Home </a>&nbsp&nbsp <a href="{% url 'logout' %}"> Logout </a><br><br>
+{% extends 'secretcrushapp/base_with_user.html' %}
 
+{% block content %}
   <h2>Add Secret Crush</h2><br><br>
 {% if error is not None%}
   <p>{{error.message}}</p><br>
@@ -16,3 +17,5 @@
   </form>
   <a href="{% url 'crushList' %}"><button>Cancel</button></a>
 {% endif %}
+
+{% endblock %}

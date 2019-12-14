@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_user_agents',
     'secretcrushapp.apps.SecretcrushappConfig',
+    'django_simple_bulma',
 ]
 
 USER_AGENTS_CACHE = 'default'
@@ -97,9 +98,19 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'secretcrushapp.custom_context_processor.secretcrushapp_context_processor',
             ],
         },
     },
+]
+
+STATICFILES_FINDERS = [
+  # First add the two default Finders, since this will overwrite the default.
+  'django.contrib.staticfiles.finders.FileSystemFinder',
+  'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+  # Now add our custom SimpleBulma one.
+  'django_simple_bulma.finders.SimpleBulmaFinder',
 ]
 
 WSGI_APPLICATION = 'hidento_project.wsgi.application'
@@ -173,6 +184,7 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 try:
+    from .settings_bulma import *
     from .settings_local import *
 except ImportError as e:
     pass
