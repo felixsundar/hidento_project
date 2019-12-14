@@ -6,8 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 
-from secretcrushapp.models import InstagramCrush, HidentoUser
-
+from secretcrushapp.models import InstagramCrush, HidentoUser, Controls, ContactHidento, HowItWorks, FAQ
 
 class HidentoUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -17,7 +16,7 @@ class HidentoUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('username', 'email', 'firstname', 'lastname')
+        fields = ('username', 'email', 'firstname', 'lastname', 'gender')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -45,7 +44,7 @@ class HidentoUserChangeForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password',
+        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password', 'joined_time',
                   'is_staff', 'is_superuser', 'is_active')
 
     def clean_password(self):
@@ -64,14 +63,14 @@ class HidentoUserAdmin(UserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     #list_display fields are displayed in the table of user details
-    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth',
+    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth', 'joined_time',
                     'is_staff', 'is_superuser', 'is_active')
     #list_filter fields are shown on the side of admin site for filtering based on its values
     list_filter = ('is_superuser', 'is_staff')
     #fieldsets define how the user details are displayed in the edit user details page
     fieldsets = (
         ('Credentials', {'fields': ('username', 'email', 'password')}),
-        ('Personal info', {'fields': ('firstname', 'lastname', 'date_of_birth', 'gender')}),
+        ('Personal info', {'fields': ('firstname', 'lastname', 'date_of_birth', 'gender', 'joined_time')}),
         ('Permissions', {'fields': ('is_staff', 'is_superuser')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -80,16 +79,24 @@ class HidentoUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'firstname', 'lastname', 'password1', 'password2')}
+            'fields': ('username', 'email', 'firstname', 'lastname', 'gender', 'password1', 'password2')}
         ),
     )
     search_fields = ('username', 'email', 'firstname', 'lastname')
     ordering = ('username', 'email', 'firstname', 'lastname')
     filter_horizontal = ()
 
+class ContactHidentoAdmin(admin.ModelAdmin):
+    search_fields = ('email', 'fullname', 'message')
+    list_filter = ('is_replied', 'is_successfully_replied', 'is_important')
+
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
 admin.site.register(InstagramCrush)
+admin.site.register(Controls)
+admin.site.register(ContactHidento, ContactHidentoAdmin)
+admin.site.register(HowItWorks)
+admin.site.register(FAQ)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)

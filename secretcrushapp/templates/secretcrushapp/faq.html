@@ -1,0 +1,6 @@
+<h1>Frequently Asked Questions</h1>
+
+{% for faq in faqs %}
+    <h2>{{ faq.question |safe}}</h2>
+    <p>{{ faq.answer |safe}}</p>
+{% endfor %}

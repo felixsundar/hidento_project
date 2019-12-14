@@ -33,8 +33,20 @@ try:
         EMAIL_HOST_PASSWORD = config['EMAIL_HOST_PASSWORD']
         EMAIL_USE_TLS = config['EMAIL_USE_TLS']
         DEFAULT_FROM_EMAIL = config['DEFAULT_FROM_EMAIL']
+        SUPPORT_FROM_EMAIL = config['SUPPORT_FROM_EMAIL']
 
         INSTAGRAM_APP_SECRET = config['INSTAGRAM_APP_SECRET']
+
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.postgresql_psycopg2',
+                'NAME': config['DB_NAME'],
+                'USER': config['DB_USER'],
+                'PASSWORD': config['DB_PASSWORD'],
+                'HOST': config['DB_HOST'],
+                'PORT': config['DB_PORT'],
+            }
+        }
 except FileNotFoundError as error:
     pass
 
@@ -43,7 +55,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.hidento.com']
+ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com']
 
 
 # Application definition
@@ -55,8 +67,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'secretcrushapp',
+    'django_user_agents',
+    'secretcrushapp.apps.SecretcrushappConfig',
 ]
+
+USER_AGENTS_CACHE = 'default'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,6 +81,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_user_agents.middleware.UserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'hidento_project.urls'
@@ -92,15 +108,6 @@ WSGI_APPLICATION = 'hidento_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': '/etc/mysql/my.cnf',
-        },
-    }
-}
-
 AUTH_USER_MODEL = 'secretcrushapp.HidentoUser'
 AUTHENTICATION_BACKENDS = ['secretcrushapp.views.HidentoUserBackend']
 LOGIN_REDIRECT_URL ='index'
@@ -117,6 +124,11 @@ INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
 
 #Logging settings
 LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
+
+#App settings
+STABLIZATION_PERIOD = 7
+STABLE_PERIOD = 14
+CONTROLS_RECORD_ID = 'master_controls'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
