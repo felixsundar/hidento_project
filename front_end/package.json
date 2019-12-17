@@ -1,0 +1,25 @@
+{
+  "name": "startgrunt",
+  "version": "0.0.1",
+  "description": "Grunt for compiling sass",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "latest",
+    "what-input": "latest",
+    "jquery": "latest",
+    "foundation-sites": "latest",
+    "grunt": "latest",
+    "grunt-contrib-cssmin": "latest",
+    "grunt-contrib-sass": "latest",
+    "grunt-contrib-uglify": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-postcss": "latest"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "ie >= 9",
+    "android >= 4.4",
+    "ios >= 7"
+  ],
+  "dependencies": {}
+}

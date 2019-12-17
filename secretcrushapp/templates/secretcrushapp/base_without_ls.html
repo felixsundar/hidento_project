@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style="height:100%">
+<html style="height:100%;overflow:auto">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,7 +9,7 @@
     {% bulma %}
     {% font_awesome %}
   </head>
-  <body bgcolor="{{ WEBSITE_COLOR }}" style="height:100%;padding-top:6.5rem">
+  <body bgcolor="{{ HIDENTO_BACKGROUND_COLOR }}" style="height:100%;padding-top:6.5rem;overflow:auto">
   <nav class="navbar is-spaced is-fixed-top">
       <div class="navbar-brand">
           <a href="{% url 'index' %}"><strong class="is-size-2 has-text-white">Hidento</strong></a>
@@ -46,13 +46,6 @@
                           </div>
                       </div>
                   </div>
-              </div>
-              {% else %}
-              <a class="navbar-item" href="{% url 'login' %}"> Login </a>
-              <div class="navbar-item">
-                  <button class="button">
-                      <a href="{% url 'signup' %}" style="color:{{ WEBSITE_COLOR }}">Sign Up</a>
-                  </button>
               </div>
               {% endif %}
           </div>

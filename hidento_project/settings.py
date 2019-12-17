@@ -183,6 +183,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'front_end/hidentostatic'),
+]
+
 try:
     from .settings_bulma import *
     from .settings_local import *

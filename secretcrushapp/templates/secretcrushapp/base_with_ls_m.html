@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html style="height:100%;overflow:auto">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hidento</title>
+    <link rel="stylesheet" href="front_end/css/hidentostyle.min.css">
+    {% load django_simple_bulma %}
+    {% bulma %}
+    {% font_awesome %}
+</head>
+<body bgcolor="{{ HIDENTO_BACKGROUND_COLOR }}" style="height:100%;padding-top:6.5rem;overflow:auto">
+<nav class="navbar is-spaced is-fixed-top">
+    <div class="navbar-brand">
+        <a href="{% url 'index' %}" style="color:{{ WEBSITE_FONT_COLOR }}"><strong class="is-size-2">Hidento</strong></a>
+        <div role="button" class="navbar-burger is-dark" style="color:#000000" aria-label="menu" aria-expanded="false"
+           data-target="navbarMenu">
+            <span aria-hidden="false"></span>
+        </div>
+    </div>
+    <div id="navbarMenu" class="navbar-menu" style="align:right">
+        <div class="navbar-end" style="align:right">
+            <a class="navbar-item" href="{% url 'howitworks' %}"> How It Works </a>
+            <a class="navbar-item" href="{% url 'faq' %}"> FAQs </a>
+            {% if request.user.is_authenticated %}
+            <a class="navbar-item" href="{% url 'account' %}"> {{request.user.firstname}} </a>
+            <a class="navbar-item" href="{% url 'logout' %}"> Logout </a>
+            {% else %}
+            <a class="navbar-item" href="{% url 'login' %}"> Login </a>
+            <div class="navbar-item">
+                <button class="button">
+                    <a href="{% url 'signup' %}" style="color:{{ WEBSITE_COLOR }}">Sign Up</a>
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% block content %}
+{% endblock %}
+
+<div class="hero-foot">
+    <div class="container">
+        <div class="tabs is-right">
+            <ul>
+                <li><a href="{% url 'contactUs' %}">CONTACT</a></li>
+                <li><a href="{% url 'privacy' %}">PRIVACY</a></li>
+                <li><a href="{% url 'terms' %}">TERMS</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

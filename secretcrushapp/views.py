@@ -59,10 +59,9 @@ class HidentoUserBackend(ModelBackend):
 
 def index(request):
     if request.user.is_authenticated:
-        context = {
-            'user_firstname':request.user.firstname,
-        }
-        return render(request, 'secretcrushapp/user_home.html', context=context)
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/user_home_m.html')
+        return render(request, 'secretcrushapp/user_home.html')
     return LoginView.as_view(template_name='secretcrushapp/website_home.html')(request)
 
 @login_required
@@ -534,6 +533,8 @@ def termsView(request):
 
 def howitworksView(request):
     howitworkspoints = HowItWorks.objects.filter(is_enabled=True).order_by('-priority_value')
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/howitworks_m.html', context={'howitworkspoints':howitworkspoints})
     return render(request, 'secretcrushapp/howitworks.html', context={'howitworkspoints':howitworkspoints})
 
 def faqView(request):
