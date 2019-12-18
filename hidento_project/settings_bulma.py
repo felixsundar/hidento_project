@@ -1,7 +1,7 @@
 # Custom settings for django-simple-bulma
 HIDENTO_BACKGROUND_COLOR = '#aaeeff'
-HIDENTO_HEADING_FONT_COLOR = '#0000ff'
-HIDENTO_FONT_COLOR = '#ffffff'
+HIDENTO_HEADING_FONT_COLOR = '#ffffff'
+HIDENTO_FONT_COLOR = '#0000ff'
 BULMA_SETTINGS = {
     "variables": {
         'navbar-item-color':HIDENTO_FONT_COLOR,

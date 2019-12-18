@@ -1,43 +1,37 @@
 <!DOCTYPE html>
-<html style="height:100%;overflow:auto">
+<html style="overflow:auto">
 <head>
     <title>Hidento</title>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostyle.min.css' %}"/>
 </head>
-<body bgcolor="{{ HIDENTO_BACKGROUND_COLOR }}">
+<body style="background-color:{{ HIDENTO_BACKGROUND_COLOR }};overflow:auto">
 <div data-sticky-container>
-        <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%">
-            <div class="top-bar-left">
-                <ul class="dropdown menu" data-dropdown-menu>
-                    <li class="menu-text">Site Title</li>
-                    <li>
-                        <a href="#">One</a>
-                    </li>
-                    <li><a href="#">Two</a></li>
-                    <li><a href="#">Three</a></li>
-                </ul>
-            </div>
-            <div class="top-bar-right">
-                <ul class="menu">
-                    <li><input type="search" placeholder="Search"></li>
-                    <li>
-                        <button type="button" class="button">Search</button>
-                    </li>
-                </ul>
-            </div>
+    <div class="top-bar" data-sticky data-options="marginTop:0;" style="width:100%">
+        <div class="top-bar-left">
+            <a href="{% url 'index' %}"><h2 class="hidento-title">Hidento</h2></a>
+        </div>
+        <div class="top-bar-right">
+            <ul class="menu">
+                <li><a class="top-bar-menu" href="{% url 'howitworks' %}"> How It Works </a></li>
+                <li><a class="top-bar-menu" href="{% url 'faq' %}"> FAQs </a></li>
+                {% if request.user.is_authenticated %}
+                {% else %}
+                {% endif %}
+            </ul>
         </div>
     </div>
-
-<br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br>
-<br><br><br><br><br>
+</div>
+er
+<br>d<br>t<br>y<br>f<br>g
+<br>f<br>g<br>g<br>e<br>
+<br>g<br><br><br><br>
+<br>h<br><br><br><br>
+<br>j<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<br>l<br><br><br><br>
+<br>u<br><br><br><br>
+<br>r<br><br><br><br>
+<br>e<br><br><br><br>
 <br><br><br><br><br>
 {% block content %}
 {% endblock %}
