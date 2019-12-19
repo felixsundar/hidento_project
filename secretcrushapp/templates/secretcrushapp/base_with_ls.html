@@ -12,13 +12,18 @@
             <a href="{% url 'index' %}"><h2 class="hidento-title">Hidento</h2></a>
         </div>
         <div class="top-bar-right">
-            <ul class="menu">
-                <li><a class="top-bar-menu" href="{% url 'howitworks' %}"> How It Works </a></li>
-                <li><a class="top-bar-menu" href="{% url 'faq' %}"> FAQs </a></li>
-                {% if request.user.is_authenticated %}
-                {% else %}
-                {% endif %}
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li><a href="{% url 'howitworks' %}" class="top-bar-menu">How It Works</a></li>
+                <li><a href="{% url 'faq' %}" class="top-bar-menu">FAQ</a></li>
+                <li class="top-bar-button">
+                    <button class="button" style="padding:0.63em 0.5em">{{request.user.firstname}}</button>
+                    <ul class="menu">
+                        <li><a href="{% url 'account' %}">My Account</a></li>
+                        <li><a href="{% url 'logout' %}">Logout</a></li>
+                    </ul>
+                </li>
             </ul>
+
         </div>
     </div>
 </div>

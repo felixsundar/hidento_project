@@ -1,12 +1,35 @@
 @import 'hidentocustomvariables';
+@import 'settings';
 
 .hidento-title{
     color:$hidento-heading-font-color;
     font-weight:bold;
-    padding-left:0.5rem;
+    padding-left:0.7rem;
+}
+
+.top-bar-button{
+    padding-left:1rem;
+    padding-right:1rem;
+}
+
+.top-bar-menu{
+    color:$hidento-heading-font-color;
 }
 
 .top-bar-menu:hover{
     background-color:$hidento-dark-background-color;
-    border-radius: 4px;
+    border-radius: $hidento-button-border-radius;
+    color:$hidento-heading-font-color;
+}
+
+.button{
+    border-radius: $hidento-button-border-radius;
+    font-size: $global-font-size;
+    color: $hidento-background-color;
+    background-color: $hidento-heading-font-color;
+}
+
+.button:hover{
+    color: $hidento-background-color;
+    background-color: $hidento-heading-font-color;
 }
