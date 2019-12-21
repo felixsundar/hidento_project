@@ -4,8 +4,7 @@
 <h2>Account Details:</h2>   <a href="{% url 'accountEdit' %}"> Edit Account </a>
 <br><br><br>
 Username: {{user.username}}<br><br>
-Firstname: {{user.firstname}}<br><br>
-Lastname: {{user.lastname}}<br><br>
+Full Name: {{user.fullname}}<br><br>
 Email: {{user.email}}<br><br>
 Date of Birth: {{user.date_of_birth}}<br><br>
 Gender: {{user.get_gender_display}}<br><br>

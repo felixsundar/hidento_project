@@ -1,9 +1,6 @@
-.navbar{
-    border-bottom:1px solid #ddd;
-}
 
 .navbar-brand{
-    font-size:2rem;
+    font-size:2.5rem;
 }
 
 .navbar-light .navbar-brand {
@@ -62,4 +59,9 @@
 
 .dropdown-menu {
     margin-top: -1px;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    color: #990000;
+    background-color: #f8f9fa;
 }

@@ -16,7 +16,7 @@ class HidentoUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('username', 'email', 'firstname', 'lastname', 'gender')
+        fields = ('username', 'email', 'firstname', 'fullname', 'gender')
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -44,7 +44,7 @@ class HidentoUserChangeForm(forms.ModelForm):
 
     class Meta:
         model = HidentoUser
-        fields = ('userid', 'firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender', 'password', 'joined_time',
+        fields = ('userid', 'firstname', 'fullname', 'username', 'email', 'date_of_birth', 'gender', 'password', 'joined_time',
                   'is_staff', 'is_superuser', 'is_active')
 
     def clean_password(self):
@@ -63,14 +63,14 @@ class HidentoUserAdmin(UserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     #list_display fields are displayed in the table of user details
-    list_display = ('userid', 'username', 'email', 'firstname', 'lastname', 'gender', 'date_of_birth', 'joined_time',
+    list_display = ('userid', 'username', 'email', 'firstname', 'fullname', 'gender', 'date_of_birth', 'joined_time',
                     'is_staff', 'is_superuser', 'is_active')
     #list_filter fields are shown on the side of admin site for filtering based on its values
     list_filter = ('is_superuser', 'is_staff')
     #fieldsets define how the user details are displayed in the edit user details page
     fieldsets = (
         ('Credentials', {'fields': ('username', 'email', 'password')}),
-        ('Personal info', {'fields': ('firstname', 'lastname', 'date_of_birth', 'gender', 'joined_time')}),
+        ('Personal info', {'fields': ('firstname', 'fullname', 'date_of_birth', 'gender', 'joined_time')}),
         ('Permissions', {'fields': ('is_staff', 'is_superuser')}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -79,11 +79,11 @@ class HidentoUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'email', 'firstname', 'lastname', 'gender', 'password1', 'password2')}
+            'fields': ('username', 'email', 'firstname', 'fullname', 'gender', 'password1', 'password2')}
         ),
     )
-    search_fields = ('username', 'email', 'firstname', 'lastname')
-    ordering = ('username', 'email', 'firstname', 'lastname')
+    search_fields = ('username', 'email', 'firstname', 'fullname')
+    ordering = ('username', 'email', 'firstname', 'fullname')
     filter_horizontal = ()
 
 class ContactHidentoAdmin(admin.ModelAdmin):

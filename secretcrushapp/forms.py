@@ -10,7 +10,13 @@ class SignUpForm(ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ('firstname', 'lastname', 'email', 'gender')
+        fields = ('fullname', 'email', 'gender')
+
+    def clean_fullname(self):
+        user_fullname = self.cleaned_data['fullname']
+        if not alphaspace(user_fullname):
+            raise forms.ValidationError('Name can contain only alphabets and spaces')
+        return user_fullname
 
     def _post_clean(self):
         super()._post_clean()
@@ -25,13 +31,16 @@ class SignUpForm(ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password"])
-        user.username = generateUsername(self.cleaned_data['firstname'], self.cleaned_data['lastname'])
+        user.username = generateUsername(self.cleaned_data['fullname'])
         if commit:
             user.save()
         return user
 
-def generateUsername(firstname, lastname):
-    username = firstname.lower() + '_' + lastname.lower()
+def alphaspace(fullname):
+    return all(letter.isalpha() or letter.isspace() for letter in fullname)
+
+def generateUsername(fullname):
+    username = fullname.lower().replace(' ', '_')
     number = 0
     newUsername = username
     try:
@@ -42,13 +51,22 @@ def generateUsername(firstname, lastname):
     except:
         return newUsername
 
+def getFirstname(fullname):
+    return fullname.split(' ')[0].capitalize()
+
 class HidentoUserChangeFormForUsers(ModelForm):
     class Meta:
         model = HidentoUser
-        fields = ('firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender')
+        fields = ('fullname', 'username', 'email', 'date_of_birth', 'gender')
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'})
         }
+
+    def clean_fullname(self):
+        user_fullname = self.cleaned_data['fullname']
+        if not alphaspace(user_fullname):
+            raise forms.ValidationError('Name can contain only aplhabets and spaces')
+        return user_fullname
 
 class AddCrushForm(Form):
     def __init__(self, lowest_priority, *args, **kwargs):

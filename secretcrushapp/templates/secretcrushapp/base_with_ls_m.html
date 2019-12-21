@@ -15,7 +15,7 @@
 <!--<span class="col-sm-2"></span>-->
 <!--    <div class="col-sm-8 nav p-0">-->
         <!-- Brand -->
-        <a class="navbar-brand font-weight-bold hidento-heading-color pt-0 pl-2" href="#">Logo</a>
+        <a class="navbar-brand font-weight-bold hidento-heading-color pt-0 pl-2" href="{% url 'index' %}">Hidento</a>
         <!-- Toggler/collapsibe Button -->
         <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
@@ -26,18 +26,26 @@
             <!-- Links --><center>
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 1</a>
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="{% url 'howitworks' %}">How It Works</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 2</a>
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="{% url 'faq' %}">FAQ</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="{% url 'account' %}">{{ request.user.firstname }}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 3</a>
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="{% url 'logout' %}">Logout</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="{% url 'login' %}">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 4</a>
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="{% url 'signup' %}">Sign Up</a>
                 </li>
-
+                {% endif %}
                 <!-- Dropdown -->
 <!--                <li class="nav-item dropdown" id="hidento-nav-dropdown">-->
 <!--                    <div class="hidento-dropdown">-->
@@ -65,20 +73,12 @@
 <!--    <div class="row">-->
 <!--        <div class="col-sm-2">ads</div>-->
 <!--        <div class="col-sm-8 hidento-background">-->
-            er
-            <br>d<br>t<br>y<br>f<br>g
-            <br>f<br>g<br>g<br>e<br>
-            <br>g<br><br><br><br>
-            <br>h<br><br><br><br>
-            <br>j<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-            <br>l<br><br><br><br>
-            <br>u<br><br><br><br>
-            <br>r<br><br><br><br>
-            <br>e<br><br><br><br>
-            <br><br><br><br><br>
+
+    <center>
             {% block content %}
             {% endblock %}
-        </div>
+    </center>
+</div>
 <!--        <div class="col-sm-2">ads</div>-->
 <!--    </div>-->
 <!--</div>-->
