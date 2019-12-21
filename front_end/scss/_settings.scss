@@ -395,7 +395,7 @@ $drilldown-arrow-size: 6px;
 // ------------
 
 $dropdown-padding: 1rem;
-$dropdown-background: $body-background;
+$dropdown-background: $hidento-heading-font-color;
 $dropdown-border: 1px solid $medium-gray;
 $dropdown-font-size: 1rem;
 $dropdown-width: 300px;
@@ -410,9 +410,9 @@ $dropdown-sizes: (
 // -----------------
 
 $dropdownmenu-arrows: true;
-$dropdownmenu-arrow-color: $anchor-color;
+$dropdownmenu-arrow-color: $hidento-background-color;
 $dropdownmenu-arrow-size: 6px;
-$dropdownmenu-arrow-padding: 1.5rem;
+$dropdownmenu-arrow-padding: 5.5rem;
 $dropdownmenu-min-width: 200px;
 $dropdownmenu-background: null;
 $dropdownmenu-submenu-background: $white;
@@ -872,7 +872,7 @@ $tooltip-radius: $global-radius;
 // 55. Top Bar
 // -----------
 
-$topbar-padding: 0.5rem;
+$topbar-padding: 0.2rem;
 $topbar-background: $hidento-background-color;
 $topbar-submenu-background: $topbar-background;
 $topbar-title-spacing: 0.5rem 1rem 0.5rem 0;

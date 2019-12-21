@@ -1,55 +1,95 @@
 <!DOCTYPE html>
-<html style="height:100%;overflow:auto">
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hidento</title>
-    <link rel="stylesheet" href="front_end/css/hidentostyle.min.css">
-    {% load django_simple_bulma %}
-    {% bulma %}
-    {% font_awesome %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'temp/hidento2.css' %}"/>
 </head>
-<body bgcolor="{{ HIDENTO_BACKGROUND_COLOR }}" style="height:100%;padding-top:6.5rem;overflow:auto">
-<nav class="navbar is-spaced is-fixed-top">
-    <div class="navbar-brand">
-        <a href="{% url 'index' %}" style="color:{{ WEBSITE_FONT_COLOR }}"><strong class="is-size-2">Hidento</strong></a>
-        <div role="button" class="navbar-burger is-dark" style="color:#000000" aria-label="menu" aria-expanded="false"
-           data-target="navbarMenu">
-            <span aria-hidden="false"></span>
-        </div>
-    </div>
-    <div id="navbarMenu" class="navbar-menu" style="align:right">
-        <div class="navbar-end" style="align:right">
-            <a class="navbar-item" href="{% url 'howitworks' %}"> How It Works </a>
-            <a class="navbar-item" href="{% url 'faq' %}"> FAQs </a>
-            {% if request.user.is_authenticated %}
-            <a class="navbar-item" href="{% url 'account' %}"> {{request.user.firstname}} </a>
-            <a class="navbar-item" href="{% url 'logout' %}"> Logout </a>
-            {% else %}
-            <a class="navbar-item" href="{% url 'login' %}"> Login </a>
-            <div class="navbar-item">
-                <button class="button">
-                    <a href="{% url 'signup' %}" style="color:{{ WEBSITE_COLOR }}">Sign Up</a>
-                </button>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-</nav>
-{% block content %}
-{% endblock %}
+<body>
+<nav class="navbar navbar-expand-md sticky-top navbar-light bg-white p-0 pt-2 pb-2">
+<!--<span class="col-sm-2"></span>-->
+<!--    <div class="col-sm-8 nav p-0">-->
+        <!-- Brand -->
+        <a class="navbar-brand font-weight-bold hidento-heading-color pt-0 pl-2" href="#">Logo</a>
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-<div class="hero-foot">
-    <div class="container">
-        <div class="tabs is-right">
-            <ul>
-                <li><a href="{% url 'contactUs' %}">CONTACT</a></li>
-                <li><a href="{% url 'privacy' %}">PRIVACY</a></li>
-                <li><a href="{% url 'terms' %}">TERMS</a></li>
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <!-- Links --><center>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 1</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 2</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 3</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3" href="#">Link 4</a>
+                </li>
+
+                <!-- Dropdown -->
+<!--                <li class="nav-item dropdown" id="hidento-nav-dropdown">-->
+<!--                    <div class="hidento-dropdown">-->
+<!--                    <a class="nav-link dropdown-toggle hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1" href="#"-->
+<!--                       data-toggle="dropdown" id="hidento1">-->
+<!--                        Dropdown link-->
+<!--                    </a>-->
+<!--                    <div class="dropdown-menu dropdown-menu-right" id="hidento-nav-dropmenu">-->
+<!--                        <a class="dropdown-item hidento-title-color" href="#">Link 1</a>-->
+<!--                        <a class="dropdown-item hidento-title-color" href="#">Lfffffffffffffffffffffffffffffink 2</a>-->
+<!--                        <a class="dropdown-item hidento-title-color" href="#">Link 3</a>-->
+<!--                    </div>-->
+<!--                    </div>-->
+<!--                </li>-->
             </ul>
+        </center>
         </div>
-    </div>
-</div>
+<!--    </div>-->
+<!--    <span class="col-sm-2"></span>-->
+</nav>
+<!--navbar above container-->
 
+
+<div class="container-fluid">
+<!--    <div class="row">-->
+<!--        <div class="col-sm-2">ads</div>-->
+<!--        <div class="col-sm-8 hidento-background">-->
+            er
+            <br>d<br>t<br>y<br>f<br>g
+            <br>f<br>g<br>g<br>e<br>
+            <br>g<br><br><br><br>
+            <br>h<br><br><br><br>
+            <br>j<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+            <br>l<br><br><br><br>
+            <br>u<br><br><br><br>
+            <br>r<br><br><br><br>
+            <br>e<br><br><br><br>
+            <br><br><br><br><br>
+            {% block content %}
+            {% endblock %}
+        </div>
+<!--        <div class="col-sm-2">ads</div>-->
+<!--    </div>-->
+<!--</div>-->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>
 </html>

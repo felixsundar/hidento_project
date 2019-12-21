@@ -1,0 +1,65 @@
+.navbar{
+    border-bottom:1px solid #ddd;
+}
+
+.navbar-brand{
+    font-size:2rem;
+}
+
+.navbar-light .navbar-brand {
+    color: #009900;
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: #009900;
+}
+
+.navbar-light .navbar-toggler {
+    border-color: #006600;
+}
+
+.navbar-light .navbar-brand:hover {
+    color: #009900;
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: #009900;
+}
+
+.hidento-heading-color{
+    color:#990000;
+}
+
+.hidento-heading-color:hover{
+    color:#990000;
+}
+
+.hidento-title-color{
+    color:#990000;
+}
+
+.hidento-title-color:hover{
+    color:#990000;
+}
+
+.nav-link:hover, .hidento-dropdown:hover{
+    background-color:#ddd;
+    border-radius:5px;
+}
+
+
+.hidento-heading-font{
+    font-size:1.2rem;
+}
+
+.hidento-background{
+    background-color:#eee;
+}
+
+.dropdown:hover .dropdown-menu{
+    display:block;
+}
+
+.dropdown-menu {
+    margin-top: -1px;
+}

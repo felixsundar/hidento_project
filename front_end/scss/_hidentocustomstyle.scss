@@ -1,5 +1,4 @@
 @import 'hidentocustomvariables';
-@import 'settings';
 
 .hidento-title{
     color:$hidento-heading-font-color;
@@ -24,7 +23,7 @@
 
 .button{
     border-radius: $hidento-button-border-radius;
-    font-size: $global-font-size;
+    font-size: 100%;
     color: $hidento-background-color;
     background-color: $hidento-heading-font-color;
 }
@@ -32,4 +31,26 @@
 .button:hover{
     color: $hidento-background-color;
     background-color: $hidento-heading-font-color;
+}
+
+.is-dropdown-submenu-item{
+    background-color:$hidento-heading-font-color;
+}
+
+.is-dropdown-submenu{
+    padding-right:1rem;
+}
+
+
+.submenu{
+    padding-right:1rem;
+}
+
+.first-sub{
+    padding-right:1rem;
+}
+
+.dropdown{
+    border-radius: $hidento-button-border-radius;
+    border: 0px;
 }

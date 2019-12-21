@@ -16,6 +16,7 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
+<!--    button should be disabled after clicking-->
     <button type="submit">Save Changes</button>
   </form>
   <a href="{% url 'index' %}"><button>Cancel</button></a>

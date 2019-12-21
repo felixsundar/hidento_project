@@ -8,6 +8,8 @@
     {% load django_simple_bulma %}
     {% bulma %}
     {% font_awesome %}
+      {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostylebulma.css' %}"/>
   </head>
   <body bgcolor="{{ HIDENTO_BACKGROUND_COLOR }}" style="height:100%;padding-top:6.5rem;overflow:auto">
   <nav class="navbar is-spaced is-fixed-top">
