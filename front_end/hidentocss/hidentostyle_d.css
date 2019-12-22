@@ -1,3 +1,6 @@
+body{
+    padding-top:5rem;
+}
 
 .navbar-brand{
     font-size:2.5rem;
@@ -49,9 +52,7 @@
     font-size:1.2rem;
 }
 
-.hidento-background{
-    background-color:#eee;
-}
+
 
 .dropdown:hover .dropdown-menu{
     display:block;
@@ -64,4 +65,31 @@
 .dropdown-item.active, .dropdown-item:active {
     color: #990000;
     background-color: #f8f9fa;
+}
+
+.leftpane {
+    width: 16%;
+    min-height: 100%;
+    float: left;
+    position:relative;
+    background-color: rosybrown;
+    border-collapse: collapse;
+}
+
+.middlepane {
+    width: 68%;
+    min-height: 100%;
+    float: left;
+    position:relative;
+    background-color: yellow;
+    border-collapse: collapse;
+}
+
+.rightpane {
+  width: 16%;
+  min-height: 100%;
+  float: right;
+  position:relative;
+  background-color: blue;
+  border-collapse: collapse;
 }

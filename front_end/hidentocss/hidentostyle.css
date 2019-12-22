@@ -1,0 +1,24 @@
+body, html{
+    height:100%;
+}
+
+.hidento-background{
+    background-color:#ccc;
+}
+
+.hidento-content{
+    background-color:#999999;
+    min-height: 100%;
+    position: relative;
+}
+
+.hidento-main-content{
+    padding-bottom: 3rem;
+}
+
+.hidento-footer{
+bottom:0;
+position:absolute;
+width:100%;
+height:3rem;
+}

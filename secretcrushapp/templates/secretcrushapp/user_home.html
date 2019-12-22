@@ -1,9 +1,11 @@
 {% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-<div align="center">
 
-<a href="{% url 'match' %}"> My Match </a><br>
-<a href="{% url 'crushList' %}"> My CrushList</a>
-</div>
+
+    <div class="hidento-home-center">
+<a class="hidento-home-center1" href="{% url 'match' %}"> My Match </a><br>
+<a class="hidento-home-center1" href="{% url 'crushList' %}"> My CrushList</a>
+    </div>
+
 {% endblock %}
