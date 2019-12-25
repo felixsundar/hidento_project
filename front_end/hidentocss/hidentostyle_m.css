@@ -56,3 +56,12 @@
 .dropdown-menu {
     margin-top: -1px;
 }
+
+.mobile-footer {
+    display: flex;
+    align-items: stretch; /* Default */
+    justify-content: space-between;
+    width: 100%;
+    bottom:0;
+    position:absolute;
+}

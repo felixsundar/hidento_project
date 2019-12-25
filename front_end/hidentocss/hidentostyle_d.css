@@ -19,23 +19,9 @@
     color: #009900;
 }
 
-.hidento-heading-color{
-    color:#990000;
-}
 
-.hidento-heading-color:hover{
-    color:#990000;
-}
 
-.hidento-title-color{
-    color:#990000;
-}
-
-.hidento-title-color:hover{
-    color:#990000;
-}
-
-.nav-link:hover, .hidento-dropdown:hover{
+.nav-link:hover, .hidento-dropdown:hover, .social-icon:hover{
     background-color:#ddd;
     border-radius:5px;
 }
@@ -45,7 +31,35 @@
     font-size:1.2rem;
 }
 
+.hidento-footer-left{
+    margin-top:auto;
+    margin-bottom:auto;
+    float:left;
+    padding-left:1.5rem;
+    bottom:0;
+    position:absolute;
+}
 
+.hidento-footer-right{
+    margin-top:auto;
+    margin-bottom:auto;
+    float:right;
+    padding-right:1.5rem;
+    bottom:0;
+    right:0;
+    position:absolute;
+}
+
+.hidento-footer-link{
+    color:#aaa;
+    text-decoration:none;
+    margin-left:1.5rem;
+}
+
+.hidento-footer-link:hover{
+    color:#aaa;
+    text-decoration:none;
+}
 
 .dropdown:hover .dropdown-menu{
     display:block;
@@ -60,29 +74,3 @@
     background-color: #f8f9fa;
 }
 
-.leftpane {
-    width: 16%;
-    min-height: 100%;
-    float: left;
-    position:relative;
-    background-color: rosybrown;
-    border-collapse: collapse;
-}
-
-.middlepane {
-    width: 68%;
-    min-height: 100%;
-    float: left;
-    position:relative;
-    background-color: yellow;
-    border-collapse: collapse;
-}
-
-.rightpane {
-  width: 16%;
-  min-height: 100%;
-  float: right;
-  position:relative;
-  background-color: blue;
-  border-collapse: collapse;
-}

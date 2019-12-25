@@ -14,6 +14,22 @@ body{
     background-color:#ccc;
 }
 
+.hidento-heading-color{
+    color:#009900;
+}
+
+.hidento-heading-color:hover{
+    color:#009900;
+}
+
+.hidento-title-color{
+    color:#990000;
+}
+
+.hidento-title-color:hover{
+    color:#990000;
+}
+
 .hidento-content{
     background-color:#999999;
     min-height: 100%;
@@ -21,12 +37,18 @@ body{
 }
 
 .hidento-main-content{
-    padding-bottom: 3rem;
+    padding-bottom: 2.4rem;
 }
 
 .hidento-footer{
 bottom:0;
 position:absolute;
 width:100%;
-height:3rem;
+height:2.4rem;
+}
+
+.social-icon{
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    font-size:1.7rem;
 }
