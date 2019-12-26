@@ -12,7 +12,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostyle_m.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostyle.css' %}"/>
 </head>
-<body>
+<body class="hidento-background">
 <nav class="navbar navbar-expand-md fixed-top navbar-light bg-white p-0 pt-2 pb-2">
     <!--<span class="col-sm-2"></span>-->
     <!--    <div class="col-sm-8 nav p-0">-->
@@ -55,20 +55,22 @@
                        href="{% url 'signup' %}">Sign Up</a>
                 </li>
                 {% endif %}
-                <!-- Dropdown -->
-                <!--                <li class="nav-item dropdown" id="hidento-nav-dropdown">-->
-                <!--                    <div class="hidento-dropdown">-->
-                <!--                    <a class="nav-link dropdown-toggle hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1" href="#"-->
-                <!--                       data-toggle="dropdown" id="hidento1">-->
-                <!--                        Dropdown link-->
-                <!--                    </a>-->
-                <!--                    <div class="dropdown-menu dropdown-menu-right" id="hidento-nav-dropmenu">-->
-                <!--                        <a class="dropdown-item hidento-title-color" href="#">Link 1</a>-->
-                <!--                        <a class="dropdown-item hidento-title-color" href="#">Lfffffffffffffffffffffffffffffink 2</a>-->
-                <!--                        <a class="dropdown-item hidento-title-color" href="#">Link 3</a>-->
-                <!--                    </div>-->
-                <!--                    </div>-->
-                <!--                </li>-->
+                <li class="nav-item dropdown" id="hidento-nav-dropdown">
+                    <div class="hidento-dropdown">
+                        <a class="nav-link dropdown-toggle hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1"
+                           href="#" data-toggle="dropdown" id="hidento1">
+                            More
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" id="hidento-nav-dropmenu">
+                            <a class="dropdown-item hidento-title-color" target="_blank"
+                               href="{% url 'about' %}">About</a>
+                            <a class="dropdown-item hidento-title-color" target="_blank" href="{% url 'privacy' %}">Privacy</a>
+                            <a class="dropdown-item hidento-title-color" target="_blank"
+                               href="{% url 'terms' %}">Terms</a>
+                            <a class="dropdown-item hidento-title-color" target="_blank" href="{% url 'contactUs' %}">Contact</a>
+                        </div>
+                    </div>
+                </li>
             </ul>
         </center>
     </div>
@@ -78,33 +80,39 @@
 <!--navbar above container-->
 
 
-<div class="container-fluid hidento-content p-0">
+<div class="container-fluid hidento-content p-0 pt-2">
     <!--    <div class="row">-->
     <!--        <div class="col-sm-2">ads</div>-->
     <!--        <div class="col-sm-8 hidento-background">-->
 
-    <div class="hidento-main-content pt-2">
+    <div class="hidento-main-content">
         {% block content %}
         {% endblock %}
         fadfrgreghthdfdfffsrgrgrf
 
 
-<!--        <br><br><br><br><br><br><br><br>-->
-<!--        <br><br><br><br><br><br><br><br>-->
-<!--        <br><br><br><br><br><br><br><br>-->
+        <!--        <br><br><br><br><br><br><br><br>-->
+        <br><br><br><br><br><br><br><br>
+        <br><br><br><br><br><br><br><br>
 
-<!--        <br><br><br><br><br><br><br><br>-->
+        <br><br><br><br><br><br><br><br>
         endsvsr
         <br><br><br><br><br><br><br><br>
-        endsvsruhkouuh
+        endsvsruhkouuhjjjdd
 
     </div>
-    <div class="hidento-footer" style="background-color:red;display:inline-block">
-<div class="mobile-footer">
-        <a href="" target="_blank" class="social-icon hidento-title-color"><i class="fa fa-facebook"></i></a>
-        <a href="" target="_blank" class="social-icon hidento-title-color"><i class="fa fa-instagram"></i></a>
-        <a href="" target="_blank" class="social-icon hidento-title-color"><i class="fa fa-twitter"></i></a>
-</div></div>
+    <div class="hidento-footer"
+         style="background-color:red;justify-content:center;text-align:center;display:box;box-align:center;">
+        <div class="mobile-footer">
+
+            <a href="" target="_blank" class="social-icon hidento-title-color" style="margin:auto"><i
+                    class="fa fa-facebook"></i></a>
+            <a href="" target="_blank" class="social-icon hidento-title-color" style="margin:auto"><i
+                    class="fa fa-instagram"></i></a>
+            <a href="" target="_blank" class="social-icon hidento-title-color" style="margin:auto"><i
+                    class="fa fa-twitter"></i></a>
+        </div>
+    </div>
 
 </div>
 <!--        <div class="col-sm-2">ads</div>-->

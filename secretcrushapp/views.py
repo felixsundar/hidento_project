@@ -554,3 +554,7 @@ def contactusView(request):
         'form': form,
     }
     return render(request, 'secretcrushapp/contact_form.html', context)
+
+
+def aboutView(request):
+    return (request, 'secretcrushapp/about.html')
