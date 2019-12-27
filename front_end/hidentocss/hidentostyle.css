@@ -2,9 +2,9 @@ body, html{
     height:100%;
 }
 
-body{
+/*body{
     padding-top:5rem;
-}
+}*/
 
 .navbar-brand{
     font-size:2.5rem;
@@ -47,22 +47,9 @@ body{
     color:#990000;
 }
 
-.hidento-content{
-    background-color:#999999;
-    min-height: 100%;
-    position: relative;
-}
 
-.hidento-main-content{
-    padding-bottom: 2.8rem;
-}
 
-.hidento-footer{
-    bottom:0;
-    position:absolute;
-    width:100%;
-    height:2.5rem;
-}
+
 
 .social-icon{
     padding-left:1.5rem;
