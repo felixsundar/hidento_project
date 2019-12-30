@@ -18,7 +18,6 @@
     padding-top: 5.1rem;
     padding-bottom: 2.8rem;
     min-height:100vh;
-
 }
 
 .hidento-home-center{
@@ -48,4 +47,20 @@
     right:25%;
     left:50%;
     margin-left:-35%;
+}
+
+.hidento-form-error{
+    text-align:left;
+    color:red;
+    font-size:0.9rem;
+}
+
+.hidento-form{             /* font-size should be added inside style for form inputs */
+    font-size:1.2rem;
+}
+
+.btn-primary{
+    font-size:1.2rem;
+    background-color:pink;
+    border:none;
 }

@@ -62,7 +62,9 @@ def index(request):
         if request.user_agent.is_mobile:
             return render(request, 'secretcrushapp/user_home_m.html')
         return render(request, 'secretcrushapp/user_home.html')
-    return LoginView.as_view(template_name='secretcrushapp/website_home.html')(request)
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/website_home_m.html')
+    return render(request, 'secretcrushapp/website_home.html')
 
 @login_required
 def crushListView(request):
@@ -131,6 +133,8 @@ def signupView(request):
             return HttpResponseRedirect(reverse('login'))
     else:
         form = SignUpForm()
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/signup_m.html', {'form': form})
     return render(request, 'secretcrushapp/signup.html', {'form': form})
 
 @login_required

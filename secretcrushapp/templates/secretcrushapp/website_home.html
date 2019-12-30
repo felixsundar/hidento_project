@@ -4,7 +4,9 @@
 <center>
 <div class="row" style="position:absolute;width:100%;top:50%;-webkit-transform:translateY(-50%);padding-left:1rem;padding-right:1rem;">
     <div class="col-sm-8" style="background-color:blue">welcome
-    <br><br><br><br>-->
+            Discover your secret crush. Your first date could be on this valentine's day.<br>
+        First matching results on February 11, 2020.<br>
+        <a href="{% url 'howitworks' %}" class="btn btn-light">See How It Works</a><br><br><br><br>-->
             <br><br><br><br><br><br><br><br>
 
             endsvsr
@@ -18,24 +20,30 @@
 <!--  </ul>-->
 <!--{% endif %}-->
 
-<form method="post" action="{% url 'login' %}">
+<form method="post" action="{% url 'signup' %}">
 {% csrf_token %}
 <!--<table>-->
 <!--<tr>-->
 <!--    <td>{{ form.username.label_tag }}</td>-->
-    {{ form.username }}
+<!--    {{ form.username }}-->
+    <input type="text" class="form-control mb-2" placeholder="Email" name="email" autofocus required id="id_email">
+        <input type="text" class="form-control mb-2" placeholder="Full Name" name="fullname" required id="id_fullname">
+
 <!--</tr>-->
 <!--<tr>-->
 <!--    <td>{{ form.password.label_tag }}</td>-->
-    {{ form.password }}
+<!--    {{ form.password }}-->
+    <input type="password" class="form-control mb-2" placeholder="New Password" name="password" required id="id_password">
+    <input type="radio" name="gender" value="1" required id="gender_male">&nbsp;<label for="gender_male">Male</label>
+    <input type="radio" class="ml-3" name="gender" value="2" required id="gender_female">&nbsp;<label for="gender_female">Female</label>
+    <input type="radio" class="ml-3" name="gender" value="3" required id="gender_other">&nbsp;<label for="gender_other">Other</label>
 <!--</tr>-->
 <!--</table>-->
 
-<input type="submit" class="btn btn-block btn-light" value="Login">
+<input type="submit" class="btn btn-block btn-primary mt-2 mb-3" value="Sign Up">
 </form>
-<a href="{% url 'resetPassword' %}"> Lost Password? </a>
-<br><br>
-Don't have an account? <a href="{% url 'signup' %}"> Signup </a><br>
+
+Have an account already? <a href="{% url 'login' %}"> Log In </a><br>
 
 </div>
     <div class="clearfix"></div>

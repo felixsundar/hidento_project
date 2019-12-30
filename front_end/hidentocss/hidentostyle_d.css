@@ -72,3 +72,9 @@
 .dropdown-menu {
     margin-top: -1px;
 }
+
+.hidento-form-error{
+    text-align:left;
+    color:red;
+    font-size:0.8rem;
+}
