@@ -64,3 +64,8 @@
     background-color:pink;
     border:none;
 }
+
+.hidento-login-error{
+    color:red;
+    font-size:1rem;
+}

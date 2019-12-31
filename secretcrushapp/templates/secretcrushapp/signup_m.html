@@ -17,7 +17,7 @@
             {% endif %}
 
 
-            <input type="text" class="form-control mt-3" style="font-size:1.2rem" placeholder="Full Name" name="fullname"
+            <input type="text" class="form-control mt-2" style="font-size:1.2rem" placeholder="Full Name" name="fullname"
                    value="{% if form.fullname.value %}{{form.fullname.value}}{% endif %}" required
                    id="id_fullname">
             {% if form.fullname.errors %}
@@ -27,7 +27,7 @@
             {% endif %}
 
 
-            <input type="password" class="form-control mt-3" style="font-size:1.2rem" placeholder="New Password" name="password" required
+            <input type="password" class="form-control mt-2" style="font-size:1.2rem" placeholder="New Password" name="password" required
                    id="id_password">
             {% if form.password.errors %}
             {% for error in form.password.errors %}
@@ -62,7 +62,7 @@
                 for="gender_other">Other</label>
             {% endif %}
 
-            <input type="submit" class="btn btn-block btn-primary mt-3 mb-3" value="Sign Up">
+            <input type="submit" class="btn btn-block btn-primary mt-2 mb-3" value="Sign Up">
             Have an account already? <a href="{% url 'login' %}"> Log In </a>
 
         </form>

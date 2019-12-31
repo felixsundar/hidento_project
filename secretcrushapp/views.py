@@ -116,6 +116,8 @@ def getMatchNickname(user_instagram):
 def loginView(request):
     if request.user.is_authenticated:
         return HttpResponseRedirect(reverse('index'))
+    if request.user_agent.is_mobile:
+        return LoginView.as_view(template_name='secretcrushapp/login_m.html')(request)
     return LoginView.as_view(template_name='secretcrushapp/login.html')(request)
 
 @login_required
@@ -129,7 +131,7 @@ def signupView(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Account created successfully')
+            messages.success(request, 'Account created successfully.')
             return HttpResponseRedirect(reverse('login'))
     else:
         form = SignUpForm()
