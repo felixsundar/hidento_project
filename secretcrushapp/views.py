@@ -327,6 +327,7 @@ def addCrushView(request):
         form = AddCrushForm(error_or_lowestPriority)
     context = {
         'form': form,
+        'lowest_priority':error_or_lowestPriority,
     }
     return render(request, 'secretcrushapp/add_crush.html', context)
 

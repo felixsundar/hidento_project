@@ -1,21 +1,64 @@
-{% extends 'secretcrushapp/base_with_ls.html' %}
+{% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-  <h2>Add Secret Crush</h2><br><br>
-{% if error is not None%}
-  <p>{{error.message}}</p><br>
-  {% if error.code == 1%}
-    <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
-  {% else %}
-    <a href="{% url 'crushList' %}"> Go to Crushlist </a>
-  {% endif %}
-{% else %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Crush</button>
-  </form>
-  <a href="{% url 'crushList' %}"><button>Cancel</button></a>
-{% endif %}
+<center>
+    <div style="width:70%;margin-top:3rem;">
+        <h2><b>Add Secret Crush</b></h2><br>
+        {% if error is not None%}
+        <p>{{error.message}}</p><br>
+        {% if error.code == 1%}
+        <p>Instagram account not linked. Please link your instagram account to register your secret
+            crushes.</p>
+        <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
+        {% else %}
+        <p>Your crush list is full. Remove one of them to add a new one.</p>
+        <a href="{% url 'crushList' %}"> Go to Crushlist </a>
+        {% endif %}
+        {% else %}
+        <form method="post">
+            {% csrf_token %}
+            <!--            {{ form.as_table }}-->
+            <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
+                   maxlength="255" required id="id_crushUsername"
+                   value="{% if form.crushUsername.value %}{{form.crushUsername.value}}{% endif %}" autofocus>
+            {% if form.crushUsername.errors %}
+            {% for error in form.crushUsername.errors %}
+            <div class="hidento-form-error">{{ error|escape }}</div>
+            {% endfor %}
+            {% endif %}
 
+            <input type="text" class="form-control" placeholder="Nickname for your crush - Optional - Can be edited later" name="crushNickname"
+                   maxlength="255" id="id_crushNickname"
+                   value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
+
+            <textarea class="form-control" placeholder="Message for your crush - Optional - Can be edited later" name="crushMessage" maxlength="3000"
+                      id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
+
+            <label>Who should be informed, if matched?</label>
+            <label for="id_whomToInform_0"><input type="radio" name="whomToInform" value="1" required
+                                                  id="id_whomToInform_0" checked>
+                Choose at random</label>
+            <label for="id_whomToInform_1"><input type="radio" name="whomToInform" value="2" required
+                                                  id="id_whomToInform_1">
+                Inform my crush</label>
+<br>
+            <label for="id_priorityPosition">Priority Position:</label> <select name="priorityPosition"
+                                                                                id="id_priorityPosition">
+            <option value="1">1 - Highest</option>
+
+            <option value="2">2</option>
+
+            <option value="3" selected>3</option>
+
+        </select>
+          <br>
+            <button type="submit">Add Crush</button>
+            <a href="{% url 'crushList' %}">
+                <button>Cancel</button>
+            </a>
+        </form>
+
+        {% endif %}
+    </div>
+</center>
 {% endblock %}

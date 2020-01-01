@@ -83,3 +83,25 @@
     color:red;
     font-size:1rem;
 }
+
+a, a:hover, a:active, a:focus, a:visited, a:link{
+    text-decoration:none;
+    border:none;
+
+}
+
+.hidento-crush{
+
+}
+
+.hidento-crush-username{
+    font-size:1.4rem;
+}
+
+.hidento-crush-nickname{
+    font-size:0.9rem;
+}
+
+.hidento-link-cell{
+    background-color:transparent;
+}
