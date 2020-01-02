@@ -328,8 +328,12 @@ def addCrushView(request):
     context = {
         'form': form,
         'lowest_priority':error_or_lowestPriority,
+        'priorities':[(getPosition(position)) for position in range(1, error_or_lowestPriority+1)]
     }
     return render(request, 'secretcrushapp/add_crush.html', context)
+
+def getPosition(position):
+    return (str(position), str(position)+' - Highest' if position == 1 else str(position))
 
 def validateUserInstagramForAdd(user_instagram):
     if user_instagram is None:
@@ -443,6 +447,7 @@ def editCrushView(request, crushUsername):
     context = {
         'form': form,
         'crushUsername': crushUsername,
+        'priorities': [(getPosition(position)) for position in range(1, error_or_lowestPriority+1)],
     }
     return render(request, 'secretcrushapp/edit_crush.html', context)
 

@@ -74,11 +74,11 @@ class AddCrushForm(Form):
         self.fields['priorityPosition'] = forms.ChoiceField(
             choices=[(self.getPosition(position)) for position in range(1, lowest_priority+1)],
             label='Priority Position',
-            initial=lowest_priority
+            initial=str(lowest_priority)
         )
 
     def getPosition(self, position):
-        return (position, str(position)+' - Highest' if position == 1 else str(position))
+        return (str(position), str(position)+' - Highest' if position == 1 else str(position))
 
     crushUsername = forms.CharField(label='Instagram Username of your crush', max_length=255, required=True)
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
@@ -93,7 +93,7 @@ class AddCrushForm(Form):
     def clean_crushUsername(self):
         crush_instagram_username = self.cleaned_data['crushUsername']
         if ' ' in crush_instagram_username:
-            raise forms.ValidationError('Instagram usernames cannot contain space')
+            raise forms.ValidationError('Instagram usernames cannot contain space.')
         return crush_instagram_username
 
 class EditCrushForm(Form):
@@ -105,7 +105,7 @@ class EditCrushForm(Form):
         )
 
     def getPosition(self, position):
-        return (position, str(position)+' - Highest' if position == 1 else str(position))
+        return (str(position), str(position)+' - Highest' if position == 1 else str(position))
 
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
     crushMessage = forms.CharField(label='Your Message', max_length=3000, required=False, widget=forms.Textarea)
