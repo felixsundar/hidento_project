@@ -114,7 +114,7 @@ class EditCrushForm(Form):
         choices=[(1, 'Choose at random'), (2, 'Inform my crush')],
         widget=forms.RadioSelect
     )
-    active = forms.BooleanField(label='Active Status')
+    active = forms.BooleanField(label='Active Status', required=False)
 
 class ContactForm(ModelForm):
     class Meta:

@@ -500,7 +500,7 @@ def getCrushData(user_instagram, crushUsername):
         'crushMessage': user_instagram.__dict__[getCrushField(position, 'message')],
         'whomToInform': user_instagram.__dict__[getCrushField(position, 'whomToInform')],
         'active': user_instagram.__dict__[getCrushField(position, 'active')],
-        'priorityPosition': position,
+        'priorityPosition': str(position),
     }
 
 def getCrushPosition(user_instagram, crushUsername):

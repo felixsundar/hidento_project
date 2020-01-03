@@ -5,13 +5,10 @@
     <div style="width:70%;margin-top:3rem;">
         <h2><b>Add Secret Crush</b></h2><br>
         {% if error is not None%}
-        <p>{{error.message}}</p><br>
+        <p>{{error.message}}</p>
         {% if error.code == 1%}
-        <p>Instagram account not linked. Please link your instagram account to register your secret
-            crushes.</p>
         <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
         {% else %}
-        <p>Your crush list is full. Remove one of them to add a new one.</p>
         <a href="{% url 'crushList' %}"> Go to Crushlist </a>
         {% endif %}
         {% else %}
@@ -36,7 +33,7 @@
                       name="crushMessage" maxlength="3000"
                       id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
             <div style="text-align:left" class="mt-3">
-                <label class="pr-3">Who should be informed, if matched?</label>
+                <label class="hidento-label pr-3">Who should be informed, if matched?</label>
                 {% if form.whomToInform.value == '2' %}
                 <label for="id_whomToInform_0c" class="mr-3"><input type="radio" name="whomToInform" value="1" required
                                                                     id="id_whomToInform_0c">
@@ -57,8 +54,8 @@
                 <table>
                     <tr>
                         <td>
-                            <label for="id_priorityPosition" class="pr-3">Priority Position</label></td>
-                        <td><select class="form-control" name="priorityPosition"
+                            <label for="id_priorityPosition" class="hidento-label pr-3">Priority Position</label></td>
+                        <td><select class="form-control" name="priorityPosition" required
                                     id="id_priorityPosition">
                             {% for priority, priority_string in priorities %}
                             {% if priority == form.priorityPosition.value %}

@@ -105,3 +105,8 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
 .hidento-link-cell{
     background-color:transparent;
 }
+
+.hidento-label{
+    font-weight:bold;
+    font-size: 0.9rem;
+}
