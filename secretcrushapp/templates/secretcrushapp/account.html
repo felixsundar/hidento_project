@@ -1,20 +1,72 @@
 {% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-<h2>Account Details:</h2>   <a href="{% url 'accountEdit' %}"> Edit Account </a>
-<br><br><br>
-Username: {{user.username}}<br><br>
-Full Name: {{user.fullname}}<br><br>
-Email: {{user.email}}<br><br>
-Date of Birth: {{user.date_of_birth}}<br><br>
-Gender: {{user.get_gender_display}}<br><br>
-Password: <a href="{% url 'changePassword' %}"> Change Password </a><br><br>
-Instagram: {% if instagram_username is None %}
-<a href="{% url 'linkInstagram' %}"> Link Instagram Account</a>
-{% else %}
-{{ instagram_username }} &nbsp&nbsp
-<form method="post" action="{% url 'removeInstagram' %}">{% csrf_token %}
-    <button type="submit">Remove Instagram Account</button>
-</form>
-{% endif %}
+<center>
+    <div style="width:70%;margin-top:2.3rem;margin-bottom:3.5rem">
+        <h2 class="mb-3"><b>Account Details
+                        <a href="{% url 'accountEdit' %}" class="btn hidento-link-cell">
+                            <i class="material-icons">mode_edit</i>
+                        </a>
+                    </b></h2>
+<!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
+        <table>
+            <tr>
+                <td class="hidento-table-left">
+                    Username
+                </td>
+                <td class="hidento-table-right">
+                    {{user.username}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Full Name
+                </td>
+                <td class="hidento-table-right">
+                    {{user.fullname}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Email
+                </td>
+                <td class="hidento-table-right">
+                    {{user.email}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Date of Birth
+                </td>
+                <td class="hidento-table-right">
+                    {% if user.date_of_birth is not None %}
+                    {{user.date_of_birth}}
+                    {% else %}
+                    dd/mm/yyyy
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Gender
+                </td>
+                <td class="hidento-table-right">
+                    {{user.get_gender_display}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Instagram
+                </td>
+                <td class="hidento-table-right">
+                    {% if instagram_username is None %}
+                    <a href="{% url 'linkInstagram' %}"> Link Instagram Account</a>
+                    {% else %}
+                        {{ instagram_username }}
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</center>
 {% endblock %}

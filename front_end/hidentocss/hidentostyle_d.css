@@ -110,3 +110,18 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
     font-weight:bold;
     font-size: 0.9rem;
 }
+
+.hidento-table-left{
+    text-align:right;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    padding-right:1rem;
+    font-weight:bold;
+    width:50%;
+}
+
+.hidento-table-right{
+    text-align:left;
+    padding-left:1rem;
+    width:50%;
+}
