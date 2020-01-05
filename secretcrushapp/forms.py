@@ -65,7 +65,7 @@ class HidentoUserChangeFormForUsers(ModelForm):
     def clean_fullname(self):
         user_fullname = self.cleaned_data['fullname']
         if not alphaspace(user_fullname):
-            raise forms.ValidationError('Name can contain only aplhabets and spaces')
+            raise forms.ValidationError('Name can contain only alphabets and spaces.')
         return user_fullname
 
 class AddCrushForm(Form):

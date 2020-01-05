@@ -142,15 +142,17 @@ def signupView(request):
 @login_required
 def accountView(request):
     printcurrentthreads()
-    user_instagram = request.user.instagramDetails.first()
-    instagram_username = None
-    if user_instagram is not None:
-        instagram_username = user_instagram.instagram_username
     context = {
         'user':request.user,
-        'instagram_username':instagram_username
+        'instagram_username':getInstagramUsername(request.user)
     }
     return render(request, 'secretcrushapp/account.html', context=context)
+
+def getInstagramUsername(user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is not None:
+        return user_instagram.instagram_username
+    return None
 
 def printcurrentthreads():
     tlist = threading.enumerate()
@@ -171,6 +173,7 @@ def accountEditView(request):
         form = HidentoUserChangeFormForUsers(instance=user)
     context = {
         'form': form,
+        'instagram_username':getInstagramUsername(user)
     }
     return render(request, 'secretcrushapp/account_edit.html', context)
 

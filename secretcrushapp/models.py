@@ -51,7 +51,7 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name='Email', max_length=255, unique=True, blank=False, null=False)
     firstname = models.CharField(max_length=255)
     fullname = models.CharField(verbose_name='Full Name', max_length=255)
-    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')])
+    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Other')])
     date_of_birth = models.DateField(verbose_name='Date of Birth', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(verbose_name='active', default=True)

@@ -120,8 +120,20 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
     width:50%;
 }
 
+.hidento-table-left-edit{
+    text-align:right;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    padding-right:1rem;
+    font-weight:bold;
+    width:35%;
+}
+
 .hidento-table-right{
     text-align:left;
     padding-left:1rem;
+
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
     width:50%;
 }
