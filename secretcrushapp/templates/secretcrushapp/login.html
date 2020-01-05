@@ -20,7 +20,7 @@
 
         <h2><b>Log In to Hidento</b></h2>
         {% if form.errors %}
-        <div class="hidento-login-error mt-2 mb-1">Username or Password invalid</div>
+        <div class="hidento-login-error mt-3 mb-1">Username or Password invalid</div>
         {% else %}
         <br>
         {% endif %}
@@ -33,16 +33,6 @@
 
             <input type="password" class="form-control mt-3" placeholder="Password" name="password" required
                    id="id_password">
-            <!--<table>-->
-            <!--<tr>-->
-            <!--    <td>{{ form.username.label_tag }}</td>-->
-            <!--    <td>{{ form.username }}</td>-->
-            <!--</tr>-->
-            <!--<tr>-->
-            <!--    <td>{{ form.password.label_tag }}</td>-->
-            <!--    <td>{{ form.password }}</td>-->
-            <!--</tr>-->
-            <!--</table>-->
             <input type="submit" class="btn btn-block btn-primary mt-4 mb-3" value="Log In">
             <input type="hidden" name="next" value="{{ next }}">
 

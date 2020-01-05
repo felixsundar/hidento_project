@@ -199,8 +199,6 @@ def changePasswordDoneView(request):
     return HttpResponseRedirect(reverse('login'))
 
 def resetPasswordView(request):
-    if request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('changePassword'))
     return PasswordResetView.as_view(template_name='secretcrushapp/resetPassword.html',
                                      email_template_name='secretcrushapp/resetPasswordEmail.html',
                                      subject_template_name='secretcrushapp/resetPasswordSubject.txt',
