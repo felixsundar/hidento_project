@@ -570,4 +570,4 @@ def contactusView(request):
 
 
 def aboutView(request):
-    return (request, 'secretcrushapp/about.html')
+    return render(request, 'secretcrushapp/about.html')

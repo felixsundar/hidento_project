@@ -1,10 +1,16 @@
-{% extends 'secretcrushapp/base_with_ls.html' %}
+{% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-<h2>Frequently Asked Questions</h2>
+<center>
+    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
 
+        <h2 class="mb-5"><b>Frequently Asked Questions</b></h2>
+<dl style="text-align:left">
 {% for faq in faqs %}
-    <h2>{{ faq.question |safe}}</h2>
-    <p>{{ faq.answer |safe}}</p>
+    <dt class="mb-2">{{ faq.question |safe}}</dt>
+    <dd class="mb-4">{{ faq.answer |safe}}</dd>
 {% endfor %}
+</dl>
+        </div>
+</center>
 {% endblock %}

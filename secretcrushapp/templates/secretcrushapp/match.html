@@ -1,23 +1,32 @@
-{% extends 'secretcrushapp/base_with_ls.html' %}
+{% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
+<center>
+    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
+<h2 class="mb-4"><b>My Match</b></h2>
 {% if matchDetails is None %}
- <p>You don't have any matches yet. </p><br>
+ <p>You don't have a match yet.</p>
+        <p>Note: Only one of them is informed, when there is a match.</p>
+        <a href="{% url 'crushList' %}">Go to Crushlist</a>
 {% else %}
     <h2>Congratulations!!! You have a match!</h2>
     You are matched with {{ matchDetails.match_instagram_username }}
     {% if matchDetails.user_nickname_for_match %}
         ({{ matchDetails.user_nickname_for_match }})
     {% endif %}
-
+<dl>
     {% if matchDetails.match_nickname_for_user %}
-        Your match has a nickname for you - {{ matchDetails.match_nickname_for_user }}
+    <dt>Your match has a nickname for you:</dt>
+    <dd>{{ matchDetails.match_nickname_for_user }}</dd>
     {% endif %}
 
     {% if matchDetails.match_message_for_user %}
-        Your match has a message for you - {{ matchDetails.match_message_for_user }}
+    <dt>Your match has a message for you:</dt>
+    <dd>{{ matchDetails.match_message_for_user }}</dd>
     {% endif %}
+</dl>
     <a target="_blank" href="{{ matchDetails.instagramProfileLink }}"> Visit Instagram Profile </a>
 {% endif %}
-
+    </div>
+</center>
 {% endblock %}
