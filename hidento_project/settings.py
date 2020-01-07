@@ -53,7 +53,7 @@ except FileNotFoundError as error:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com']
 
@@ -176,6 +176,8 @@ MEDIA_URL = '/media/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'front_end'),
 ]
+
+CSRF_FAILURE_VIEW = 'secretcrushapp.views.csrf_failure'
 
 HIDENTO_BACKGROUND_COLOR = '#00eeff'
 HIDENTO_DARK_BACKGROUND_COLOR = '#00ddee'

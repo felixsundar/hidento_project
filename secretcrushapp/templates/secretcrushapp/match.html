@@ -9,23 +9,31 @@
         <p>Note: Only one of them is informed, when there is a match.</p>
         <a href="{% url 'crushList' %}">Go to Crushlist</a>
 {% else %}
-    <h2>Congratulations!!! You have a match!</h2>
-    You are matched with {{ matchDetails.match_instagram_username }}
+    <h4>Congratulations! You have a match!!!</h4>
+    <h3 class="mt-3 mb-4">You are matched with <b><a target="_blank" href="{{ matchDetails.instagramProfileLink }}">
+        {{ matchDetails.match_instagram_username }}</a>
     {% if matchDetails.user_nickname_for_match %}
         ({{ matchDetails.user_nickname_for_match }})
-    {% endif %}
+        {% endif %}</b></h3>
 <dl>
     {% if matchDetails.match_nickname_for_user %}
-    <dt>Your match has a nickname for you:</dt>
+    <dt>Your match has a nickname for you</dt>
     <dd>{{ matchDetails.match_nickname_for_user }}</dd>
     {% endif %}
 
     {% if matchDetails.match_message_for_user %}
-    <dt>Your match has a message for you:</dt>
+    <dt>Your match has a message for you</dt>
     <dd>{{ matchDetails.match_message_for_user }}</dd>
     {% endif %}
 </dl>
-    <a target="_blank" href="{{ matchDetails.instagramProfileLink }}"> Visit Instagram Profile </a>
+        <div class="mt-5" style="text-align:left;width:70%">
+            <b>Note</b><br>
+            <div class="hidento-light-color" >
+                1. Only you are informed about the match. Your crush doesn't know about it.<br>
+                2. This match will stable only for the next {{match;Details.remaining_stable_days}} days.
+                See what happens after destablization in fg<a target="_blank" href="{% url 'faq' %}">FAQ</a>
+            </div>
+        </div>
 {% endif %}
     </div>
 </center>

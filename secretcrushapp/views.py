@@ -17,7 +17,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls
 from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm
 
 from hidento_project import settings
@@ -96,18 +96,30 @@ def matchView(request):
     if user_instagram is None or not (user_instagram.match_stablized and user_instagram.inform_this_user):
         matchDetails = None
     else:
+        try:
+            controls = Controls.objects.get(control_id=settings.CONTROLS_RECORD_ID)
+        except Controls.DoesNotExist:
+            stable_days = settings.STABLE_PERIOD
+        else:
+            stable_days = controls.stable_days
         matchDetails = {
             'match_instagram_username':user_instagram.match_instagram_username,
             'user_nickname_for_match':getMatchNickname(user_instagram),
             'match_nickname_for_user':user_instagram.match_nickname,
             'match_message_for_user':user_instagram.match_message,
             'instagramProfileLink': 'https://www.instagram.com/' + user_instagram.match_instagram_username,
+            'remaining_stable_days': int(stable_days - time_difference_in_days(user_instagram.match_stablized_time, now()))
         }
     context = {
-        'user_firstname':request.user.firstname,
         'matchDetails':matchDetails,
     }
     return render(request, 'secretcrushapp/match.html', context=context)
+
+def time_difference_in_days(initial_time, final_time):
+    if initial_time is None or final_time is None:
+        return -2
+    time_difference = final_time - initial_time
+    return divmod(time_difference.total_seconds(), 86400)[0]
 
 def getMatchNickname(user_instagram):
     matchPosition = getCrushPosition(user_instagram, user_instagram.match_instagram_username)
@@ -571,3 +583,28 @@ def contactusView(request):
 
 def aboutView(request):
     return render(request, 'secretcrushapp/about.html')
+
+def handler404(request, exception):
+    if request.user_agent.is_mobile:
+        return render(request, '404_m.html', status=404)
+    return render(request, '404.html', status=404)
+
+def handler403(request, exception):
+    if request.user_agent.is_mobile:
+        return render(request, '403_m.html', status=403)
+    return render(request, '403.html', status=403)
+
+def handler500(request):
+    if request.user_agent.is_mobile:
+        return render(request, '500_m.html', status=500)
+    return render(request, '500.html', status=500)
+
+def handler400(request, exception):
+    if request.user_agent.is_mobile:
+        return render(request, '400_m.html', status=400)
+    return render(request, '400.html', status=400)
+
+def csrf_failure(request, reason=""):
+    if request.user_agent.is_mobile:
+        return render(request, '403_csrf_m.html', status=403)
+    return render(request, '403_csrf.html', status=403)

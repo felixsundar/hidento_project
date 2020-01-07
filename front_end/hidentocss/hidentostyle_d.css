@@ -137,3 +137,7 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
     padding-bottom:0.5rem;
     width:50%;
 }
+
+.hidento-light-color{
+    color:#777777;
+}
