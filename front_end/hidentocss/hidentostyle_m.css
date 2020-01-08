@@ -5,7 +5,6 @@
 }
 
 .hidento-content{
-    background-color:#cccc00;
     min-height: 100%;
     padding-top: 5.2rem;
     padding-bottom: 2.8rem;
@@ -55,17 +54,75 @@
     font-size:0.9rem;
 }
 
-.hidento-form{             /* font-size should be added inside style for form inputs */
+.hidento-m-font-size{             /* font-size should be added inside style for form inputs */
     font-size:1.2rem;
 }
 
 .btn-primary{
     font-size:1.2rem;
-    background-color:pink;
+/*    background-color:pink;*/
     border:none;
 }
 
 .hidento-login-error{
     color:red;
     font-size:1rem;
+}
+
+.hidento-link-cell{
+    background-color:transparent;
+}
+
+.hidento-label{
+    font-weight:bold;
+    font-size: 1rem;
+    text-align:left;
+}
+
+.hidento-table-left{
+    text-align:right;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    padding-right:1rem;
+    font-weight:bold;
+    width:35%;
+}
+
+.hidento-table-left-edit{
+    font-size:1rem;
+    text-align:left;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    padding-right:1rem;
+    font-weight:bold;
+
+}
+
+.hidento-table-right{
+    text-align:left;
+    padding-left:1rem;
+max-width: 50%;
+word-wrap: break-word;
+word-break: break-all;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    width:50%;
+}
+
+.hidento-table-right-edit{
+    text-align:left;
+    padding-left:1rem;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    max-width: 50%;
+word-wrap: break-word;
+word-break: break-all;
+}
+
+.hidento-input{
+    width:100%;
+}
+
+.hidento-light-color{
+    color:#777777;
 }

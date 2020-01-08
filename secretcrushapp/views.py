@@ -158,6 +158,8 @@ def accountView(request):
         'user':request.user,
         'instagram_username':getInstagramUsername(request.user)
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/account_m.html', context=context)
     return render(request, 'secretcrushapp/account.html', context=context)
 
 def getInstagramUsername(user):
@@ -187,6 +189,8 @@ def accountEditView(request):
         'form': form,
         'instagram_username':getInstagramUsername(user)
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/accountedit1.html', context)
     return render(request, 'secretcrushapp/account_edit.html', context)
 
 @login_required

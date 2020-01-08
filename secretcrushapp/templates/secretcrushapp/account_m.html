@@ -1,15 +1,15 @@
-{% extends 'secretcrushapp/base_d.html' %}
+{% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
 <center>
-    <div style="width:70%;margin-top:2.3rem;margin-bottom:3.5rem">
-        <h2 class="mb-3 pl-5l"><b>Account Details
+    <div style="padding-left:1rem;padding-right:1rem;margin-top:1rem;">
+        <h2 class="mb-3"><b>Account Details
                         <a href="{% url 'accountEdit' %}" class="btn hidento-link-cell">
                             <i class="material-icons">mode_edit</i>
                         </a>
                     </b></h2>
 <!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
-        <table>
+        <table class="hidento-m-font-size">
             <tr>
                 <td class="hidento-table-left">
                     Username
