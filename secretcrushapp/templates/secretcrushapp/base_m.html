@@ -44,6 +44,10 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3"
+                       href="{% url 'changePassword' %}">Change Password</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-2 pb-2 pl-3 pr-3"
                        href="{% url 'logout' %}">Logout</a>
                 </li>
                 {% else %}
@@ -80,7 +84,7 @@
 </nav>
 <!--navbar above container-->
 
-<div class="hidento-content">
+<div class="hidento-content" style="max-height: 999999px;">
     <!--    <div class="row">-->
     <!--        <div class="col-sm-2">ads</div>-->
     <!--        <div class="col-sm-8 hidento-background">-->

@@ -4,11 +4,11 @@
 <center>
     <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:2rem">
 
-        <h2 class="mb-4"><b>How It Works</b></h2>
+        <h2 class="mb-4"><b>Frequently Asked Questions</b></h2>
 <dl style="text-align:left">
-{% for howitworks in howitworkspoints %}
-    <dt class="mb-2">{{ howitworks.heading |safe}}</dt>
-    <dd class="mb-4">{{howitworks.explanation |safe}}</dd>
+{% for faq in faqs %}
+    <dt class="mb-2">{{ faq.question |safe}}</dt>
+    <dd class="mb-4">{{ faq.answer |safe}}</dd>
 {% endfor %}
 </dl>
         </div>

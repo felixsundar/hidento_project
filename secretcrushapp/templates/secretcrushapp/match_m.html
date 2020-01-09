@@ -1,11 +1,11 @@
-{% extends 'secretcrushapp/base_d.html' %}
+{% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
 <center>
-    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:2rem">
 <h2 class="mb-4"><b>My Match</b></h2>
 {% if matchDetails is None %}
- <p>You don't have a match yet.</p>
+ <p style="max-height: 999999px;">You don't have a match yet.</p>
         <p class="hidento-light-color">Note: Only one of them is informed, when there is a match.</p>
         <a href="{% url 'crushList' %}">Go to Crushlist</a>
 {% else %}
@@ -26,8 +26,8 @@
     <dd>{{ matchDetails.match_message_for_user }}</dd>
     {% endif %}
 </dl>
-        <div class="mt-5" style="text-align:left;width:70%">
-            <b>Note:</b><br>
+        <div class="mt-5" style="text-align:left">
+            <b>Note</b><br>
             <div class="hidento-light-color mt-3" >
                 <p>1. Only you are informed about the match. Your crush doesn't know about it.</p>
                 <p>2. This match will be stable only for the next {{matchDetails.remaining_stable_days}} days.

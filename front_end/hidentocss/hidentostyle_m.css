@@ -55,11 +55,11 @@
 }
 
 .hidento-m-font-size{             /* font-size should be added inside style for form inputs */
-    font-size:1.2rem;
+    font-size:1.1rem;
 }
 
 .btn-primary{
-    font-size:1.2rem;
+    font-size:1.1rem;
 /*    background-color:pink;*/
     border:none;
 }
@@ -114,7 +114,7 @@ word-break: break-all;
     padding-left:1rem;
     padding-top:0.5rem;
     padding-bottom:0.5rem;
-    max-width: 50%;
+    /*max-width: 50%;*/
 word-wrap: break-word;
 word-break: break-all;
 }
@@ -125,4 +125,8 @@ word-break: break-all;
 
 .hidento-light-color{
     color:#777777;
+}
+
+p{
+word-wrap: break-word;
 }

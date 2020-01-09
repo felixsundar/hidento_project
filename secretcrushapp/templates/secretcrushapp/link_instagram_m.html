@@ -1,13 +1,13 @@
-{% extends 'secretcrushapp/base_d.html' %}
+{% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
 <center>
-    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:2rem">
 
-{% if code == 1 %}
+{% if code == 2 %}
 <p>Your account is already linked with an Instagram account. Remove the account to add a new one.</p>
 <a href="{% url 'accountEdit' %}"> Edit Account </a>
-{% elif code == 2 %}
+{% elif code == 1 %}
 <p>The Instagram account you are trying to link - <b>{{instagram_username}}</b>, is already linked with a different Hidento account.</p>
 <p>Do you want to link it to this account instead? </p>
 <a class="btn btn-primary" href="{% url 'linkInstagram' %}?mode=forceLink">Yes</a>

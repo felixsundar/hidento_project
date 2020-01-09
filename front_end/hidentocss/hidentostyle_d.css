@@ -136,8 +136,14 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
     padding-top:0.5rem;
     padding-bottom:0.5rem;
     width:50%;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 .hidento-light-color{
     color:#777777;
+}
+
+p{
+word-wrap: break-word;
 }

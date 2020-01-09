@@ -1,8 +1,8 @@
-{% extends 'secretcrushapp/base_d.html' %}
+{% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
 <center>
-    <div style="margin-top:3rem;">
+    <div style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:2rem">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
@@ -21,10 +21,10 @@
         <p class="mt-4">You have not added any secret crushes.</p>
         {% else %}
         <div class="mt-2 mb-3" style="font-size:0.9rem">Ordered by Priority: High to Low</div>
-        <table>
+        <table class="hidento-m-font-size">
             {% for crush in instagram_crushes %}
             <tr>
-                <td class="pr-5 pb-2 pt-2">
+                <td class="pr-5 pb-3 pt-3">
                     <div class="hidento-crush-username"> {{ crush.crushUsername }}</div>
                     <div class="hidento-crush-nickname">{{ crush.crushNickname }}</div>
                 </td>
@@ -40,7 +40,7 @@
             {% endfor %}
         </table>
         {% endif %}
-        <a class="btn btn-primary mt-4" href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
+        <a class="btn btn-primary mt-4" href="{% url 'addCrush' %}" style="font-size:1.1rem"> Add Secret Crush </a><br>
         {% endif %}
     </div>
 </center>

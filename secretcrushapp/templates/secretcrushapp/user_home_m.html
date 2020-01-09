@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="hidento-home-center">
-    <a class="btn btn-block btn-light" href=""> My Match </a>
-    <a class="btn btn-block btn-light" href=""> My Crushlist </a>
+    <a class="btn btn-block btn-light" href="{% url 'match' %}"> My Match </a>
+    <a class="btn btn-block btn-light" href="{% url 'crushList' %}"> My Crushlist </a>
 </div>
 
 {% endblock %}

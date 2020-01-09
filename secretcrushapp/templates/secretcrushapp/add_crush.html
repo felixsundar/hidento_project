@@ -54,7 +54,7 @@
                 <table>
                     <tr>
                         <td>
-                            <label for="id_priorityPosition" class="hidento-label pr-3">Priority Position</label></td>
+                            <label for="id_priorityPosition" class="hidento-label pr-3 pt-2">Priority Position</label></td>
                         <td><select class="form-control" name="priorityPosition" required
                                     id="id_priorityPosition">
                             {% for priority, priority_string in priorities %}
@@ -70,12 +70,12 @@
                 </table>
             </div>
             <br>
-            <button class="btn btn-primary mr-3" type="submit">Add Crush</button>
+            <input class="btn btn-primary mr-3" type="submit" value="Add Crush">
+
             <a href="{% url 'crushList' %}">
-                <button class="btn btn-primary">Cancel</button>
+                <button type="button" class="btn btn-primary">Cancel</button>
             </a>
         </form>
-
         {% endif %}
     </div>
 </center>

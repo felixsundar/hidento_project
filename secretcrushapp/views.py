@@ -73,6 +73,8 @@ def crushListView(request):
         'user_firstname':request.user.firstname,
         'instagram_crushes':getInstagramCrushes(user_instagram)
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/crush_list_m.html', context=context)
     return render(request, 'secretcrushapp/crush_list.html', context=context)
 
 def getInstagramCrushes(user_instagram):
@@ -113,6 +115,8 @@ def matchView(request):
     context = {
         'matchDetails':matchDetails,
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/match_m.html', context=context)
     return render(request, 'secretcrushapp/match.html', context=context)
 
 def time_difference_in_days(initial_time, final_time):
@@ -190,7 +194,7 @@ def accountEditView(request):
         'instagram_username':getInstagramUsername(user)
     }
     if request.user_agent.is_mobile:
-        return render(request, 'secretcrushapp/accountedit1.html', context)
+        return render(request, 'secretcrushapp/account_edit_m.html', context)
     return render(request, 'secretcrushapp/account_edit.html', context)
 
 @login_required
@@ -204,6 +208,9 @@ def accountDeleteView(request):
 
 @login_required
 def changePasswordView(request):
+    if request.user_agent.is_mobile:
+        return PasswordChangeView.as_view(template_name='secretcrushapp/changePassword_m.html',
+                                          success_url=reverse('changePasswordDone'))(request)
     return PasswordChangeView.as_view(template_name='secretcrushapp/changePassword.html', success_url=reverse('changePasswordDone'))(request)
 
 @login_required
@@ -215,6 +222,12 @@ def changePasswordDoneView(request):
     return HttpResponseRedirect(reverse('login'))
 
 def resetPasswordView(request):
+    if request.user_agent.is_mobile:
+        return PasswordResetView.as_view(template_name='secretcrushapp/resetPassword_m.html',
+                                         email_template_name='secretcrushapp/resetPasswordEmail.html',
+                                         subject_template_name='secretcrushapp/resetPasswordSubject.txt',
+                                         success_url=reverse('resetPasswordDone')
+                                         )(request)
     return PasswordResetView.as_view(template_name='secretcrushapp/resetPassword.html',
                                      email_template_name='secretcrushapp/resetPasswordEmail.html',
                                      subject_template_name='secretcrushapp/resetPasswordSubject.txt',
@@ -224,9 +237,15 @@ def resetPasswordView(request):
 def resetPasswordDoneView(request):
     if request.META.get('HTTP_REFERER') is None:
         return HttpResponseRedirect(reverse('resetPassword'))
+    if request.user_agent.is_mobile:
+        return PasswordResetDoneView.as_view(template_name='secretcrushapp/resetPasswordDone_m.html')(request)
     return PasswordResetDoneView.as_view(template_name='secretcrushapp/resetPasswordDone.html')(request)
 
 def confirmResetPasswordView(request, uidb64, token):
+    if request.user_agent.is_mobile:
+        return PasswordResetConfirmView.as_view(template_name='secretcrushapp/confirmResetPassword_m.html',
+                                                success_url=reverse('completeResetPassword'),
+                                                )(request, uidb64=uidb64, token=token)
     return PasswordResetConfirmView.as_view(template_name='secretcrushapp/confirmResetPassword.html',
                                             success_url=reverse('completeResetPassword'),
                                             )(request, uidb64=uidb64, token=token)
@@ -244,6 +263,8 @@ def linkInstagramView(request):
         context = {
             'code':1,
         }
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/link_instagram_m.html', context)
         return render(request, 'secretcrushapp/link_instagram.html', context)
     if request.GET.get('mode') == 'forceLink':
         request.session['mode']='forceLink'
@@ -266,6 +287,8 @@ def authInstagramView(request):
         context = {
             'code': 1,
         }
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/link_instagram_m.html', context)
         return render(request, 'secretcrushapp/link_instagram.html', context)
     code = request.GET.get('code')
     logging.debug("instagram authorization code for user {}:\n {}".format(user, code))
@@ -287,6 +310,8 @@ def authInstagramView(request):
             'code': 2,
             'instagram_username':user_details_response_data['username'],
         }
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/link_instagram_m.html', context)
         return render(request, 'secretcrushapp/link_instagram.html', context)
     user_instagram = InstagramCrush(hidento_userid=user)
     user_instagram.instagram_userid = user_details_response_data['id']
@@ -347,6 +372,8 @@ def addCrushView(request):
         'lowest_priority':error_or_lowestPriority,
         'priorities':[(getPosition(position)) for position in range(1, error_or_lowestPriority+1)]
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/add_crush_m.html', context)
     return render(request, 'secretcrushapp/add_crush.html', context)
 
 def getPosition(position):
@@ -466,6 +493,8 @@ def editCrushView(request, crushUsername):
         'crushUsername': crushUsername,
         'priorities': [(getPosition(position)) for position in range(1, error_or_lowestPriority+1)],
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/edit_crush_m.html', context)
     return render(request, 'secretcrushapp/edit_crush.html', context)
 
 def validateUserInstagramForEdit(user_instagram, crushUsername):
@@ -555,9 +584,13 @@ def deleteCrushView(request, crushUsername):
     return HttpResponseRedirect(reverse('crushList'))
 
 def privacyView(request):
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/privacy_m.html')
     return render(request, 'secretcrushapp/privacy.html')
 
 def termsView(request):
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/terms_m.html')
     return render(request, 'secretcrushapp/terms.html')
 
 def howitworksView(request):
@@ -568,6 +601,8 @@ def howitworksView(request):
 
 def faqView(request):
     faqs = FAQ.objects.filter(is_enabled=True).order_by('-priority_value')
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/faq_m.html', context={'faqs': faqs})
     return render(request, 'secretcrushapp/faq.html', context={'faqs':faqs})
 
 def contactusView(request):
@@ -582,10 +617,14 @@ def contactusView(request):
     context = {
         'form': form,
     }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/contact_form_m.html', context)
     return render(request, 'secretcrushapp/contact_form.html', context)
 
 
 def aboutView(request):
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/about_m.html')
     return render(request, 'secretcrushapp/about.html')
 
 def handler404(request, exception):

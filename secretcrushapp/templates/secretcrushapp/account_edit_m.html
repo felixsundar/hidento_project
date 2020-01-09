@@ -2,68 +2,55 @@
 
 {% block content %}
 
-<center>
-    <div style="padding-left:1rem;padding-right:1rem;margin-top:1rem;margin-bottom:1.5rem">
-        <h2 class="mb-3"><b>Edit Account</b></h2>
-        <!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
-        <form method="post" class="hidento-m-font-size">
-            <table class="mb-3">
-                <tr>
-                    <td class="hidento-table-left-edit">
-                        Username
-                    </td>
-                    <td class="hidento-table-right">
-                        <!--                    {{user.username}}-->
 
-                        <input type="text" name="username"
-                               value="{% if form.username.value %}{{form.username.value}}{% endif %}" maxlength="255"
-                               required id="id_username">
-                      {% if form.username.errors %}
+    <div style="padding-left:1rem;padding-right:1rem;margin-top:1rem;margin-bottom:1.5rem">
+        <center>        <h2 class="mb-3"><b>Edit Account</b></h2></center>
+        <!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
+        <form method="post" style="font-size:1.1rem">
+
+            <div class="hidento-label mb-1">
+                Username
+            </div>
+            <input type="text" name="username"
+                   value="{% if form.username.value %}{{form.username.value}}{% endif %}" maxlength="255"
+                   required id="id_username" class="hidento-input">
+            {% if form.username.errors %}
             {% for error in form.username.errors %}
             <div class="hidento-form-error">{{ error|escape }}</div>
             {% endfor %}
             {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="hidento-table-left-edit">
-                        Full Name
-                    </td>
-                    <td class="hidento-table-right">
-                        <!--                    {{user.fullname}}-->
-                        <input type="text" name="fullname"
-                               value="{% if form.fullname.value %}{{form.fullname.value}}{% endif %}" maxlength="255"
-                               required id="id_fullname">
-                      {% if form.fullname.errors %}
+
+            <div class="hidento-label mt-3 mb-1">
+                Full Name
+            </div>
+            <input type="text" name="fullname"
+                   value="{% if form.fullname.value %}{{form.fullname.value}}{% endif %}" maxlength="255"
+                   required id="id_fullname" class="hidento-input">
+            {% if form.fullname.errors %}
             {% for error in form.fullname.errors %}
             <div class="hidento-form-error">{{ error|escape }}</div>
             {% endfor %}
             {% endif %}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="hidento-table-left-edit">
-                        Email
-                    </td>
-                    <td class="hidento-table-right">
-                        <!--                    {{user.email}}-->
-                        <input type="email" name="email"
-                               value="{% if form.email.value %}{{form.email.value}}{% endif %}"
-                               maxlength="255" required id="id_email">
-                      {% if form.email.errors %}
+
+            <div class="hidento-label mt-3 mb-1">
+                Email
+            </div>
+            <input type="email" name="email"
+                   value="{% if form.email.value %}{{form.email.value}}{% endif %}"
+                   maxlength="255" required id="id_email" class="hidento-input">
+            {% if form.email.errors %}
             {% for error in form.email.errors %}
             <div class="hidento-form-error">{{ error|escape }}</div>
             {% endfor %}
             {% endif %}
-                    </td>
-                </tr>
+            <table class="mb-3 mt-2">
                 <tr>
                     <td class="hidento-table-left-edit">
                         Date of Birth
                     </td>
-                    <td class="hidento-table-right">
+                    <td class="hidento-table-right-edit">
                         <input type="date" name="date_of_birth"
-                               value="{% if form.date_of_birth.value %}{{form.date_of_birth.value}}{% endif %}"
+                               value="{% if form.date_of_birth.value %}{{form.date_of_birth.value|date:'Y-m-d'}}{% endif %}"
                                id="id_date_of_birth">
                     </td>
                 </tr>
@@ -71,7 +58,7 @@
                     <td class="hidento-table-left-edit">
                         Gender
                     </td>
-                    <td class="hidento-table-right">
+                    <td class="hidento-table-right-edit">
                         <!--                    {{user.get_gender_display}}-->
 
                         <select name="gender" required id="id_gender">
@@ -104,38 +91,34 @@
                     <td class="hidento-table-left-edit">
                         Instagram
                     </td>
-                    <td class="hidento-table-right">
+                    <td class="hidento-table-right-edit">
                         {% if instagram_username is None %}
                         <a href="{% url 'linkInstagram' %}"> Link Instagram Account</a>
                         {% else %}
                         <form method="post" action="{% url 'removeInstagram' %}">
                             {% csrf_token %}
-                            <table>
-                                <tr>
-                                    <td>{{ instagram_username }}</td>
-                                    <td class="pl-2"><input type="submit" value="Remove Instagram"
-                                                            class="btn btn-danger btn-sm">
-                                    </td>
-                                </tr>
-                            </table>
+
+                                    <div style="font-size:1.2rem">{{ instagram_username }}</div>
+                                    <div style="text-align:center"><input type="submit" value="Remove Instagram"
+                                                            class="btn btn-sm" style="color:red">
+                                    </div>
+
                         </form>
                         {% endif %}
                     </td>
                 </tr>
             </table>
-            <input type="submit" value="Submit" class="btn btn-primary">
-        </form>
+            <center><input type="submit" value="Submit" class="btn btn-primary" style="font-size:1.1rem">
 
-          <a href="{% url 'account' %}">
-                <button type="button" class="btn btn-primary ml-3">Cancel</button>
-            </a>
-
+        <a href="{% url 'account' %}">
+            <button type="button" class="btn btn-primary ml-3" style="font-size:1.1rem">Cancel</button>
+        </a></center>
+</form>
         <form method="post" action="{% url 'accountDelete' %}">
             {% csrf_token %}
-            <button type="submit" class="btn hidento-link-cell mt-4" style="color:red">Delete My Account</button>
+            <center><button type="submit" class="btn hidento-link-cell mt-4" style="color:red">Delete My Account</button></center>
         </form>
     </div>
-</center>
 
 
 <!--  <h2>Edit Account:</h2><br><br>-->
