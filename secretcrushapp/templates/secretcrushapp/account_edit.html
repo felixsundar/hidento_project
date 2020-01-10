@@ -4,7 +4,7 @@
 
 <center>
     <div style="width:70%;margin-top:2.3rem;margin-bottom:3.5rem">
-        <h2 class="mb-3"><b>Edit Account</b></h2>
+        <h2 class="mb-3 hidento-title-color"><b>Edit Account</b></h2>
         <!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
         <form method="post">
             <table class="mb-3">
@@ -124,12 +124,12 @@
                 </tr>
             </table>
             <input type="submit" value="Submit" class="btn btn-primary">
-        </form>
+
 
           <a href="{% url 'account' %}">
                 <button type="button" class="btn btn-primary ml-3">Cancel</button>
             </a>
-
+        </form>
         <form method="post" action="{% url 'accountDelete' %}">
             {% csrf_token %}
             <button type="submit" class="btn hidento-link-cell mt-4" style="color:red">Delete My Account</button>

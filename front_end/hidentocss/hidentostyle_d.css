@@ -5,7 +5,6 @@
 }
 
 .hidento-content{
-    background-color:#999999;
     min-height: 100%;
     position: relative;
 }
@@ -55,14 +54,13 @@
 }
 
 .hidento-footer-link{
-    color:#aaa;
-    text-decoration:none;
     margin-left:1.5rem;
 }
 
-.hidento-footer-link:hover, .hidento-footer-link:active, .hidento-footer-link:focus, .hidento-footer-link:visited, .hidento-footer-link:link{
-    color:#aaa;
-    text-decoration:none;
+.social-icon{
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    font-size:1.7rem;
 }
 
 .dropdown:hover .dropdown-menu{
@@ -87,11 +85,7 @@
 a, a:hover, a:active, a:focus, a:visited, a:link{
     text-decoration:none;
     border:none;
-
-}
-
-.hidento-crush{
-
+    color:#000099;
 }
 
 .hidento-crush-username{
@@ -140,10 +134,12 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
     word-break: break-all;
 }
 
-.hidento-light-color{
-    color:#777777;
-}
-
 p{
 word-wrap: break-word;
+}
+
+.btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
+    background-color:#000099 !important;
+    color:#ffffff !important;
+    border:none;
 }

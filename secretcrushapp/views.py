@@ -157,7 +157,6 @@ def signupView(request):
 
 @login_required
 def accountView(request):
-    printcurrentthreads()
     context = {
         'user':request.user,
         'instagram_username':getInstagramUsername(request.user)

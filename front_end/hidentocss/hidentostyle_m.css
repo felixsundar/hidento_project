@@ -48,6 +48,12 @@
     margin-left:-35%;
 }
 
+.social-icon{
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    font-size:1.7rem;
+}
+
 .hidento-form-error{
     text-align:left;
     color:red;
@@ -58,9 +64,9 @@
     font-size:1.1rem;
 }
 
-.btn-primary{
+.btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
     font-size:1.1rem;
-/*    background-color:pink;*/
+    background-color:#000099 !important;
     border:none;
 }
 
@@ -123,8 +129,10 @@ word-break: break-all;
     width:100%;
 }
 
-.hidento-light-color{
-    color:#777777;
+a, a:hover, a:active, a:focus, a:visited, a:link{
+    text-decoration:none;
+    border:none;
+    color:#000099;
 }
 
 p{

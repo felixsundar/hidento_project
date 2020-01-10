@@ -90,6 +90,7 @@ class Controls(models.Model):
     stablizer_thread = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Start Stablizer thread')], default=1)
     stablizer_thread_status = models.IntegerField(choices=[(1, 'Stablizer thread running'), (2, 'Stablizer thread not running'),
                                                            (3, 'Check stablizer thread')], default=2)
+    number_of_threads = models.IntegerField(default=0)
     total_matches = models.BigIntegerField(default=0)
     total_stable_matches = models.BigIntegerField(default=0)
     total_unstable_matches = models.BigIntegerField(default=0)
@@ -128,6 +129,7 @@ class Controls(models.Model):
             self.total_female_users = HidentoUser.objects.filter(gender=2).count()
             self.total_other_gender_users = HidentoUser.objects.filter(gender=3).count()
             self.count_updated_time = now()
+            self.number_of_threads = len(threading.enumerate())
         self.count_users_and_matches = 1
         super().save(*args, **kwargs)
 
