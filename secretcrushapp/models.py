@@ -18,15 +18,15 @@ from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 class HidentoUserManager(BaseUserManager):
-    def create_user(self, username, email, firstname, lastname, gender, password):
-        if not (username and email and firstname and lastname and gender):
-            raise ValueError('Users must have a username, an email address, a firstname and a lastname')
+    def create_user(self, username, email, firstname, fullname, gender, password):
+        if not (username and email and firstname and fullname and gender):
+            raise ValueError('Users must have a username, an email address, a firstname and a fullname')
 
         user = self.model(
             username = username,
             email=self.normalize_email(email),
             firstname = firstname,
-            lastname = lastname,
+            fullname = fullname,
             gender = gender
         )
 
@@ -34,8 +34,8 @@ class HidentoUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, firstname, lastname, gender, password):
-        user = self.create_user(username, email, firstname, lastname, gender, password)
+    def create_superuser(self, username, email, firstname, fullname, gender, password):
+        user = self.create_user(username, email, firstname, fullname, gender, password)
         #is_staff is the field name which django will check to provide access to admin site. even for superusers.
         #it provides only access to admin site. if the user didn't have other permissions, admin site will be
         #accessible but it will be empty
@@ -48,18 +48,18 @@ class HidentoUserManager(BaseUserManager):
 class HidentoUser(AbstractBaseUser, PermissionsMixin):
     userid = models.BigAutoField(primary_key=True, unique=True)
     username = models.CharField(max_length=255, unique=True, blank=False, null=False)
-    email = models.EmailField(verbose_name='email address', max_length=255, unique=True, blank=False, null=False)
+    email = models.EmailField(verbose_name='Email', max_length=255, unique=True, blank=False, null=False)
     firstname = models.CharField(max_length=255)
-    lastname = models.CharField(max_length=255)
-    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')])
-    date_of_birth = models.DateField(blank=True, null=True)
+    fullname = models.CharField(verbose_name='Full Name', max_length=255)
+    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Other')])
+    date_of_birth = models.DateField(verbose_name='Date of Birth', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(verbose_name='active', default=True)
     joined_time = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'firstname', 'lastname', 'gender']
+    REQUIRED_FIELDS = ['email', 'firstname', 'fullname', 'gender']
 
     objects = HidentoUserManager()
 
@@ -72,6 +72,7 @@ def hidentoUserPreSave(sender, **kwargs):
     if hidentoUser.is_superuser or hidentoUser.is_staff:
         if hidentoUser.username != 'admin':
             raise Exception('Users cannot be upgraded to admins')
+    hidentoUser.firstname = hidentoUser.fullname.split(' ')[0].capitalize()
 
 @receiver(post_save, sender=HidentoUser, dispatch_uid='hidentoUserPostSave')
 def hidentoUserPostSave(sender, **kwargs):
@@ -89,6 +90,7 @@ class Controls(models.Model):
     stablizer_thread = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Start Stablizer thread')], default=1)
     stablizer_thread_status = models.IntegerField(choices=[(1, 'Stablizer thread running'), (2, 'Stablizer thread not running'),
                                                            (3, 'Check stablizer thread')], default=2)
+    number_of_threads = models.IntegerField(default=0)
     total_matches = models.BigIntegerField(default=0)
     total_stable_matches = models.BigIntegerField(default=0)
     total_unstable_matches = models.BigIntegerField(default=0)
@@ -127,6 +129,7 @@ class Controls(models.Model):
             self.total_female_users = HidentoUser.objects.filter(gender=2).count()
             self.total_other_gender_users = HidentoUser.objects.filter(gender=3).count()
             self.count_updated_time = now()
+            self.number_of_threads = len(threading.enumerate())
         self.count_users_and_matches = 1
         super().save(*args, **kwargs)
 

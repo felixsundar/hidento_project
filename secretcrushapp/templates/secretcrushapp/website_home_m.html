@@ -1,0 +1,61 @@
+{% extends 'secretcrushapp/base_m.html' %}
+{% block content %}
+
+<center>
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;">
+        <div class="mb-3">
+            <p>Discover your secret crush. Your first date could be on this valentine's day.<br>
+                First matching results on February 11, 2020.</p>
+            <a href="{% url 'howitworks' %}" class="btn btn-light" style="font-size:1.1rem">See How It Works</a>
+            <br><br><br><br>-->
+            <br><br><br><br><br><br><br><br>
+
+            <br><br><br><br><br><br><br><br>
+
+            endsvsr
+        </div>
+
+        <div class="mb-5">
+            <!--{% if messages %}-->
+            <!--  <ul class="messages">-->
+            <!--    {% for message in messages %}-->
+            <!--      <li class="{{ message.tags }}">{{ message }}</li>-->
+            <!--    {% endfor %}-->
+            <!--  </ul>-->
+            <!--{% endif %}-->
+
+
+            <form method="post" action="{% url 'signup' %}" class="hidento-m-font-size">
+
+                {% csrf_token %}
+                <!--<table>-->
+                <!--<tr>-->
+                <!--    <td>{{ form.username.label_tag }}</td>-->
+                <!--    {{ form.username }}-->
+                <input type="text" class="form-control mb-3" style="font-size:1.1rem" placeholder="Email" name="email" required
+                       id="id_email">
+                <input type="text" class="form-control mb-3" style="font-size:1.1rem" placeholder="Full Name" name="fullname" required
+                       id="id_fullname">
+
+                <!--</tr>-->
+                <!--<tr>-->
+                <!--    <td>{{ form.password.label_tag }}</td>-->
+                <!--    {{ form.password }}-->
+                <input type="password" class="form-control mb-3" style="font-size:1.1rem" placeholder="New Password" name="password" required
+                       id="id_password">
+                <input type="radio" name="gender" value="1" required id="gender_male">&nbsp;<label for="gender_male">Male</label>
+                <input type="radio" class="ml-3" name="gender" value="2" required id="gender_female">&nbsp;<label
+                    for="gender_female">Female</label>
+                <input type="radio" class="ml-3" name="gender" value="3" required id="gender_other">&nbsp;<label
+                    for="gender_other">Other</label>
+                <!--</tr>-->
+                <!--</table>--><br>
+
+                <input type="submit" class="btn btn-block btn-primary mt-3 mb-3" value="Sign Up">
+
+            Have an account already? <a href="{% url 'login' %}"> Log In </a><br>
+            </form>
+        </div>
+    </div>
+</center>
+{% endblock %}

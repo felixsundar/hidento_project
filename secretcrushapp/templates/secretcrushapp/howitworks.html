@@ -1,15 +1,16 @@
-
-{% extends 'secretcrushapp/base_with_user.html' %}
+{% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-<h1>How It Works</h1>
+<center>
+    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
 
-<p>Hidento is a secret crush website which matches two users if they have crush on each other.</p>
-
+        <h2 class="mb-4"><b>How It Works</b></h2>
+<dl style="text-align:left">
 {% for howitworks in howitworkspoints %}
-    <h2>{{ howitworks.heading |safe}}</h2>
-    <p>{{ howitworks.explanation |safe}}</p>
-    <br>
+    <dt class="mb-2">{{ howitworks.heading |safe}}</dt>
+    <dd class="mb-4">{{howitworks.explanation |safe}}</dd>
 {% endfor %}
-
+</dl>
+        </div>
+</center>
 {% endblock %}

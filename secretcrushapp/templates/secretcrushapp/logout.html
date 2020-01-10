@@ -1,6 +1,11 @@
-{% extends 'secretcrushapp/base_with_user.html' %}
+{% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-You have successfully logged out.<br>
-<a href="{% url 'login' %}"> Login Again </a>
+<center>
+    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
+
+        <p>You have successfully logged out.</p>
+<a class="btn btn-primary" href="{% url 'login' %}"> Login Again </a>
+    </div>
+</center>
 {% endblock %}

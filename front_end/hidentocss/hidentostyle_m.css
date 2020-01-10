@@ -1,0 +1,140 @@
+
+.nav-link:active, .hidento-dropdown:active{
+    background-color:#ddd;
+    border-radius:5px;
+}
+
+.hidento-content{
+    min-height: 100%;
+    padding-top: 5.2rem;
+    padding-bottom: 2.8rem;
+    position:relative;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+}
+
+.hidento-main-content{
+    padding-top: 5.1rem;
+    padding-bottom: 2.8rem;
+    min-height:100vh;
+}
+
+.hidento-home-center{
+    width:60%;
+    left:50%;
+    margin-left:-30%;
+    position:relative;
+    margin-top: 50%;
+  /* -webkit-transform: translateY(-50%);
+/*  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);*/
+}
+
+.hidento-footer{
+    bottom:0;
+    position:absolute;
+    width:100%;
+    height:2.5rem;
+}
+
+.mobile-footer {
+    display: flex;
+    justify-content: center;
+    width:70%;
+    bottom:0;
+    position:absolute;
+    right:25%;
+    left:50%;
+    margin-left:-35%;
+}
+
+.social-icon{
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    font-size:1.7rem;
+}
+
+.hidento-form-error{
+    text-align:left;
+    color:red;
+    font-size:0.9rem;
+}
+
+.hidento-m-font-size{             /* font-size should be added inside style for form inputs */
+    font-size:1.1rem;
+}
+
+.btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
+    font-size:1.1rem;
+    background-color:#000099 !important;
+    border:none;
+}
+
+.hidento-login-error{
+    color:red;
+    font-size:1rem;
+}
+
+.hidento-link-cell{
+    background-color:transparent;
+}
+
+.hidento-label{
+    font-weight:bold;
+    font-size: 1rem;
+    text-align:left;
+}
+
+.hidento-table-left{
+    text-align:right;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    padding-right:1rem;
+    font-weight:bold;
+    width:35%;
+}
+
+.hidento-table-left-edit{
+    font-size:1rem;
+    text-align:left;
+    padding-top:1rem;
+    padding-bottom:1rem;
+    padding-right:1rem;
+    font-weight:bold;
+
+}
+
+.hidento-table-right{
+    text-align:left;
+    padding-left:1rem;
+max-width: 50%;
+word-wrap: break-word;
+word-break: break-all;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    width:50%;
+}
+
+.hidento-table-right-edit{
+    text-align:left;
+    padding-left:1rem;
+    padding-top:0.5rem;
+    padding-bottom:0.5rem;
+    /*max-width: 50%;*/
+word-wrap: break-word;
+word-break: break-all;
+}
+
+.hidento-input{
+    width:100%;
+}
+
+a, a:hover, a:active, a:focus, a:visited, a:link{
+    text-decoration:none;
+    border:none;
+    color:#000099;
+}
+
+p{
+word-wrap: break-word;
+}

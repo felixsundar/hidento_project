@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Hidento</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostyle_d.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostyle.css' %}"/>
+</head>
+<body class="hidento-background">
+
+<nav class="navbar navbar-expand-md fixed-top navbar-light bg-white p-0">
+    <!--    .navbar{-->
+    <!--    border-bottom:1px solid #ddd;-->
+    <!--}-->
+    <span class="col-sm-1"></span>
+    <div class="col-sm-10 nav p-0">
+        <!-- Brand -->
+        <a class="navbar-brand font-weight-bold hidento-heading-color pt-0 pl-3" href="{% url 'index' %}">Hidento</a>
+        <!-- Toggler/collapsibe Button -->
+        <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+            <!-- Links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1"
+                       href="{% url 'howitworks' %}">How It Works</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1"
+                       href="{% url 'faq' %}">FAQ</a>
+                </li>
+                {% if request.user.is_authenticated %}
+                <!-- Dropdown -->
+                <li class="nav-item dropdown" id="hidento-nav-dropdown">
+                    <div class="hidento-dropdown">
+                        <a class="nav-link dropdown-toggle hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1"
+                           href="#"
+                           data-toggle="dropdown" id="hidento1">
+                            {{ request.user.firstname }}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" id="hidento-nav-dropmenu">
+                            <a class="dropdown-item hidento-heading-color2" href="{% url 'account' %}">My Account</a>
+                            <a class="dropdown-item hidento-heading-color2" href="{% url 'changePassword' %}">Change Password</a>
+                            <a class="dropdown-item hidento-heading-color2" href="{% url 'logout' %}">Log Out</a>
+                        </div>
+                    </div>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link hidento-heading-color hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1"
+                       href="{% url 'login' %}">Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-primary hidento-heading-font pt-1 pb-1 pl-3 pr-3 mt-2 mb-1 ml-3"
+                       href="{% url 'signup' %}">Sign Up</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <span class="col-sm-1"></span>
+</nav>
+
+<!--navbar above container-->
+
+<div class="container-fluid hidento-content">
+    <div class="row hidento-main-content">
+        <div class="col-sm-2">
+            <div style="position:fixed"></div>
+        </div>
+        <div class="col-sm-8">
+            {% block content %}
+            {% endblock %}
+<!--            <br><br><br><br><br><br><br><br>-->
+<!--            <br><br><br><br><br><br><br><br>-->
+<!--            <br><br><br><br><br><br><br><br>-->
+
+<!--            <br><br><br><br><br><br><br><br>-->
+<!--            endsvsr-->
+        </div>
+
+        <div class="col-sm-2">
+            <div style="position:fixed"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="row hidento-footer" style="display:inline-block">
+        <div class="hidento-footer-left">
+            <span class="hidento-light-color">Follow Us</span>
+            <a href="" target="_blank" class="social-icon hidento-fb-color"><i class="fa fa-facebook"></i></a>
+            <a href="" target="_blank" class="social-icon hidento-insta-color"><i class="fa fa-instagram"></i></a>
+            <a href="" target="_blank" class="social-icon hidento-twitter-color"><i class="fa fa-twitter"></i></a>
+        </div>
+        <div class="hidento-footer-right">
+            <a href="{% url 'about' %}" target="_blank" class="hidento-footer-link hidento-light-color">About</a>
+            <a href="{% url 'privacy' %}" target="_blank" class="hidento-footer-link hidento-light-color">Privacy</a>
+            <a href="{% url 'terms' %}" target="_blank" class="hidento-footer-link hidento-light-color">Terms</a>
+            <a href="{% url 'contactUs' %}" target="_blank" class="hidento-footer-link hidento-light-color">Contact</a>
+        </div>
+    </div>
+</div>
+
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"
+        crossorigin="anonymous"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="{% static 'hidentojs/hidentoscript.js' %}"></script>
+</body>
+</html>

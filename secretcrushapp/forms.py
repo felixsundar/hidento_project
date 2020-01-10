@@ -10,7 +10,13 @@ class SignUpForm(ModelForm):
 
     class Meta:
         model = get_user_model()
-        fields = ('firstname', 'lastname', 'email', 'gender')
+        fields = ('fullname', 'email', 'gender')
+
+    def clean_fullname(self):
+        user_fullname = self.cleaned_data['fullname']
+        if not alphaspace(user_fullname):
+            raise forms.ValidationError('Name can contain only alphabets and spaces.')
+        return user_fullname
 
     def _post_clean(self):
         super()._post_clean()
@@ -25,13 +31,16 @@ class SignUpForm(ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data["password"])
-        user.username = generateUsername(self.cleaned_data['firstname'], self.cleaned_data['lastname'])
+        user.username = generateUsername(self.cleaned_data['fullname'])
         if commit:
             user.save()
         return user
 
-def generateUsername(firstname, lastname):
-    username = firstname.lower() + '_' + lastname.lower()
+def alphaspace(fullname):
+    return all(letter.isalpha() or letter.isspace() for letter in fullname)
+
+def generateUsername(fullname):
+    username = fullname.lower().replace(' ', '_')
     number = 0
     newUsername = username
     try:
@@ -42,13 +51,22 @@ def generateUsername(firstname, lastname):
     except:
         return newUsername
 
+def getFirstname(fullname):
+    return fullname.split(' ')[0].capitalize()
+
 class HidentoUserChangeFormForUsers(ModelForm):
     class Meta:
         model = HidentoUser
-        fields = ('firstname', 'lastname', 'username', 'email', 'date_of_birth', 'gender')
+        fields = ('fullname', 'username', 'email', 'date_of_birth', 'gender')
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'})
         }
+
+    def clean_fullname(self):
+        user_fullname = self.cleaned_data['fullname']
+        if not alphaspace(user_fullname):
+            raise forms.ValidationError('Name can contain only alphabets and spaces.')
+        return user_fullname
 
 class AddCrushForm(Form):
     def __init__(self, lowest_priority, *args, **kwargs):
@@ -56,11 +74,11 @@ class AddCrushForm(Form):
         self.fields['priorityPosition'] = forms.ChoiceField(
             choices=[(self.getPosition(position)) for position in range(1, lowest_priority+1)],
             label='Priority Position',
-            initial=lowest_priority
+            initial=str(lowest_priority)
         )
 
     def getPosition(self, position):
-        return (position, str(position)+' - Highest' if position == 1 else str(position))
+        return (str(position), str(position)+' - Highest' if position == 1 else str(position))
 
     crushUsername = forms.CharField(label='Instagram Username of your crush', max_length=255, required=True)
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
@@ -75,7 +93,7 @@ class AddCrushForm(Form):
     def clean_crushUsername(self):
         crush_instagram_username = self.cleaned_data['crushUsername']
         if ' ' in crush_instagram_username:
-            raise forms.ValidationError('Instagram usernames cannot contain space')
+            raise forms.ValidationError('Instagram usernames cannot contain space.')
         return crush_instagram_username
 
 class EditCrushForm(Form):
@@ -87,7 +105,7 @@ class EditCrushForm(Form):
         )
 
     def getPosition(self, position):
-        return (position, str(position)+' - Highest' if position == 1 else str(position))
+        return (str(position), str(position)+' - Highest' if position == 1 else str(position))
 
     crushNickname = forms.CharField(label='Nickname for your crush', max_length=255, required=False)
     crushMessage = forms.CharField(label='Your Message', max_length=3000, required=False, widget=forms.Textarea)
@@ -96,7 +114,7 @@ class EditCrushForm(Form):
         choices=[(1, 'Choose at random'), (2, 'Inform my crush')],
         widget=forms.RadioSelect
     )
-    active = forms.BooleanField(label='Active Status')
+    active = forms.BooleanField(label='Active Status', required=False)
 
 class ContactForm(ModelForm):
     class Meta:

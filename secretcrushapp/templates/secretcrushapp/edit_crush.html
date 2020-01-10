@@ -1,27 +1,96 @@
-{% extends 'secretcrushapp/base_with_user.html' %}
+{% extends 'secretcrushapp/base_d.html' %}
 
 {% block content %}
-  <h2>Edit Secret Crush</h2><br><br>
-<p>Crush Instagram Username: &nbsp {{crushUsername}}</p>
-{% if error is not None%}
-  <p>{{error.message}}</p><br>
-  {% if error.code == 1 %}
-    <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
-  {% elif error.code == 2 %}
-    <a href="{% url 'addCrush' %}"> Add Secret Crush </a>
-  {% elif error.code == 3 %}
-    <a href="{% url 'index' %}"> Go to Crushlist </a>
-  {% endif %}
-{% else %}
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Changes</button>
-  </form>
-  <a href="{% url 'index' %}"><button>Cancel</button></a>
-  <form method="post" action="{% url 'deleteCrush' crushUsername %}">
-    {% csrf_token %}
-    <button type="submit">Delete Crush</button>
-  </form>
-{% endif %}
+<center>
+    <div style="width:70%;margin-top:2.3rem;margin-bottom:3.5rem">
+        <h2 class="mb-3"><b>Edit Crush</b></h2>
+        {% if error is not None%}
+        <p>{{error.message}}</p>
+        {% if error.code == 1 %}
+        <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
+        {% elif error.code == 2 %}
+        <a href="{% url 'addCrush' %}"> Add Secret Crush </a>
+        {% elif error.code == 3 %}
+        <a href="{% url 'index' %}"> Go to Crushlist </a>
+        {% endif %}
+        {% else %}
+        <form method="post">
+            {% csrf_token %}
+<!--                {{ form.as_p }}-->
+            <!--    button should be disabled after clicking-->
+          <div class="hidento-label mb-1" style="text-align:left">Instagram Username of your crush</div>
+            <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
+                   maxlength="255" required id="id_crushUsername"
+                   value="{{crushUsername}}" disabled>
+
+          <div class="hidento-label mt-3 mb-1" style="text-align:left">Nickname for your crush</div>
+          <input type="text" class="form-control"
+                   placeholder="You haven't added a nickname" name="crushNickname"
+                   maxlength="255" id="id_crushNickname"
+                   value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
+
+
+          <div class="hidento-label mt-3 mb-1" style="text-align:left">Message for your crush</div>
+            <textarea class="form-control" placeholder="You haven't added any message"
+                      name="crushMessage" maxlength="3000"
+                      id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
+
+          <div style="text-align:left" class="mt-3">
+                <label class="hidento-label pr-3">Who should be informed, if matched?</label>
+                {% if form.whomToInform.value == 2 %}
+                <label for="id_whomToInform_0c" class="mr-3"><input type="radio" name="whomToInform" value="1" required
+                                                                    id="id_whomToInform_0c">
+                    Choose at random</label>
+                <label for="id_whomToInform_1c"><input type="radio" name="whomToInform" value="2" required
+                                                       id="id_whomToInform_1c" checked>
+                    Inform my crush</label>
+                {% else %}
+                <label for="id_whomToInform_0" class="mr-3"><input type="radio" name="whomToInform" value="1" required
+                                                                   id="id_whomToInform_0" checked>
+                    Choose at random</label>
+                <label for="id_whomToInform_1"><input type="radio" name="whomToInform" value="2" required
+                                                      id="id_whomToInform_1">
+                    Inform my crush</label>
+                {% endif %}
+            </div>
+            <div style="text-align:left" class="mt-2">
+                <table>
+                    <tr>
+                        <td>
+                            <label for="id_priorityPosition" class="hidento-label pr-3">Priority Position</label></td>
+                        <td><select class="form-control" name="priorityPosition"
+                                    id="id_priorityPosition">
+                            {% for priority, priority_string in priorities %}
+                            {% if priority == form.priorityPosition.value %}
+                            <option value="{{priority}}" selected>{{priority_string}}</option>
+                            {% else %}
+                            <option value="{{priority}}">{{priority_string}}</option>
+                            {% endif %}
+                            {% endfor %}
+
+                        </select></td>
+                        <td class="pl-5 pr-3">
+                            <label class="hidento-label">Active</label>
+                        </td>
+                        <td>{% if form.active.value == True %}
+                            <input name="active" type="checkbox" value="True" checked id="activeSwitchc">
+                          {% else %}
+                                 <input name="active" type="checkbox" value="True" id="activeSwitch">
+                          {%endif%}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br>
+            <input class="btn btn-primary" type="submit" value="Save Changes" style="float:left">
+        </form>
+        <a href="{% url 'crushList' %}"><button type="button" class="btn btn-primary ml-3" style="float:left">Cancel</button></a>
+            <form method="post" action="{% url 'deleteCrush' crushUsername %}">
+                {% csrf_token %}
+                <button style="float:right" class="btn btn-danger" type="submit">Delete Crush</button>
+            </form>
+
+        {% endif %}
+    </div>
+</center>
 {% endblock %}
