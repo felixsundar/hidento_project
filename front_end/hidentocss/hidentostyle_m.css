@@ -67,6 +67,12 @@
 .btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
     font-size:1.1rem;
     background-color:#000099 !important;
+    color:#ffffff !important;
+    border:none;
+}
+
+.btn-light, btn-light:hover, btn-light:active, btn-light:focus, btn-light:visited, btn-light:link{
+    color:#333333 !important;
     border:none;
 }
 
@@ -91,7 +97,7 @@
     padding-bottom:1rem;
     padding-right:1rem;
     font-weight:bold;
-    width:35%;
+    width:30%;
 }
 
 .hidento-table-left-edit{
