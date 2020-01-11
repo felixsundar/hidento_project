@@ -1,5 +1,5 @@
 
-.nav-link:hover, .hidento-dropdown:hover, .social-icon:hover{
+.nav-link:hover, .hidento-dropdown:hover{
     background-color:#ddd;
     border-radius:5px;
 }
@@ -38,7 +38,7 @@
     margin-top:auto;
     margin-bottom:auto;
     float:left;
-    padding-left:1.5rem;
+    padding-left:8.33%;
     bottom:0;
     position:absolute;
 }
@@ -47,7 +47,7 @@
     margin-top:auto;
     margin-bottom:auto;
     float:right;
-    padding-right:1.5rem;
+    padding-right:8.33%;
     bottom:0;
     right:0;
     position:absolute;
@@ -58,8 +58,6 @@
 }
 
 .social-icon{
-    padding-left:1.5rem;
-    padding-right:1.5rem;
     font-size:1.7rem;
 }
 
@@ -141,5 +139,10 @@ word-wrap: break-word;
 .btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
     background-color:#000099 !important;
     color:#ffffff !important;
+    border:none;
+}
+
+.btn-light, btn-light:hover, btn-light:active, btn-light:focus, btn-light:visited, btn-light:link{
+    color:#333333 !important;
     border:none;
 }
