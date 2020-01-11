@@ -70,7 +70,7 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
 def hidentoUserPreSave(sender, **kwargs):
     hidentoUser = kwargs['instance']
     if hidentoUser.is_superuser or hidentoUser.is_staff:
-        if hidentoUser.username != 'admin':
+        if hidentoUser.username != 'hidentosonlysuperuser':
             raise Exception('Users cannot be upgraded to admins')
     hidentoUser.firstname = hidentoUser.fullname.split(' ')[0].capitalize()
 
@@ -78,7 +78,7 @@ def hidentoUserPreSave(sender, **kwargs):
 def hidentoUserPostSave(sender, **kwargs):
     hidentoUser = kwargs['instance']
     if hidentoUser.is_superuser or hidentoUser.is_staff:
-        if hidentoUser.username != 'admin':
+        if hidentoUser.username != 'hidentosonlysuperuser':
             hidentoUser.is_staff = False
             hidentoUser.is_superuser = False
             hidentoUser.save()
