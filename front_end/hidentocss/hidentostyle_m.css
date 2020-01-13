@@ -73,6 +73,7 @@
 
 .btn-light, btn-light:hover, btn-light:active, btn-light:focus, btn-light:visited, btn-light:link{
     color:#333333 !important;
+    font-size:1.1rem;
     border:none;
 }
 
