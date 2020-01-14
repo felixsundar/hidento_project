@@ -55,7 +55,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com']
+ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com', '13.127.109.102']
 
 
 # Application definition
