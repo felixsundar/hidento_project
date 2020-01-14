@@ -273,7 +273,7 @@ def constructInstagramApiUrl():
     queryParams = urlencode({
         'app_id': settings.INSTAGRAM_APP_ID,
         'redirect_uri': settings.INSTAGRAM_AUTHORIZE_REDIRECT_URL,
-        'scope': 'user_profile,user_media',
+        'scope': 'user_profile',
         'response_type': 'code'
     })
     return settings.INSTAGRAM_AUTHORIZE_URL + '?' + queryParams
@@ -355,7 +355,7 @@ def removeInstagramView(request):
     user_instagram = request.user.instagramDetails.first()
     if user_instagram is not None:
         user_instagram.delete()
-        messages.success(request, 'Your Instagram has been removed successfully and your crush list is cleared.')
+        messages.success(request, 'Your Instagram has been removed successfully and your crush list has been cleared.')
     return HttpResponseRedirect(reverse('crushList'))
 
 @login_required
