@@ -338,6 +338,16 @@ def getInstagramUserDetails(user_id, access_token):
     return requests.get(url=url, params=params)
 
 @login_required
+def removeInstagramConfirmview(request):
+    user_instagram = request.user.instagramDetails.first()
+    context = {
+        'user_instagram':user_instagram,
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/removeInstagramConfirm_m.html', context=context)
+    return render(request, 'secretcrushapp/removeInstagramConfirm.html', context=context)
+
+@login_required
 @transaction.atomic
 def removeInstagramView(request):
     if request.method != 'POST':
