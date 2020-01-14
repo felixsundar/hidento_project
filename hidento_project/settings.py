@@ -53,7 +53,7 @@ except FileNotFoundError as error:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com']
 
