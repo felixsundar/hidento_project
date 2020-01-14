@@ -45,7 +45,10 @@
 <!--</tr>-->
 <!--</table>-->
 
-<input type="submit" class="btn btn-block btn-primary mt-2 mb-3" value="Sign Up">
+<input type="submit" class="btn btn-block btn-primary mt-2 mb-2" value="Sign Up">
+    <p class="hidento-light-color" style="font-size:0.9rem">By signing up, you agree to our
+        <a class="hidento-light-color" target="_blank" href="{% url 'terms' %}"><b>Terms of Service</b></a> and
+        <a class="hidento-light-color" target="_blank" href="{% url 'privacy' %}"><b>Privacy Policy</b></a>.</p>
 </form>
 
 Have an account already? <a href="{% url 'login' %}"> Log In </a><br>
