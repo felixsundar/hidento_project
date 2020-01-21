@@ -366,6 +366,7 @@ def getInstagramLongLivedToken(access_token, user):
         }
         long_lived_token_response = requests.get(url=settings.INSTAGRAM_LONG_LIVED_TOKEN_URL, params=params)
         long_lived_token_response_data = long_lived_token_response.json()
+        logging.debug("response from instagram\n {}".format(long_lived_token_response_data))
         user_instagram_details = InstagramDetails(hidento_userid=user)
         user_instagram_details.ll_access_token = long_lived_token_response_data['access_token']
         user_instagram_details.expires_in = long_lived_token_response_data['expires_in']
@@ -375,6 +376,7 @@ def getInstagramLongLivedToken(access_token, user):
     except Exception as e:
         logging.debug("exception occured while getting long lived token from instagram for user {}".format(user))
         logging.debug(str(e))
+
 
 
 def checkInstagramUsername(request, instagramUsername):
