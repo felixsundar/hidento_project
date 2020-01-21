@@ -112,12 +112,12 @@
                 <button type="button" class="btn btn-primary ml-3" style="font-size:1.1rem">Cancel</button>
             </a></center>
     </form>
-    <form method="post" action="{% url 'accountDelete' %}">
-        {% csrf_token %}
         <center>
+            <a href="{% url 'accountDelete' %}">
             <button type="submit" class="btn hidento-link-cell hidento-light-color mt-4">Delete My Account</button>
+            </a>
         </center>
-    </form>
+
 </div>
 
 

@@ -247,6 +247,12 @@ def userInstagramPostDelete(sender, **kwargs):
                                                args=(loser.hidento_userid,))
             matching_thread.start()
 
+class InstagramDetails(models.Model):
+    hidento_userid = models.ForeignKey(HidentoUser, related_name='user_instagramDetails', on_delete=models.CASCADE, primary_key=True)
+    ll_access_token = models.CharField(max_length=1000, null=False)
+    expires_in = models.BigIntegerField(null=False)
+    token_time = models.DateTimeField(null=False)
+
 class ContactHidento(models.Model):
     fullname = models.CharField(max_length=255, null=False)
     email = models.EmailField(max_length=255, null=False)
