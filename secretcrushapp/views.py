@@ -360,7 +360,7 @@ def authInstagramView(request):
 def getInstagramLongLivedToken(access_token, user):
     try:
         params = {
-            'app_secret': settings.INSTAGRAM_APP_SECRET,
+            'client_secret': settings.INSTAGRAM_APP_SECRET,
             'grant_type': 'ig_exchange_token',
             'access_token': access_token
         }
@@ -372,10 +372,8 @@ def getInstagramLongLivedToken(access_token, user):
         user_instagram_details.expires_in = long_lived_token_response_data['expires_in']
         user_instagram_details.token_time = now()
         user_instagram_details.save()
-        logging.debug("long lived token from instagram for user {}:\n {}".format(user, long_lived_token_response_data['access_token']))
     except Exception as e:
         logging.debug("exception occured while getting long lived token from instagram for user {}".format(user))
-        logging.debug(str(e))
 
 
 
