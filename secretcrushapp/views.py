@@ -372,8 +372,9 @@ def getInstagramLongLivedToken(access_token, user):
         user_instagram_details.token_time = now()
         user_instagram_details.save()
         logging.debug("long lived token from instagram for user {}:\n {}".format(user, long_lived_token_response_data['access_token']))
-    except:
+    except Exception as e:
         logging.debug("exception occured while getting long lived token from instagram for user {}".format(user))
+        logging.debug(e)
 
 
 def checkInstagramUsername(request, instagramUsername):
