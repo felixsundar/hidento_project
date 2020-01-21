@@ -17,7 +17,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails
 from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm
 
 from hidento_project import settings
@@ -216,11 +216,15 @@ def accountEditView(request):
 @login_required
 @transaction.atomic
 def accountDeleteView(request):
-    if request.method != 'POST':
-        raise PermissionDenied
-    request.user.delete()
-    messages.success(request, 'Your account has been removed')
-    return HttpResponseRedirect(reverse('index'))
+    if request.method == 'POST':
+        request.user.delete()
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/account_deleted_m.html')
+        return render(request, 'secretcrushapp/account_deleted.html')
+    else:
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/account_delete_m.html')
+        return render(request, 'secretcrushapp/account_delete.html')
 
 
 @login_required
@@ -345,11 +349,31 @@ def authInstagramView(request):
         user_instagram.instagram_userid = user_details_response_data['id']
         user_instagram.instagram_username = user_details_response_data['username']
         user_instagram.save()
+        getInstagramLongLivedToken(token_response_data['access_token'], user)
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
     except:
         messages.warning(request, 'Instagram account not linked.')
         return HttpResponseRedirect(reverse('crushList'))
+
+
+def getInstagramLongLivedToken(access_token, user):
+    try:
+        params = {
+            'app_secret': settings.INSTAGRAM_APP_SECRET,
+            'grant_type': 'ig_exchange_token',
+            'access_token': access_token
+        }
+        long_lived_token_response = requests.get(url=settings.INSTAGRAM_LONG_LIVED_TOKEN_URL, params=params)
+        long_lived_token_response_data = long_lived_token_response.json()
+        user_instagram_details = InstagramDetails(hidento_userid=user)
+        user_instagram_details.ll_access_token = long_lived_token_response_data['access_token']
+        user_instagram_details.expires_in = long_lived_token_response_data['expires_in']
+        user_instagram_details.token_time = now()
+        user_instagram_details.save()
+        logging.debug("long lived token from instagram for user {}:\n {}".format(user, long_lived_token_response_data['access_token']))
+    except:
+        logging.debug("exception occured while getting long lived token from instagram for user {}".format(user))
 
 
 def checkInstagramUsername(request, instagramUsername):

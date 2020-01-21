@@ -121,7 +121,7 @@ INSTAGRAM_AUTHORIZE_URL = 'https://api.instagram.com/oauth/authorize'
 INSTAGRAM_AUTHORIZE_REDIRECT_URL = 'https://www.hidento.com/account/instagram/auth/'
 INSTAGRAM_TOKEN_URL = 'https://api.instagram.com/oauth/access_token'
 INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
-
+INSTAGRAM_LONG_LIVED_TOKEN_URL = 'https://graph.instagram.com/access_token'
 
 #Logging settings
 LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
