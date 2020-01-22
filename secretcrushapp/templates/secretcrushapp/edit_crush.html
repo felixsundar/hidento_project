@@ -85,9 +85,9 @@
             <input class="btn btn-primary" type="submit" value="Save Changes" style="float:left">
         </form>
         <a href="{% url 'crushList' %}"><button type="button" class="btn btn-primary ml-3" style="float:left">Cancel</button></a>
-            <form method="post" action="{% url 'deleteCrush' crushUsername %}">
+            <form id="edit_crush_deleteForm" method="post" action="{% url 'deleteCrush' crushUsername %}">
                 {% csrf_token %}
-                <button style="float:right" class="btn btn-danger" type="submit">Delete Crush</button>
+                <button id="edit_crush_deleteButton" style="float:right" class="btn btn-danger" type="submit">Delete Crush</button>
             </form>
 
         {% endif %}

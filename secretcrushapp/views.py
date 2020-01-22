@@ -23,13 +23,13 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddC
 from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
-INSTAGRAM_NOT_LINKED = 'Instagram account not linked. Link Instagram account to add secret crush'
-CRUSH_LIST_FULL = 'You already have 5 secret crushes. Remove one of them to add a new crush'
-CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty'
-CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list'
-CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list. Select one from your crush list'
-PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist'
-CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as a crush'
+INSTAGRAM_NOT_LINKED = 'Instagram account not linked. Link Instagram account to add secret crush.'
+CRUSH_LIST_FULL = 'You already have 5 secret crushes. Remove one of them to add a new crush.'
+CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty.'
+CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list.'
+CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list. Select one from your crush list.'
+PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist.'
+CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as a crush.'
 
 
 class HidentoUserBackend(ModelBackend):
@@ -186,13 +186,6 @@ def getInstagramUsername(user):
     return None
 
 
-def printcurrentthreads():
-    tlist = threading.enumerate()
-    logging.debug('Currently alive thread list:')
-    for t in tlist:
-        logging.debug('thread name - {}'.format(t.name))
-
-
 @login_required
 @transaction.atomic
 def accountEditView(request):
@@ -346,18 +339,21 @@ def authInstagramView(request):
                 return render(request, 'secretcrushapp/link_instagram_m.html', context)
             return render(request, 'secretcrushapp/link_instagram.html', context)
         user_instagram = InstagramCrush(hidento_userid=user)
-        user_instagram.instagram_userid = user_details_response_data['id']
         user_instagram.instagram_username = user_details_response_data['username']
         user_instagram.save()
-        getInstagramLongLivedToken(token_response_data['access_token'], user)
+        user_instagram_details = InstagramDetails(hidento_userid=user)
+        user_instagram_details.instagram_userid = user_details_response_data['id']
+        user_instagram_details.instagram_username = user_details_response_data['username']
+        getInstagramLongLivedToken(token_response_data['access_token'], user_instagram_details)
+        user_instagram_details.save()
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
     except:
-        messages.warning(request, 'Instagram account not linked.')
+        messages.warning(request, 'Linking Instagram account failed.')
         return HttpResponseRedirect(reverse('crushList'))
 
 
-def getInstagramLongLivedToken(access_token, user):
+def getInstagramLongLivedToken(access_token, user_instagram_details):
     try:
         params = {
             'client_secret': settings.INSTAGRAM_APP_SECRET,
@@ -366,27 +362,41 @@ def getInstagramLongLivedToken(access_token, user):
         }
         long_lived_token_response = requests.get(url=settings.INSTAGRAM_LONG_LIVED_TOKEN_URL, params=params)
         long_lived_token_response_data = long_lived_token_response.json()
-        logging.debug("response from instagram\n {}".format(long_lived_token_response_data))
-        user_instagram_details = InstagramDetails(hidento_userid=user)
         user_instagram_details.ll_access_token = long_lived_token_response_data['access_token']
         user_instagram_details.expires_in = long_lived_token_response_data['expires_in']
         user_instagram_details.token_time = now()
-        user_instagram_details.save()
     except Exception as e:
-        logging.debug("exception occured while getting long lived token from instagram for user {}".format(user))
-
+        logging.debug("ll token exception. username - {}\n exception - {}".format(user_instagram_details.instagram_username, str(e)))
 
 
 def checkInstagramUsername(request, instagramUsername):
-    try:
-        user_instagram = InstagramCrush.objects.get(instagram_username=instagramUsername)
-    except InstagramCrush.DoesNotExist:
+    user_instagram = checkUsernameInInstagramCrush(instagramUsername)
+    user_instagramDetails = checkUsernameInInstagramDetails(instagramUsername)
+    if user_instagram is None and user_instagramDetails is None:
         return False
-    if request.session.pop('mode', None) == 'forceLink':
+    if user_instagram is not None and user_instagramDetails is not None:
+        if request.session.pop('mode', None) == 'forceLink':
+            user_instagram.delete()
+            user_instagramDetails.delete()
+            return False
+        return True
+    if user_instagram is not None:
         user_instagram.delete()
-        return False
-    return True
+    if user_instagramDetails is not None:
+        user_instagramDetails.delete()
+    return False
 
+def checkUsernameInInstagramCrush(instagramUsername):
+    try:
+        return InstagramCrush.objects.get(instagram_username=instagramUsername)
+    except InstagramCrush.DoesNotExist:
+        return None
+
+def checkUsernameInInstagramDetails(instagramUsername):
+    try:
+        return InstagramDetails.objects.get(instagram_username=instagramUsername)
+    except InstagramDetails.DoesNotExist:
+        return None
 
 def getInstagramUserDetails(user_id, access_token):
     url = settings.INSTAGRAM_USERNODE_URL + str(user_id)
@@ -414,9 +424,14 @@ def removeInstagramView(request):
     if request.method != 'POST':
         raise PermissionDenied
     user_instagram = request.user.instagramDetails.first()
-    if user_instagram is not None:
+    user_instagramDetails = request.user.user_instagramDetails.first()
+    if user_instagram is None and user_instagramDetails is None:
+        return HttpResponseRedirect(reverse('account'))
+    if user_instagramDetails is not None:
+        user_instagramDetails.delete()
+    elif user_instagram is not None:
         user_instagram.delete()
-        messages.success(request, 'Your Instagram has been removed successfully and your crush list has been cleared.')
+    messages.success(request, 'Your Instagram has been removed successfully and your crush list has been cleared.')
     return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -429,6 +444,8 @@ def addCrushView(request):
         context = {
             'error': error_or_lowestPriority
         }
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/add_crush_m.html', context)
         return render(request, 'secretcrushapp/add_crush.html', context)
 
     if request.method == 'POST':
@@ -566,6 +583,8 @@ def editCrushView(request, crushUsername):
             'error': error_or_lowestPriority,
             'crushUsername': crushUsername,
         }
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/edit_crush_m.html', context)
         return render(request, 'secretcrushapp/edit_crush.html', context)
     data = getCrushData(user_instagram, crushUsername)
     form = EditCrushForm(error_or_lowestPriority, data)
@@ -673,6 +692,8 @@ def deleteCrushView(request, crushUsername):
             'error': error_or_lowestPriority,
             'crushUsername': crushUsername,
         }
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/edit_crush_m.html', context)
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
     messages.success(request, 'Secret crush deleted successfully')

@@ -1,5 +1,9 @@
-//var center_div_height = $("#page-center-div").height();
-//var center_margin_top = center_div_height/2;
-//var mtop_string = "-" + center_margin_top + "px";
-////alert(d);
-//$("#page-center-div").css("margin-top", mtop_string);
+$(function() {
+   $("#edit_crush_deleteButton").click(function(){
+      if (confirm("Deleting the crush will break any stable or unstable match made with this crush.\n\n Are you sure you want to delete?")){
+         $('form#edit_crush_deleteForm').submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});
