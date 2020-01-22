@@ -254,9 +254,9 @@ class InstagramDetails(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='user_instagramDetails', on_delete=models.CASCADE, primary_key=True)
     instagram_userid = models.CharField(max_length=255, unique=True)
     instagram_username = models.CharField(max_length=255, unique=True)
-    ll_access_token = models.CharField(max_length=1000, null=False)
-    token_expires_in = models.BigIntegerField(null=False)
-    token_time = models.DateTimeField(null=False)
+    ll_access_token = models.CharField(max_length=1000, null=True, blank=True)
+    token_expires_in = models.BigIntegerField(null=True, blank=True)
+    token_time = models.DateTimeField(null=True, blank=True)
 
     @classmethod
     def from_db(cls, db, field_names, values):
