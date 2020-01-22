@@ -142,6 +142,14 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
     color:#000099;
 }
 
+.hidento-crush-username{
+    font-size:1.4rem;
+}
+
+.hidento-crush-nickname{
+    font-size:0.9rem;
+}
+
 p{
 word-wrap: break-word;
 }

@@ -71,7 +71,7 @@ def hidentoUserPreSave(sender, **kwargs):
     hidentoUser = kwargs['instance']
     if hidentoUser.is_superuser or hidentoUser.is_staff:
         if hidentoUser.username != 'hidentosonlysuperuser':
-            raise Exception('Users cannot be upgraded to admins')
+            raise Exception('Users cannot be upgraded to admins.')
     hidentoUser.firstname = hidentoUser.fullname.split(' ')[0].capitalize()
 
 @receiver(post_save, sender=HidentoUser, dispatch_uid='hidentoUserPostSave')
@@ -142,7 +142,6 @@ def stablizer_thread_running():
 
 class InstagramCrush(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, primary_key=True)
-    instagram_userid = models.CharField(max_length=255, unique=True)
     instagram_username = models.CharField(max_length=255, unique=True)
     crush1_username = models.CharField(max_length=255, blank=True, null=True)
     crush1_nickname = models.CharField(max_length=255, blank=True, null=True)
@@ -220,8 +219,7 @@ class InstagramCrush(models.Model):
 
     def instagramDetailsModified(self):
         if not self._state.adding:
-            if self.instagram_username != self._loaded_values['instagram_username'] \
-                or self.instagram_userid != self._loaded_values['instagram_userid']:
+            if self.instagram_username != self._loaded_values['instagram_username']:
                 return True
         return False
 
@@ -246,12 +244,46 @@ def userInstagramPostDelete(sender, **kwargs):
             matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
                                                args=(loser.hidento_userid,))
             matching_thread.start()
+    try:
+        user_instagramDetails = InstagramDetails.objects.get(instagram_username = user_instagram.instagram_username)
+        user_instagramDetails.delete()
+    except InstagramDetails.DoesNotExist:
+        pass
 
 class InstagramDetails(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='user_instagramDetails', on_delete=models.CASCADE, primary_key=True)
+    instagram_userid = models.CharField(max_length=255, unique=True)
+    instagram_username = models.CharField(max_length=255, unique=True)
     ll_access_token = models.CharField(max_length=1000, null=False)
-    expires_in = models.BigIntegerField(null=False)
+    token_expires_in = models.BigIntegerField(null=False)
     token_time = models.DateTimeField(null=False)
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        instance._loaded_values = dict(zip(field_names, values))
+        return instance
+
+    def save(self, *args, **kwargs):
+        if self.user_instagramDetailsModified():
+            raise ValueError('Instagram account details cannot be modified. To change instagram account, '
+                             'remove and link instagram again.')
+
+    def user_instagramDetailsModified(self):
+        if not self._state.adding:
+            if self.instagram_username != self._loaded_values['instagram_username'] \
+                or self.instagram_userid != self._loaded_values['instagram_userid']:
+                return True
+        return False
+
+@receiver(post_delete, sender=InstagramDetails, dispatch_uid='instagramDetailsPostDelete')
+def userInstagramDetailsPostDelete(sender, **kwargs):
+    user_instagramDetails = kwargs['instance']
+    try:
+        user_instagram = InstagramCrush.objects.get(instagram_username = user_instagramDetails.instagram_username)
+        user_instagram.delete()
+    except InstagramCrush.DoesNotExist:
+        pass
 
 class ContactHidento(models.Model):
     fullname = models.CharField(max_length=255, null=False)

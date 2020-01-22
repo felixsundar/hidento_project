@@ -25,11 +25,11 @@
             {% endif %}
 
             <input type="text" class="form-control mt-3"
-                   placeholder="Nickname for your crush - Optional - Can be edited later" name="crushNickname"
+                   placeholder="Nickname for your crush (Optional)" name="crushNickname"
                    maxlength="255" id="id_crushNickname"
                    value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
 
-            <textarea class="form-control mt-3" placeholder="Message for your crush - Optional - Can be edited later"
+            <textarea class="form-control mt-3" placeholder="Message for your crush (Optional)"
                       name="crushMessage" maxlength="3000"
                       id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
             <div style="text-align:left" class="mt-3">
