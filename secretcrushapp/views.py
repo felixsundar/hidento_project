@@ -345,6 +345,7 @@ def authInstagramView(request):
         user_instagram_details.instagram_userid = user_details_response_data['id']
         user_instagram_details.instagram_username = user_details_response_data['username']
         getInstagramLongLivedToken(token_response_data['access_token'], user_instagram_details)
+        logging.debug('instagram details - {}'.format(user_instagram_details))
         user_instagram_details.save()
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
@@ -362,6 +363,7 @@ def getInstagramLongLivedToken(access_token, user_instagram_details):
         }
         long_lived_token_response = requests.get(url=settings.INSTAGRAM_LONG_LIVED_TOKEN_URL, params=params)
         long_lived_token_response_data = long_lived_token_response.json()
+        logging.debug('ll token response username - {} \n response - {}'.format(user_instagram_details.instagram_username, long_lived_token_response_data))
         user_instagram_details.ll_access_token = long_lived_token_response_data['access_token']
         user_instagram_details.expires_in = long_lived_token_response_data['expires_in']
         user_instagram_details.token_time = now()
