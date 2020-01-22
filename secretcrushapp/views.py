@@ -315,7 +315,6 @@ def authInstagramView(request):
         return render(request, 'secretcrushapp/link_instagram.html', context)
     try:
         code = request.GET.get('code')
-        logging.debug("instagram authorization code for user {}:\n {}".format(user, code))
         data = {
             'app_id': settings.INSTAGRAM_APP_ID,
             'app_secret': settings.INSTAGRAM_APP_SECRET,
@@ -325,11 +324,9 @@ def authInstagramView(request):
         }
         token_response = requests.post(url=settings.INSTAGRAM_TOKEN_URL, data=data)
         token_response_data = token_response.json()
-        logging.debug("token response from instagram for user {}:\n {}".format(user, token_response_data))
         user_details_response = getInstagramUserDetails(token_response_data['user_id'],
                                                         token_response_data['access_token'])
         user_details_response_data = user_details_response.json()
-        logging.debug("user details response from instagram for user {}:\n {}".format(user, user_details_response_data))
         if checkInstagramUsername(request, user_details_response_data['username']):
             context = {
                 'code': 2,
@@ -345,7 +342,6 @@ def authInstagramView(request):
         user_instagram_details.instagram_userid = user_details_response_data['id']
         user_instagram_details.instagram_username = user_details_response_data['username']
         getInstagramLongLivedToken(token_response_data['access_token'], user_instagram_details)
-        logging.debug('instagram details - {}'.format(user_instagram_details))
         user_instagram_details.save()
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
@@ -363,7 +359,6 @@ def getInstagramLongLivedToken(access_token, user_instagram_details):
         }
         long_lived_token_response = requests.get(url=settings.INSTAGRAM_LONG_LIVED_TOKEN_URL, params=params)
         long_lived_token_response_data = long_lived_token_response.json()
-        logging.debug('ll token response username - {} \n response - {}'.format(user_instagram_details.instagram_username, long_lived_token_response_data))
         user_instagram_details.ll_access_token = long_lived_token_response_data['access_token']
         user_instagram_details.expires_in = long_lived_token_response_data['expires_in']
         user_instagram_details.token_time = now()

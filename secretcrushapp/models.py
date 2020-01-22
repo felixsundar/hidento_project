@@ -268,6 +268,7 @@ class InstagramDetails(models.Model):
         if self.user_instagramDetailsModified():
             raise ValueError('Instagram account details cannot be modified. To change instagram account, '
                              'remove and link instagram again.')
+        super().save(*args, **kwargs)
 
     def user_instagramDetailsModified(self):
         if not self._state.adding:
