@@ -346,7 +346,8 @@ def authInstagramView(request):
         user_instagram_details.save()
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
-    except:
+    except Exception as e:
+        logging.debug('exception - {}'.format(str(e)))
         messages.warning(request, 'Linking Instagram account failed.')
         return HttpResponseRedirect(reverse('crushList'))
 
