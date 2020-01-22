@@ -1,0 +1,72 @@
+{% extends 'secretcrushapp/base_m.html' %}
+
+{% block content %}
+<center>
+    <div style="padding-left:1rem;padding-right:1rem;margin-top:1rem;">
+        <h2 class="mb-3"><b>Account Details
+                        <a href="{% url 'accountEdit' %}" class="btn hidento-link-cell hidento-title-color">
+                            <i class="material-icons">mode_edit</i>
+                        </a>
+                    </b></h2>
+<!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
+        <table class="hidento-m-font-size">
+            <tr>
+                <td class="hidento-table-left">
+                    Username
+                </td>
+                <td class="hidento-table-right">
+                    {{user.username}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Full Name
+                </td>
+                <td class="hidento-table-right">
+                    {{user.fullname}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Email
+                </td>
+                <td class="hidento-table-right">
+                    {{user.email}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Date of Birth
+                </td>
+                <td class="hidento-table-right">
+                    {% if user.date_of_birth is not None %}
+                    {{user.date_of_birth}}
+                    {% else %}
+                    --/--/----
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Gender
+                </td>
+                <td class="hidento-table-right">
+                    {{user.get_gender_display}}
+                </td>
+            </tr>
+            <tr>
+                <td class="hidento-table-left">
+                    Instagram
+                </td>
+                <td class="hidento-table-right">
+                    {% if instagram_username is None %}
+                    <a href="{% url 'linkInstagram' %}"> Link Instagram Account</a>
+                    {% else %}
+                        {{ instagram_username }}
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+</center>
+{% endblock %}

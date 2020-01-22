@@ -1,0 +1,23 @@
+{% extends 'secretcrushapp/base_d.html' %}
+
+{% block content %}
+<center>
+    <div style="width:80%;margin-top:2.3rem;margin-bottom:3.5rem">
+        <h3 class="mb-3 hidento-title-color"><b>Remove Instagram Confirmation</b></h3>
+        {% if user_instagram is not None %}
+        <p style="text-align:left">At Hidento, all matchings are done based Instagram usernames. Removing your Instagram account will delete all
+            your crushes from your crushlist and break any stable or unstable match you currently have.</p>
+        <p class="mb-4" style="text-align:left">Are you sure you want to remove your Instagram account? </p>
+        <form method="post" action="{% url 'removeInstagram' %}">
+                            {% csrf_token %}
+        <input type="submit" class="btn btn-primary" value="Yes, Remove Instagram">
+            <a href="{% url 'account' %}">
+                <button type="button" class="btn btn-primary ml-3">No, Abort</button></a>
+        </form>
+        {% else %}
+        <p>You don't have any Instagram account linked to your account. Nothing to remove.</p>
+        <a href="{% url 'index' %}">Go back to Hidento</a>
+        {% endif %}
+    </div>
+</center>
+{% endblock %}

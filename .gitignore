@@ -8,6 +8,8 @@ db.sqlite3
 media
 media/
 static/
+.sass-cache/
+node_modules/
 local_settings.py
 settings_local.py
 db.sqlite3-journal

@@ -1,12 +1,18 @@
-<a href="{% url 'index' %}"> Home </a>&nbsp&nbsp
-<a href="{% url 'logout' %}"> Logout </a><br><br>
+{% extends 'secretcrushapp/base_d.html' %}
+
+{% block content %}
+<center>
+    <div style="width:90%;margin-top:2.3rem;margin-bottom:3.5rem">
 
 {% if code == 1 %}
-<p>Your account is already linked with an Instagram account. Remove the account to add a new one</p><br>
-<a href="{% url 'account' %}"> My Account </a>
+<p>Your account is already linked with an Instagram account. Remove the account to add a new one.</p>
+<a href="{% url 'accountEdit' %}"> Edit Account </a>
 {% elif code == 2 %}
-<p>The Instagram account you are trying to link - <b>{{instagram_username}}</b>, is already linked with a different Hidento account.</p><br>
-<p>Do you want to change it to link to this account instead? </p>
-<a href="{% url 'linkInstagram' %}?mode=forceLink"><button>Yes</button> </a>&nbsp&nbsp&nbsp&nbsp
-<a href="{% url 'account' %}"><button>No</button> </a>
+<p>The Instagram account you are trying to link - <b>{{instagram_username}}</b>, is already linked with a different Hidento account.</p>
+<p>Do you want to link it to this account instead? </p>
+<a class="btn btn-primary" href="{% url 'linkInstagram' %}?mode=forceLink">Yes</a>
+<a class="btn btn-primary ml-3" href="{% url 'account' %}">No</a>
 {% endif %}
+    </div>
+</center>
+{% endblock %}

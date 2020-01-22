@@ -16,7 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+import secretcrushapp
+
 urlpatterns = [
     path('', include('secretcrushapp.urls')),
     path('admin/', admin.site.urls),
 ]
+
+handler400 = secretcrushapp.views.handler400
+handler403 = secretcrushapp.views.handler403
+handler404 = secretcrushapp.views.handler404
+handler500 = secretcrushapp.views.handler500

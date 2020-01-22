@@ -18,15 +18,15 @@ from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
 class HidentoUserManager(BaseUserManager):
-    def create_user(self, username, email, firstname, lastname, gender, password):
-        if not (username and email and firstname and lastname and gender):
-            raise ValueError('Users must have a username, an email address, a firstname and a lastname')
+    def create_user(self, username, email, firstname, fullname, gender, password):
+        if not (username and email and firstname and fullname and gender):
+            raise ValueError('Users must have a username, an email address, a firstname and a fullname')
 
         user = self.model(
             username = username,
             email=self.normalize_email(email),
             firstname = firstname,
-            lastname = lastname,
+            fullname = fullname,
             gender = gender
         )
 
@@ -34,8 +34,8 @@ class HidentoUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, firstname, lastname, gender, password):
-        user = self.create_user(username, email, firstname, lastname, gender, password)
+    def create_superuser(self, username, email, firstname, fullname, gender, password):
+        user = self.create_user(username, email, firstname, fullname, gender, password)
         #is_staff is the field name which django will check to provide access to admin site. even for superusers.
         #it provides only access to admin site. if the user didn't have other permissions, admin site will be
         #accessible but it will be empty
@@ -48,18 +48,18 @@ class HidentoUserManager(BaseUserManager):
 class HidentoUser(AbstractBaseUser, PermissionsMixin):
     userid = models.BigAutoField(primary_key=True, unique=True)
     username = models.CharField(max_length=255, unique=True, blank=False, null=False)
-    email = models.EmailField(verbose_name='email address', max_length=255, unique=True, blank=False, null=False)
+    email = models.EmailField(verbose_name='Email', max_length=255, unique=True, blank=False, null=False)
     firstname = models.CharField(max_length=255)
-    lastname = models.CharField(max_length=255)
-    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Others')])
-    date_of_birth = models.DateField(blank=True, null=True)
+    fullname = models.CharField(verbose_name='Full Name', max_length=255)
+    gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Other')])
+    date_of_birth = models.DateField(verbose_name='Date of Birth', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(verbose_name='active', default=True)
     joined_time = models.DateTimeField(default=timezone.now)
 
     USERNAME_FIELD = 'username'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'firstname', 'lastname', 'gender']
+    REQUIRED_FIELDS = ['email', 'firstname', 'fullname', 'gender']
 
     objects = HidentoUserManager()
 
@@ -70,14 +70,15 @@ class HidentoUser(AbstractBaseUser, PermissionsMixin):
 def hidentoUserPreSave(sender, **kwargs):
     hidentoUser = kwargs['instance']
     if hidentoUser.is_superuser or hidentoUser.is_staff:
-        if hidentoUser.username != 'admin':
-            raise Exception('Users cannot be upgraded to admins')
+        if hidentoUser.username != 'hidentosonlysuperuser':
+            raise Exception('Users cannot be upgraded to admins.')
+    hidentoUser.firstname = hidentoUser.fullname.split(' ')[0].capitalize()
 
 @receiver(post_save, sender=HidentoUser, dispatch_uid='hidentoUserPostSave')
 def hidentoUserPostSave(sender, **kwargs):
     hidentoUser = kwargs['instance']
     if hidentoUser.is_superuser or hidentoUser.is_staff:
-        if hidentoUser.username != 'admin':
+        if hidentoUser.username != 'hidentosonlysuperuser':
             hidentoUser.is_staff = False
             hidentoUser.is_superuser = False
             hidentoUser.save()
@@ -89,6 +90,7 @@ class Controls(models.Model):
     stablizer_thread = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Start Stablizer thread')], default=1)
     stablizer_thread_status = models.IntegerField(choices=[(1, 'Stablizer thread running'), (2, 'Stablizer thread not running'),
                                                            (3, 'Check stablizer thread')], default=2)
+    number_of_threads = models.IntegerField(default=0)
     total_matches = models.BigIntegerField(default=0)
     total_stable_matches = models.BigIntegerField(default=0)
     total_unstable_matches = models.BigIntegerField(default=0)
@@ -127,6 +129,7 @@ class Controls(models.Model):
             self.total_female_users = HidentoUser.objects.filter(gender=2).count()
             self.total_other_gender_users = HidentoUser.objects.filter(gender=3).count()
             self.count_updated_time = now()
+            self.number_of_threads = len(threading.enumerate())
         self.count_users_and_matches = 1
         super().save(*args, **kwargs)
 
@@ -139,7 +142,6 @@ def stablizer_thread_running():
 
 class InstagramCrush(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, primary_key=True)
-    instagram_userid = models.CharField(max_length=255, unique=True)
     instagram_username = models.CharField(max_length=255, unique=True)
     crush1_username = models.CharField(max_length=255, blank=True, null=True)
     crush1_nickname = models.CharField(max_length=255, blank=True, null=True)
@@ -217,8 +219,7 @@ class InstagramCrush(models.Model):
 
     def instagramDetailsModified(self):
         if not self._state.adding:
-            if self.instagram_username != self._loaded_values['instagram_username'] \
-                or self.instagram_userid != self._loaded_values['instagram_userid']:
+            if self.instagram_username != self._loaded_values['instagram_username']:
                 return True
         return False
 
@@ -243,6 +244,47 @@ def userInstagramPostDelete(sender, **kwargs):
             matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
                                                args=(loser.hidento_userid,))
             matching_thread.start()
+    try:
+        user_instagramDetails = InstagramDetails.objects.get(instagram_username = user_instagram.instagram_username)
+        user_instagramDetails.delete()
+    except InstagramDetails.DoesNotExist:
+        pass
+
+class InstagramDetails(models.Model):
+    hidento_userid = models.ForeignKey(HidentoUser, related_name='user_instagramDetails', on_delete=models.CASCADE, primary_key=True)
+    instagram_userid = models.CharField(max_length=255, unique=True)
+    instagram_username = models.CharField(max_length=255, unique=True)
+    ll_access_token = models.CharField(max_length=1000, null=True, blank=True)
+    token_expires_in = models.BigIntegerField(null=True, blank=True)
+    token_time = models.DateTimeField(null=True, blank=True)
+
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        instance._loaded_values = dict(zip(field_names, values))
+        return instance
+
+    def save(self, *args, **kwargs):
+        if self.user_instagramDetailsModified():
+            raise ValueError('Instagram account details cannot be modified. To change instagram account, '
+                             'remove and link instagram again.')
+        super().save(*args, **kwargs)
+
+    def user_instagramDetailsModified(self):
+        if not self._state.adding:
+            if self.instagram_username != self._loaded_values['instagram_username'] \
+                or self.instagram_userid != self._loaded_values['instagram_userid']:
+                return True
+        return False
+
+@receiver(post_delete, sender=InstagramDetails, dispatch_uid='instagramDetailsPostDelete')
+def userInstagramDetailsPostDelete(sender, **kwargs):
+    user_instagramDetails = kwargs['instance']
+    try:
+        user_instagram = InstagramCrush.objects.get(instagram_username = user_instagramDetails.instagram_username)
+        user_instagram.delete()
+    except InstagramCrush.DoesNotExist:
+        pass
 
 class ContactHidento(models.Model):
     fullname = models.CharField(max_length=255, null=False)

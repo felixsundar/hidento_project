@@ -1,66 +1,11 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Hidento</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  </head>
-  <body bgcolor="#00ddcc">
-<section class="hero is-fullheight is-default is-bold">
-        <div class="hero-head">
-            <nav class="navbar">
-                <div class="container">
-                    <div class="navbar-brand">
-                        <a href="{% url 'index' %}">
-                    <h1 class="title">
-                        Hidento
-                    </h1>
-                </a>
-                        <span class="navbar-burger burger" data-target="navbarMenu">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </span>
-                    </div>
-                    <div id="navbarMenu" class="navbar-menu">
-                        <div class="navbar-end">
-                            <div class="tabs is-right">
-                                <ul>
-                                    <li><a href="{% url 'howitworks' %}"> How it works </a></li>
-                                    <li><a href="{% url 'faq' %}"> FAQs </a></li>
-                                    <li><a href="{% url 'account' %}"> My Account </a></li>
-                                    <li><a href="{% url 'logout' %}"> Logout </a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-        </div>
+{% extends 'secretcrushapp/base_d.html' %}
 
-<div align="center">
+{% block content %}
 
 
-Hi {{ user_firstname }}<br><br>
-
-<a href="{% url 'match' %}"> My Match </a><br>
-<a href="{% url 'crushList' %}"> My CrushList</a>
+<div class="hidento-home-center" id="page-center-div">
+    <a class="btn btn-block btn-light btn-lg" href="{% url 'match' %}"> My Match </a>
+    <a class="btn btn-block btn-light btn-lg" href="{% url 'crushList' %}"> My Crushlist </a>
 </div>
 
-    <div class="hero-foot">
-            <div class="container">
-                <div class="tabs is-right">
-                    <ul>
-                        <li><a href="{% url 'contactUs' %}">Contact Us</a></li>
-                        <li><a href="{% url 'privacy' %}">Privacy Policy</a></li>
-                        <li><a href="{% url 'terms' %}">Terms of Service</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-</section>
-    </body>
-</html>
+{% endblock %}

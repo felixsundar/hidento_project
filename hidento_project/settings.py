@@ -53,9 +53,9 @@ except FileNotFoundError as error:
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com']
+ALLOWED_HOSTS = ['www.hidento.com', 'hidento.com', '13.127.109.102']
 
 
 # Application definition
@@ -97,6 +97,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'secretcrushapp.custom_context_processor.secretcrushapp_context_processor',
             ],
         },
     },
@@ -120,7 +121,7 @@ INSTAGRAM_AUTHORIZE_URL = 'https://api.instagram.com/oauth/authorize'
 INSTAGRAM_AUTHORIZE_REDIRECT_URL = 'https://www.hidento.com/account/instagram/auth/'
 INSTAGRAM_TOKEN_URL = 'https://api.instagram.com/oauth/access_token'
 INSTAGRAM_USERNODE_URL = 'https://graph.instagram.com/'
-
+INSTAGRAM_LONG_LIVED_TOKEN_URL = 'https://graph.instagram.com/access_token'
 
 #Logging settings
 LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
@@ -171,6 +172,17 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'front_end'),
+]
+
+CSRF_FAILURE_VIEW = 'secretcrushapp.views.csrf_failure'
+
+HIDENTO_BACKGROUND_COLOR = '#00eeff'
+HIDENTO_DARK_BACKGROUND_COLOR = '#00ddee'
+HIDENTO_HEADING_FONT_COLOR = '#ffffff'
+HIDENTO_FONT_COLOR = '#0000ff'
 
 try:
     from .settings_local import *

@@ -1,0 +1,74 @@
+{% extends 'secretcrushapp/base_m.html' %}
+{% block content %}
+
+<center>
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;">
+        <div class="mb-5">
+<!--            <p>Discover your secret crush. Your first date could be on this valentine's day.<br>-->
+<!--                First matching results on February 11, 2020.</p>-->
+<!--            <a href="{% url 'howitworks' %}" class="btn btn-light" style="font-size:1.1rem">See How It Works</a>-->
+<!--            <br><br><br><br>&ndash;&gt;-->
+<!--            <br><br><br><br><br><br><br><br>-->
+
+<!--            <br><br><br><br><br><br><br><br>-->
+
+<!--            endsvsr-->
+            <h3 class="mb-4">A Stable Matching Tool!</h3>
+            <p style="text-align:left"><b>Have a crush on someone in your social circle? Anxious about expressing it? Hidento has got you covered!</b></p>
+
+        <div style="text-align:left">
+        <p>1. Sign Up and link your Instagram Account.</p>
+        <p>2. Enter the Instagram usernames of your crushes.</p>
+        <p>3. Indirectly let your crushes know about this website.</p>
+        <p>4. See match results from February 11, 2020 onwards.</p>
+        </div>
+            <a href="{% url 'howitworks' %}" class="btn btn-primary mt-3"><b>See How It Works</b></a>
+        </div>
+
+        <div class="mb-5">
+            <!--{% if messages %}-->
+            <!--  <ul class="messages">-->
+            <!--    {% for message in messages %}-->
+            <!--      <li class="{{ message.tags }}">{{ message }}</li>-->
+            <!--    {% endfor %}-->
+            <!--  </ul>-->
+            <!--{% endif %}-->
+
+<h4 class="mb-3 hidento-title-color">Create an Account</h4>
+            <form method="post" action="{% url 'signup' %}" class="hidento-m-font-size">
+
+                {% csrf_token %}
+                <!--<table>-->
+                <!--<tr>-->
+                <!--    <td>{{ form.username.label_tag }}</td>-->
+                <!--    {{ form.username }}-->
+                <input type="text" class="form-control mb-3" style="font-size:1.1rem" placeholder="Email" name="email" required
+                       id="id_email">
+                <input type="text" class="form-control mb-3" style="font-size:1.1rem" placeholder="Full Name" name="fullname" required
+                       id="id_fullname">
+
+                <!--</tr>-->
+                <!--<tr>-->
+                <!--    <td>{{ form.password.label_tag }}</td>-->
+                <!--    {{ form.password }}-->
+                <input type="password" class="form-control mb-3" style="font-size:1.1rem" placeholder="New Password" name="password" required
+                       id="id_password">
+                <input type="radio" name="gender" value="1" required id="gender_male">&nbsp;<label for="gender_male">Male</label>
+                <input type="radio" class="ml-3" name="gender" value="2" required id="gender_female">&nbsp;<label
+                    for="gender_female">Female</label>
+                <input type="radio" class="ml-3" name="gender" value="3" required id="gender_other">&nbsp;<label
+                    for="gender_other">Other</label>
+                <!--</tr>-->
+                <!--</table>--><br>
+
+                <input type="submit" class="btn btn-block btn-primary mt-3 mb-2" value="Sign Up">
+                <p class="hidento-light-color" style="font-size:0.9rem">By signing up, you agree to our
+        <a class="hidento-light-color" target="_blank" href="{% url 'terms' %}"><b>Terms of Service</b></a> and
+        <a class="hidento-light-color" target="_blank" href="{% url 'privacy' %}"><b>Privacy Policy</b></a>.</p>
+
+            Have an account already? <a href="{% url 'login' %}"> Log In </a><br>
+            </form>
+        </div>
+    </div>
+</center>
+{% endblock %}

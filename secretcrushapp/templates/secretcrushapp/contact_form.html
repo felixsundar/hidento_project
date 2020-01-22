@@ -1,17 +1,33 @@
-<h2>Contact Us</h2>
-You can get some quick information in <a href="{% url 'howitworks' %}"> How It Works </a> and <a href="{% url 'faq' %}"> FAQ </a>.
-Please check them before contacting us.
+{% extends 'secretcrushapp/base_d.html' %}
 
+{% block content %}
+<center>
+    <div style="width:60%;margin-top:2.3rem;margin-bottom:3.5rem">
 {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+
+<h2 class="mb-3"><b>Contact Us</b></h2>
+<p style="text-align:left">Please refer to <a href="{% url 'howitworks' %}"> How It Works </a> and <a href="{% url 'faq' %}"> FAQ </a> before contacting us.</p>
 
 <form method="post">
   {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Submit</button>
+<!--  {{ form.as_p }}-->
+  <input type="text" class="form-control" name="fullname" placeholder="Full Name" maxlength="255"
+         value="{% if form.fullname.value %}{{form.fullname.value}}{% endif %}" required id="id_fullname">
+<input type="email" class="form-control mt-3" name="email" placeholder="Email" maxlength="255"
+       value="{% if form.email.value %}{{form.email.value}}{% endif %}" required id="id_email">
+  {% if form.email.errors %}
+            {% for error in form.email.errors %}
+            <div class="hidento-form-error">{{ error|escape }}</div>
+            {% endfor %}
+            {% endif %}
+<textarea name="message" class="form-control mt-3" placeholder="Message" cols="10" rows="4"
+          maxlength="3000" required id="id_message">{% if form.message.value %}{{form.message.value}}{% endif %}</textarea>
+  <button class="btn btn-primary mt-3" type="submit">Submit</button>
 </form>
+    </div>
+</center>
+{% endblock %}

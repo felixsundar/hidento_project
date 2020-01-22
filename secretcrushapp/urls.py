@@ -19,6 +19,7 @@ urlpatterns = [
     path('complete_reset_password/', views.completeResetPasswordView, name='completeResetPassword'),
     path('account/instagram/link/', views.linkInstagramView, name='linkInstagram'),
     path('account/instagram/auth/', views.authInstagramView, name='authInstagram'),
+    path('account/instagram/remove/confirm/', views.removeInstagramConfirmview, name='removeInstagramConfirm'),
     path('account/instagram/remove/', views.removeInstagramView, name='removeInstagram'),
     path('crush/addnew/', views.addCrushView, name='addCrush'),
     path('crush/edit/<crushUsername>/', views.editCrushView, name='editCrush'),
@@ -28,5 +29,6 @@ urlpatterns = [
     path('terms/', views.termsView, name='terms'),
     path('howitworks/', views.howitworksView, name='howitworks'),
     path('faq/', views.faqView, name='faq'),
-    path('contactus/', views.contactusView, name='contactUs')
+    path('contactus/', views.contactusView, name='contactUs'),
+    path('about/', views.aboutView, name='about'),
 ]

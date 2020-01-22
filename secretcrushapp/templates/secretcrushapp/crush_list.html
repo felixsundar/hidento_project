@@ -1,29 +1,47 @@
-<a href="{% url 'index' %}"> Home </a> &nbsp&nbsp <a href="{% url 'account' %}"> Account Details </a>&nbsp&nbsp
-<a href="{% url 'logout' %}"> Logout </a><br><br>
+{% extends 'secretcrushapp/base_d.html' %}
 
-<br><br>
-{% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
-Hi {{ user_firstname }}
-<br><br>
-{% if instagram_crushes is None %}
- <p>Instagram account not linked. Please link your instagram account to register your secret crushes</p><br>
- <a href="{% url 'linkInstagram' %}"> Link Instagram </a>
-{% else %}
-    <h2>Your Secret Crushes</h2>
-    {% if not instagram_crushes %}
-        <p>You have not added any secret crushes</p>
-    {% else %}
-        {% for crush in instagram_crushes %}
-            Crush Username => {{ crush.crushUsername }}&nbsp&nbsp <a href="{% url 'editCrush' crush.crushUsername %}">Edit</a>
-            <br>
-            Crush Nickname => {{ crush.crushNickname }}<br><br>
+{% block content %}
+<center>
+    <div style="margin-top:2.3rem;">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
-    {% endif %}
-    <a href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
-{% endif %}
+        {% endif %}
+
+        <h2 class="hidento-title-color"><b>My Crushlist</b></h2>
+
+        {% if instagram_crushes is None %}
+        <div class="mt-3 mb-3">Instagram account not linked. Please link your instagram account to register your secret
+            crushes.
+        </div>
+        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
+        {% else %}
+        {% if not instagram_crushes %}
+        <p class="mt-4">You have not added any secret crushes.</p>
+        {% else %}
+        <div class="mt-2 mb-3" style="font-size:0.9rem">Ordered by Priority: High to Low</div>
+        <table>
+            {% for crush in instagram_crushes %}
+            <tr>
+                <td class="pr-5 pb-2 pt-2">
+                    <div class="hidento-crush-username"> {{ crush.crushUsername }}</div>
+                    <div class="hidento-crush-nickname">{{ crush.crushNickname }}</div>
+                </td>
+                <td>
+                    <a href="{% url 'editCrush' crush.crushUsername %}">
+                        <button class="btn hidento-link-cell">
+                            <i class="material-icons">mode_edit</i>
+                        </button>
+                    </a>
+                </td>
+            </tr>
+
+            {% endfor %}
+        </table>
+        {% endif %}
+        <a class="btn btn-primary mt-4" href="{% url 'addCrush' %}"> Add Secret Crush </a><br>
+        {% endif %}
+    </div>
+</center>
+{% endblock %}
