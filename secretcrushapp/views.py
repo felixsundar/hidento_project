@@ -695,7 +695,7 @@ def deleteCrushView(request, crushUsername):
             return render(request, 'secretcrushapp/edit_crush_m.html', context)
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
-    messages.success(request, 'Secret crush deleted successfully')
+    messages.success(request, 'Secret crush deleted successfully.')
     return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -730,7 +730,7 @@ def contactusView(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Query submitted successfully')
+            messages.success(request, 'Query submitted successfully.')
             return HttpResponseRedirect(reverse('contactUs'))
     else:
         form = ContactForm()

@@ -12,7 +12,6 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import now
 from secretcrushapp import matching
-from secretcrushapp import testcase
 
 from hidento_project import settings
 
@@ -200,24 +199,10 @@ class InstagramCrush(models.Model):
         if self._state.adding and self.instagramDetailsNotPresent():
             raise ValueError('Instagram username must match the instagram details of the user.')
         crushListModified = self._state.adding or self.isPreferenceListModified()
-        runtestcase = False
-        if self._state.adding and self.instagram_username == 'a':
-            self.crush1_username = 'e'
-            self.crush1_active = True
-            self.crush2_username = 'b'
-            self.crush2_active = True
-            self.crush1_nickname = 'atoen'
-            self.crush1_message = 'atoem'
-            self.crush2_nickname = 'atobn'
-            self.crush2_message = 'atobm'
-            runtestcase = True
         super().save(*args, **kwargs)
         if crushListModified:
             matching_thread = threading.Thread(target=matching.startMatching, daemon=True, args=(self.hidento_userid,))
             matching_thread.start()
-        if runtestcase:
-            testcase_thread = threading.Thread(target=testcase.createTestcases, daemon=True)
-            testcase_thread.start()
 
     def instagramDetailsModified(self):
         if not self._state.adding:
