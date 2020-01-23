@@ -35,3 +35,13 @@ function hasatsymbol(s) {
 function hasWhiteSpace(s) {
   return s.indexOf(' ') >= 0;
 }
+
+$(function()
+{
+  $("#hidentoform").submit(function(){
+    $("input[type='submit']", this)
+      .val("Please Wait...")
+      .attr("disabled", true);
+    return true;
+  });
+});

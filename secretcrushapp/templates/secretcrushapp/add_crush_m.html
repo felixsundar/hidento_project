@@ -12,7 +12,7 @@
         <a href="{% url 'crushList' %}"> Go to Crushlist </a>
         {% endif %}
         {% else %}
-        <form method="post" class="hidento-m-font-size">
+        <form method="post" class="hidento-m-font-size" id="hidentoform">
             {% csrf_token %}
             <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
                    maxlength="255" required id="id_crushUsername" style="font-size:1.1rem"
@@ -87,7 +87,7 @@ to see this message, if you get a stable match with this crush and your crush is
                 </table>
             </div>
             <div class="mt-4" style="font-size:1rem">
-            <button class="btn btn-primary mr-3" type="submit" style="font-size:1.1rem">Add Crush</button>
+            <input class="btn btn-primary mr-3" type="submit" style="font-size:1.1rem" value="Add Crush">
         <a href="{% url 'crushList' %}">
                 <button type="button" class="btn btn-primary" style="font-size:1.1rem">Cancel</button>
             </a>

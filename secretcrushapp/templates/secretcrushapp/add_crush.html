@@ -12,7 +12,7 @@
         <a href="{% url 'crushList' %}"> Go to Crushlist </a>
         {% endif %}
         {% else %}
-        <form method="post">
+        <form method="post" id="hidentoform">
             {% csrf_token %}
             <!--            {{ form.as_table }}-->
             <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
