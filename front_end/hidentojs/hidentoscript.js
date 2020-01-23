@@ -45,3 +45,9 @@ $(function()
     return true;
   });
 });
+
+$(".edit_crush_activeClass").change(function() {
+    if(!this.checked && this.defaultChecked) {
+        alert("You are about to deactivate this crush.\n\n Deactivating will break any stable or unstable match made with this crush.")
+    }
+});

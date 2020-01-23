@@ -14,7 +14,7 @@
         <a href="{% url 'index' %}"> Go to Crushlist </a>
         {% endif %}
         {% else %}
-        <form method="post">
+        <form method="post" id="hidentoform">
             {% csrf_token %}
 <!--                {{ form.as_p }}-->
             <!--    button should be disabled after clicking-->
@@ -81,9 +81,9 @@ to see this message, if you get a stable match with this crush and your crush is
                             <label class="hidento-label">Active</label>
                         </td>
                         <td>{% if form.active.value == True %}
-                            <input name="active" type="checkbox" value="True" checked id="activeSwitchc">
+                            <input name="active" type="checkbox" value="True" class="edit_crush_activeClass" checked id="activeSwitchc">
                           {% else %}
-                                 <input name="active" type="checkbox" value="True" id="activeSwitch">
+                                 <input name="active" type="checkbox" value="True" class="edit_crush_activeClass" id="activeSwitch">
                           {%endif%}
                         </td>
                     </tr>
