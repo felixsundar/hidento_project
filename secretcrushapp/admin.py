@@ -90,9 +90,13 @@ class ContactHidentoAdmin(admin.ModelAdmin):
     search_fields = ('email', 'fullname', 'message')
     list_filter = ('is_replied', 'is_successfully_replied', 'is_important')
 
+class InstagramCrushAdmin(admin.ModelAdmin):
+    search_fields = ('instagram_username', 'crush1_username', 'crush2_username', 'crush3_username', 'crush4_username', 'crush5_username')
+    list_filter = ('match_stablized', 'inform_this_user')
+
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
-admin.site.register(InstagramCrush)
+admin.site.register(InstagramCrush, InstagramCrushAdmin)
 admin.site.register(Controls)
 admin.site.register(ContactHidento, ContactHidentoAdmin)
 admin.site.register(HowItWorks)
