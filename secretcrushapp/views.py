@@ -307,13 +307,15 @@ def authInstagramView(request):
     user = request.user
     user_instagram = user.instagramDetails.first()
     user_instagramDetails = user.user_instagramDetails.first()
-    if user_instagram is not None or user_instagramDetails is not None:
+    if user_instagram is not None:
         context = {
             'code': 1,
         }
         if request.user_agent.is_mobile:
             return render(request, 'secretcrushapp/link_instagram_m.html', context)
         return render(request, 'secretcrushapp/link_instagram.html', context)
+    if user_instagramDetails is not None:
+        user_instagramDetails.delete()
     try:
         code = request.GET.get('code')
         data = {
@@ -336,14 +338,14 @@ def authInstagramView(request):
             if request.user_agent.is_mobile:
                 return render(request, 'secretcrushapp/link_instagram_m.html', context)
             return render(request, 'secretcrushapp/link_instagram.html', context)
-        user_instagram = InstagramCrush(hidento_userid=user)
-        user_instagram.instagram_username = user_details_response_data['username']
-        user_instagram.save()
         user_instagram_details = InstagramDetails(hidento_userid=user)
         user_instagram_details.instagram_userid = user_details_response_data['id']
         user_instagram_details.instagram_username = user_details_response_data['username']
         getInstagramLongLivedToken(token_response_data['access_token'], user_instagram_details)
         user_instagram_details.save()
+        user_instagram = InstagramCrush(hidento_userid=user)
+        user_instagram.instagram_username = user_details_response_data['username']
+        user_instagram.save()
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
     except Exception as e:

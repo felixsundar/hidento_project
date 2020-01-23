@@ -197,6 +197,8 @@ class InstagramCrush(models.Model):
         if self.instagramDetailsModified():
             raise ValueError('Instagram account details cannot be modified. To change instagram account, '
                              'remove and link instagram again.')
+        if self._state.adding and self.instagramDetailsNotPresent():
+            raise ValueError('Instagram username must match the instagram details of the user.')
         crushListModified = self._state.adding or self.isPreferenceListModified()
         runtestcase = False
         if self._state.adding and self.instagram_username == 'a':
@@ -223,6 +225,12 @@ class InstagramCrush(models.Model):
                 return True
         return False
 
+    def instagramDetailsNotPresent(self):
+        user_instagramDetails = self.hidento_userid.user_instagramDetails.first()
+        if user_instagramDetails is None or user_instagramDetails.instagram_username != self.instagram_username:
+            return True
+        return False
+
     def isPreferenceListModified(self):
         if not self._state.adding:
             for position in range(1,6):
@@ -234,21 +242,19 @@ class InstagramCrush(models.Model):
 def getCrushField(position, fieldname):
         return 'crush' + str(position) + '_' + fieldname
 
+@transaction.atomic
 @receiver(post_delete, sender=InstagramCrush, dispatch_uid='instagramPostDelete')
 def userInstagramPostDelete(sender, **kwargs):
     user_instagram = kwargs['instance']
-    with transaction.atomic():
-        loser = matching.breakCurrentMatch(user_instagram)
-        if loser is not None:
-            loser.save()
-            matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
+    loser = matching.breakCurrentMatch(user_instagram)
+    if loser is not None:
+        loser.save()
+        matching_thread = threading.Thread(target=matching.startMatching, daemon=True,
                                                args=(loser.hidento_userid,))
-            matching_thread.start()
-    try:
-        user_instagramDetails = InstagramDetails.objects.get(instagram_username = user_instagram.instagram_username)
+        matching_thread.start()
+    user_instagramDetails = user_instagram.hidento_userid.user_instagramDetails.select_for_update().first()
+    if user_instagramDetails is not None:
         user_instagramDetails.delete()
-    except InstagramDetails.DoesNotExist:
-        pass
 
 class InstagramDetails(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='user_instagramDetails', on_delete=models.CASCADE, primary_key=True)
@@ -277,14 +283,13 @@ class InstagramDetails(models.Model):
                 return True
         return False
 
+@transaction.atomic
 @receiver(post_delete, sender=InstagramDetails, dispatch_uid='instagramDetailsPostDelete')
 def userInstagramDetailsPostDelete(sender, **kwargs):
     user_instagramDetails = kwargs['instance']
-    try:
-        user_instagram = InstagramCrush.objects.get(instagram_username = user_instagramDetails.instagram_username)
+    user_instagram = user_instagramDetails.hidento_userid.instagramDetails.select_for_update().first()
+    if user_instagram is not None:
         user_instagram.delete()
-    except InstagramCrush.DoesNotExist:
-        pass
 
 class ContactHidento(models.Model):
     fullname = models.CharField(max_length=255, null=False)
