@@ -20,7 +20,7 @@ def startStablizerThread():
 
 def runStablizer():
     while True:
-        time.sleep(60)
+        time.sleep(3600)
         try:
             controls = Controls.objects.get(control_id=CONTROLS_RECORD_ID)
         except Controls.DoesNotExist:

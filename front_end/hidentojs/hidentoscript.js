@@ -7,3 +7,31 @@ $(function() {
       }
    });
 });
+
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+
+$(document).ready(function() {
+   $("#instagramVerify").click(function(){
+      var instagramUsername = $("#id_crushUsername").val();
+      if (!instagramUsername.trim() || instagramUsername.length == 0){
+        alert("Enter an Instagram username to verify.");
+      } else if (hasWhiteSpace(instagramUsername.trim())){
+        alert("Instagram username should not contain spaces.")
+      } else if (hasatsymbol(instagramUsername.trim())){
+        alert("Do not include '@' in Instagram username.")
+      } else{
+        instagramLink = "https://www.instagram.com/" + instagramUsername.trim();
+        window.open(instagramLink, '_blank')
+      }
+   });
+});
+
+function hasatsymbol(s) {
+  return s.indexOf('@') >= 0;
+}
+
+function hasWhiteSpace(s) {
+  return s.indexOf(' ') >= 0;
+}
