@@ -5,7 +5,7 @@
     <div style="width:40%;margin-top:3rem;">
         <h2><b>Create a new account</b></h2>
         <br>
-        <form method="post">
+        <form method="post" id="hidentoform">
             {% csrf_token %}
             <!--                    {{form.as_p}}-->
             <input type="text" class="form-control" placeholder="Email" name="email"

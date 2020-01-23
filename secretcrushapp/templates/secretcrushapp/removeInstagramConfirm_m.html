@@ -8,7 +8,7 @@
         <p style="text-align:left">At Hidento, all matchings are done based Instagram usernames. Removing your Instagram account will delete all
             your crushes from your crushlist and break any stable or unstable match you currently have.</p>
         <p class="mb-4" style="text-align:left">Are you sure you want to remove your Instagram account? </p>
-        <form method="post" action="{% url 'removeInstagram' %}">
+        <form method="post" action="{% url 'removeInstagram' %}" id="hidentoform">
                             {% csrf_token %}
         <input type="submit" class="btn btn-primary" value="Yes, Remove Instagram">
             <a href="{% url 'account' %}">

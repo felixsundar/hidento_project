@@ -20,7 +20,7 @@ import secretcrushapp
 
 urlpatterns = [
     path('', include('secretcrushapp.urls')),
-    path('admin/', admin.site.urls),
+    path('ih783fhi33dmlw37ydf9/', admin.site.urls),
 ]
 
 handler400 = secretcrushapp.views.handler400

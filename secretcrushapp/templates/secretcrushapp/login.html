@@ -25,7 +25,7 @@
         <br>
         {% endif %}
 
-        <form method="post">
+        <form method="post" id="hidentoform">
             {% csrf_token %}
             <input type="text" class="form-control" placeholder="Email or Username" name="username"
                    value="{% if form.username.value %}{{form.username.value}}{% endif %}" autofocus required

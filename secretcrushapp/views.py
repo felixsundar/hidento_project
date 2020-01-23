@@ -306,6 +306,7 @@ def constructInstagramApiUrl():
 def authInstagramView(request):
     user = request.user
     user_instagram = user.instagramDetails.first()
+    user_instagramDetails = user.user_instagramDetails.first()
     if user_instagram is not None:
         context = {
             'code': 1,
@@ -313,6 +314,8 @@ def authInstagramView(request):
         if request.user_agent.is_mobile:
             return render(request, 'secretcrushapp/link_instagram_m.html', context)
         return render(request, 'secretcrushapp/link_instagram.html', context)
+    if user_instagramDetails is not None:
+        user_instagramDetails.delete()
     try:
         code = request.GET.get('code')
         data = {
@@ -335,14 +338,14 @@ def authInstagramView(request):
             if request.user_agent.is_mobile:
                 return render(request, 'secretcrushapp/link_instagram_m.html', context)
             return render(request, 'secretcrushapp/link_instagram.html', context)
-        user_instagram = InstagramCrush(hidento_userid=user)
-        user_instagram.instagram_username = user_details_response_data['username']
-        user_instagram.save()
         user_instagram_details = InstagramDetails(hidento_userid=user)
         user_instagram_details.instagram_userid = user_details_response_data['id']
         user_instagram_details.instagram_username = user_details_response_data['username']
         getInstagramLongLivedToken(token_response_data['access_token'], user_instagram_details)
         user_instagram_details.save()
+        user_instagram = InstagramCrush(hidento_userid=user)
+        user_instagram.instagram_username = user_details_response_data['username']
+        user_instagram.save()
         messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
         return HttpResponseRedirect(reverse('crushList'))
     except Exception as e:
@@ -373,7 +376,6 @@ def checkInstagramUsername(request, instagramUsername):
         return False
     if user_instagram is not None and user_instagramDetails is not None:
         if request.session.pop('mode', None) == 'forceLink':
-            user_instagram.delete()
             user_instagramDetails.delete()
             return False
         return True
@@ -448,7 +450,7 @@ def addCrushView(request):
     if request.method == 'POST':
         form = AddCrushForm(error_or_lowestPriority, request.POST)
         if form.is_valid() and validateAndAddCrush(form, user_instagram, error_or_lowestPriority):
-            messages.success(request, 'New secret crush has been added successfully')
+            messages.success(request, 'New secret crush has been added successfully.')
             return HttpResponseRedirect(reverse('crushList'))
     else:
         form = AddCrushForm(error_or_lowestPriority)
@@ -693,7 +695,7 @@ def deleteCrushView(request, crushUsername):
             return render(request, 'secretcrushapp/edit_crush_m.html', context)
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
-    messages.success(request, 'Secret crush deleted successfully')
+    messages.success(request, 'Secret crush deleted successfully.')
     return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -728,7 +730,7 @@ def contactusView(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Query submitted successfully')
+            messages.success(request, 'Query submitted successfully.')
             return HttpResponseRedirect(reverse('contactUs'))
     else:
         form = ContactForm()
