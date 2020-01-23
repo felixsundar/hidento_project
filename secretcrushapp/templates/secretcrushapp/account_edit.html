@@ -6,7 +6,7 @@
     <div style="width:70%;margin-top:2.3rem;margin-bottom:3.5rem">
         <h2 class="mb-3 hidento-title-color"><b>Edit Account</b></h2>
         <!--        <a href="{% url 'accountEdit' %}"> Edit Account </a>-->
-        <form method="post">
+        <form method="post" id="hidentoform">
             {% csrf_token %}
             <table class="mb-3">
                 <tr>

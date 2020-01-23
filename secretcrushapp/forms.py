@@ -93,7 +93,7 @@ class AddCrushForm(Form):
     def clean_crushUsername(self):
         crush_instagram_username = self.cleaned_data['crushUsername']
         if ' ' in crush_instagram_username:
-            raise forms.ValidationError('Instagram usernames cannot contain space.')
+            raise forms.ValidationError('Instagram usernames cannot contain spaces.')
         return crush_instagram_username
 
 class EditCrushForm(Form):

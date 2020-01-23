@@ -12,7 +12,7 @@
 <h2 class="mb-3"><b>Contact Us</b></h2>
 <p style="text-align:left">Please refer to <a href="{% url 'howitworks' %}"> How It Works </a> and <a href="{% url 'faq' %}"> FAQ </a> before contacting us.</p>
 
-<form method="post">
+<form method="post" id="hidentoform">
   {% csrf_token %}
 <!--  {{ form.as_p }}-->
   <input type="text" class="form-control" name="fullname" placeholder="Full Name" maxlength="255"
@@ -26,7 +26,7 @@
             {% endif %}
 <textarea name="message" class="form-control mt-3" placeholder="Message" cols="10" rows="4"
           maxlength="3000" required id="id_message">{% if form.message.value %}{{form.message.value}}{% endif %}</textarea>
-  <button class="btn btn-primary mt-3" type="submit">Submit</button>
+  <input class="btn btn-primary mt-3" type="submit" value="Submit">
 </form>
     </div>
 </center>

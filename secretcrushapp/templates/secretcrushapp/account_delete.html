@@ -11,7 +11,7 @@
             If you wish to stop matchings temporarily, you can deactivate your crushes from your <a href="{% url 'crushList' %}">crush list</a>.
         </p>
         <p class="mb-4" style="text-align:left">Still want to delete your account? </p>
-        <form method="post" action="{% url 'accountDelete' %}">
+        <form method="post" action="{% url 'accountDelete' %}" id="hidentoform">
                             {% csrf_token %}
         <input type="submit" class="btn btn-primary" value="Yes, Delete My Account">
             <a href="{% url 'account' %}">
