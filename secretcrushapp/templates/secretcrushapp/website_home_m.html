@@ -2,16 +2,11 @@
 {% block content %}
 
 <center>
-    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;">
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-bottom:6rem">
         <div class="mb-5">
             <h3 class="mb-4">Instagram Based Secret Crush Register!</h3>
-            <p style="text-align:left"><b>Hidento matches two users, if they have each other's Instagram username on their crush lists.
-                It also acts as a stable matching tool, which matches users without any conflicts.
+            <p style="text-align:left"><b>Hidento matches two users if they have secret crush on each other, based on their Instagram usernames.
                 </b></p>
-
-<!--            <p style="text-align:left"><b>-->
-<!--                It also acts as a stable matching tool, which matches users without any conflicts.-->
-<!--            </b></p>-->
 
         <div style="text-align:left">
         <p>1. Sign Up and link your Instagram Account.</p>
@@ -19,37 +14,22 @@
         <p>3. Indirectly let your crushes know about this website.</p>
         </div>
             <p style="text-align:left"><b>
-                Hidento informs one of the users in the match, if a match is stabilized.
+                When a match is stabilized, Hidento informs one of the users in the match.
             </b></p>
             <a href="{% url 'howitworks' %}" class="btn btn-primary mt-3"><b>See How It Works</b></a>
         </div>
 
         <div class="mb-5">
-            <!--{% if messages %}-->
-            <!--  <ul class="messages">-->
-            <!--    {% for message in messages %}-->
-            <!--      <li class="{{ message.tags }}">{{ message }}</li>-->
-            <!--    {% endfor %}-->
-            <!--  </ul>-->
-            <!--{% endif %}-->
 
 <h4 class="mb-3 hidento-title-color">Create an Account</h4>
             <form method="post" action="{% url 'signup' %}" class="hidento-m-font-size" id="hidentoform">
 
                 {% csrf_token %}
-                <!--<table>-->
-                <!--<tr>-->
-                <!--    <td>{{ form.username.label_tag }}</td>-->
-                <!--    {{ form.username }}-->
                 <input type="text" class="form-control mb-3" style="font-size:1.1rem" placeholder="Email" name="email" required
                        id="id_email">
                 <input type="text" class="form-control mb-3" style="font-size:1.1rem" placeholder="Full Name" name="fullname" required
                        id="id_fullname">
 
-                <!--</tr>-->
-                <!--<tr>-->
-                <!--    <td>{{ form.password.label_tag }}</td>-->
-                <!--    {{ form.password }}-->
                 <input type="password" class="form-control mb-3" style="font-size:1.1rem" placeholder="New Password" name="password" required
                        id="id_password">
                 <input type="radio" name="gender" value="1" required id="gender_male">&nbsp;<label for="gender_male">Male</label>
@@ -57,8 +37,7 @@
                     for="gender_female">Female</label>
                 <input type="radio" class="ml-3" name="gender" value="3" required id="gender_other">&nbsp;<label
                     for="gender_other">Other</label>
-                <!--</tr>-->
-                <!--</table>--><br>
+                <br>
 
                 <input type="submit" class="btn btn-block btn-primary mt-3 mb-2" value="Sign Up">
                 <p class="hidento-light-color" style="font-size:0.9rem">By signing up, you agree to our
