@@ -7,48 +7,28 @@
         <h3 class="mb-4">Instagram Based Secret Crush Register!</h3>
 
             <p style="text-align:left"><b>
-                Hidento matches two users, if they have each other's Instagram username on their crush lists.
-                It also acts as a stable matching tool, which matches users without any conflicts.
+                Hidento matches two users if they have secret crush on each other, based on their Instagram usernames.
             </b></p>
-<!--        <p style="text-align:left"><b>-->
-<!--                It also acts as a stable matching tool, which matches users without any conflicts.-->
-<!--            </b></p>-->
             <div style="text-align:left;width:80%">
             <p>1. Sign Up and link your Instagram Account.</p>
-        <p>2. Enter the Instagram usernames of your crushes in priority order.</p>
+        <p>2. Enter the Instagram usernames of your secret crushes in priority order.</p>
         <p>3. Indirectly let your crushes know about this website.</p>
         </div>
-        <p style="text-align:left"><b>Hidento informs one of the users in the match, if a match is stabilized.</b></p>
+        <p style="text-align:left"><b>When a match is stabilized, Hidento informs one of the users in the match.</b></p>
         <a href="{% url 'howitworks' %}" class="btn btn-primary mt-3"><b>See How It Works</b></a>
     </div>
     <div class="col-sm-4">
-<!--{% if messages %}-->
-<!--  <ul class="messages">-->
-<!--    {% for message in messages %}-->
-<!--      <li class="{{ message.tags }}">{{ message }}</li>-->
-<!--    {% endfor %}-->
-<!--  </ul>-->
-<!--{% endif %}-->
 <h3 class="mb-4 hidento-title-color">Create an Account</h3>
 <form method="post" action="{% url 'signup' %}" id="hidentoform">
 {% csrf_token %}
-<!--<table>-->
-<!--<tr>-->
-<!--    <td>{{ form.username.label_tag }}</td>-->
-<!--    {{ form.username }}-->
     <input type="text" class="form-control mb-2" placeholder="Email" name="email" autofocus required id="id_email">
         <input type="text" class="form-control mb-2" placeholder="Full Name" name="fullname" required id="id_fullname">
 
-<!--</tr>-->
-<!--<tr>-->
-<!--    <td>{{ form.password.label_tag }}</td>-->
-<!--    {{ form.password }}-->
     <input type="password" class="form-control mb-2" placeholder="New Password" name="password" required id="id_password">
     <input type="radio" name="gender" value="1" required id="gender_male">&nbsp;<label for="gender_male">Male</label>
     <input type="radio" class="ml-3" name="gender" value="2" required id="gender_female">&nbsp;<label for="gender_female">Female</label>
     <input type="radio" class="ml-3" name="gender" value="3" required id="gender_other">&nbsp;<label for="gender_other">Other</label>
-<!--</tr>-->
-<!--</table>-->
+
 
 <input type="submit" class="btn btn-block btn-primary mt-2 mb-2" value="Sign Up">
     <p class="hidento-light-color" style="font-size:0.9rem">By signing up, you agree to our
