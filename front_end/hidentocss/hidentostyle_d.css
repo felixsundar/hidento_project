@@ -80,12 +80,6 @@
     font-size:1rem;
 }
 
-a, a:hover, a:active, a:focus, a:visited, a:link{
-    text-decoration:none;
-    border:none;
-    color:#000099;
-}
-
 .hidento-crush-username{
     font-size:1.4rem;
 }

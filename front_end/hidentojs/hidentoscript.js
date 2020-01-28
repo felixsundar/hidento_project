@@ -1,6 +1,6 @@
 $(function() {
    $("#edit_crush_deleteButton").click(function(){
-      if (confirm("Deleting the crush will break the match (if any) made with this crush.\n\nAre you sure you want to delete?")){
+      if (confirm("If you are matched with this crush currently, your match will be broken.\n\nAre you sure you want to delete?")){
          $('form#edit_crush_deleteForm').submit();
       } else{
       event.preventDefault();
@@ -48,6 +48,6 @@ $(function()
 
 $(".edit_crush_activeClass").change(function() {
     if(!this.checked && this.defaultChecked) {
-        alert("You are about to deactivate this crush.\n\nDeactivating will break the match (if any) made with this crush.")
+        alert("You are about to deactivate this crush.\n\nIf you are matched with this crush currently, your match will be broken.")
     }
 });
