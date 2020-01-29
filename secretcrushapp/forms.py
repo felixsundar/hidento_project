@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
 
-from secretcrushapp.models import HidentoUser, ContactHidento
+from secretcrushapp.models import HidentoUser, ContactHidento, AnonymousMessage
 
 class SignUpForm(ModelForm):
     password = forms.CharField(label="Password", strip=False, widget=forms.PasswordInput,)
@@ -94,6 +94,7 @@ class AddCrushForm(Form):
         crush_instagram_username = self.cleaned_data['crushUsername']
         if ' ' in crush_instagram_username:
             raise forms.ValidationError('Instagram usernames cannot contain spaces.')
+
         return crush_instagram_username
 
 class EditCrushForm(Form):
@@ -120,3 +121,14 @@ class ContactForm(ModelForm):
     class Meta:
         model = ContactHidento
         fields = ('fullname', 'email', 'message')
+
+class SendMessageForm(ModelForm):
+    class Meta:
+        model = AnonymousMessage
+        fields = ('receiver_instagram_username', 'message', 'sender_nickname')
+
+    def clean_receiver_instagram_username(self):
+        receiver_instagram_username = self.cleaned_data['receiver_instagram_username']
+        if ' ' in receiver_instagram_username:
+            raise forms.ValidationError('Instagram usernames cannot contain spaces.')
+        return receiver_instagram_username

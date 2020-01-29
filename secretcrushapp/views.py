@@ -17,8 +17,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails
-from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails, AnonymousMessage
+from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm, SendMessageForm
 
 from hidento_project import settings
 
@@ -776,3 +776,80 @@ def csrf_failure(request, reason=""):
     if request.user_agent.is_mobile:
         return render(request, '403_csrf_m.html', status=403)
     return render(request, '403_csrf.html', status=403)
+
+@login_required
+def recievedMessages(request):
+    user_instagram = request.user.instagramDetails.first()
+    context = {
+        'received_messages': getReceivedMessages(user_instagram)
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/received_messages_m.html', context=context)
+    return render(request, 'secretcrushapp/received_messages.html', context=context)
+
+def getReceivedMessages(user_instagram):
+    if user_instagram is None:
+        return None
+    return list(AnonymousMessage.objects.filter(receiver_instagram_username = user_instagram.instagram_username)
+                .filter(is_abusive = False))
+
+@login_required
+def sentMessages(request):
+    context = {
+        'sent_messages': getSentMessages(request.user)
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/sent_messages_m.html', context=context)
+    return render(request, 'secretcrushapp/sent_messages.html', context=context)
+
+def getSentMessages(user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        return None
+    return user.anonymousSentMessages
+
+@login_required
+def sendMessage(request):
+    error = validateForSendMessage(request.user)
+    if error is not None:
+        context = {'error': error,}
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/send_message_m.html', context)
+        return render(request, 'secretcrushapp/send_message.html', context)
+
+    if request.method == 'POST':
+        form = SendMessageForm(request.POST)
+        if form.is_valid() and validateAndSendMessage(form, request.user):
+            messages.success(request, 'Message sent.')
+            return HttpResponseRedirect(reverse('crushList'))
+    else:
+        form = SendMessageForm()
+    context = {'form': form,}
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/send_message_m.html', context)
+    return render(request, 'secretcrushapp/send_message.html', context)
+
+def validateForSendMessage(user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        return 1
+    if user.anonymousSentMessages.count() >= 10:
+        return 2
+    return None
+
+def validateAndSendMessage(form, user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
+        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
+        return False
+    if user.anonymousSentMessages.count() >= 10:
+        form.add_error('__all__', 'You have already sent 10 messages. Delete one of them to send a new one.')
+        return False
+    new_message = AnonymousMessage(hidento_userid = user,
+                                   receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
+                                   sender_instagram_username = user_instagram.instagram_username,
+                                   message = form.cleaned_data['message'],
+                                   sender_nickname = form.cleaned_data['sender_nickname'],
+                                   added_time = now())
+    new_message.save()
+    return True
