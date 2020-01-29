@@ -20,7 +20,7 @@
     left:50%;
     margin-left:-10%;
     position:relative;
-    top: 50%;
+    top: 46%;
   -webkit-transform: translateY(-50%);
 
 /*  -ms-transform: translateY(-50%);
@@ -78,12 +78,6 @@
 .hidento-login-error{
     color:red;
     font-size:1rem;
-}
-
-a, a:hover, a:active, a:focus, a:visited, a:link{
-    text-decoration:none;
-    border:none;
-    color:#000099;
 }
 
 .hidento-crush-username{

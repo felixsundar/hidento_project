@@ -18,39 +18,65 @@ body, html{
     color: #000099;
 }
 
-.navbar-light .navbar-toggler {
-    border:none;
-}
-
-.hidento-heading-font{
-    font-size:1.1rem;
-}
-
 .dropdown-item, .dropdown-item:active, .dropdown-item.active, .dropdown-item:visited {
     color: #000099;
-}
-
-.dropdown-item:focus, .dropdown-item:hover{
-    color: #ffffff;
-    background-color: #000099;
-}
-
-
-.hidento-background{
-    background-color:#fff;
 }
 
 .hidento-heading-color, .hidento-heading-color:active, .hidento-heading-color:hover, .hidento-heading-color:link, .hidento-heading-color:focus, .hidento-heading-color:visited{
     color:#000099;
 }
 
+.dropdown-item:focus, .dropdown-item:hover{
+    color: #ffffff; /* same as special-font */
+    background-color: #000099;
+}
+
+a, a:hover, a:active, a:focus, a:visited, a:link{
+    text-decoration:none;
+    border:none;
+    color:#000099;
+}
+
+/* above color should be applied for bg-color in btn-primary in desktop and mobile styles */
+
+/*------------------------------------------------------------------------------------------------------*/
+
 .hidento-title-color, .hidento-title-color:active, .hidento-title-color:hover, .hidento-title-color:link, .hidento-title-color:focus, .hidento-title-color:visited{
     color:#333333;
+}
+
+h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
+    color:#333333;
+}
+
+/*above color should be applied for color in btn-light in desktop and mobile styles*/
+
+/*------------------------------------------------------------------------------------------------*/
+
+.hidento-background{
+    background-color:#fff;
 }
 
 .hidento-light-color, .hidento-light-color:hover, .hidento-light-color:active, .hidento-light-color:focus, .hidento-light-color:visited, .hidento-light-color:link{
     color:#777777;
     text-decoration:none;
+}
+
+/*------------------------------------------------------------------------------*/
+
+/* special-font : same as bg if bg is light. same as font if bg is dark */
+
+/* special-font should be applied to color in btn-primary */
+
+
+/*---------------------------------------------------------------------------------------*/
+
+.navbar-light .navbar-toggler {
+    border:none;
+}
+
+.hidento-heading-font{
+    font-size:1.1rem;
 }
 
 .hidento-fb-color{
@@ -63,8 +89,4 @@ body, html{
 
 .hidento-twitter-color{
     color:#00ACEE !important;
-}
-
-h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
-    color:#333333;
 }
