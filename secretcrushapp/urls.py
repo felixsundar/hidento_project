@@ -31,4 +31,7 @@ urlpatterns = [
     path('faq/', views.faqView, name='faq'),
     path('contactus/', views.contactusView, name='contactUs'),
     path('about/', views.aboutView, name='about'),
+    path('messages/sent/', views.sentMessages, name='sentMessages'),
+    path('messages/send/', views.sendMessage, name='sendMessage'),
+    path('messages/received/', views.receivedMessages, name='receivedMessages'),
 ]

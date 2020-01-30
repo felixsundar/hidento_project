@@ -9,12 +9,7 @@
         {% endfor %}
         {% endif %}
         <h2 class="hidento-title-color"><b>Messages Sent</b></h2>
-        
-         {% if sent_messages is None %}
-        <div class="mt-3 mb-3">Instagram account not linked. Link your instagram account to send anonymous messages.
-        </div>
-        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
-        {% else %}
+
         {% if not sent_messages %}
         <p class="mt-4">You haven't sent any messages yet.</p>
         {% else %}
@@ -39,7 +34,6 @@
             {% endfor %}
         {% endif %}
         <a class="btn btn-primary mt-4" href="{% url 'sendMessage' %}"> Send New Message </a>
-        {% endif %}
     </div>
 </center>
 {% endblock %}

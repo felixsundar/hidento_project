@@ -16,12 +16,12 @@
 }
 
 .hidento-home-center{
-    width:20%;
-    left:50%;
-    margin-left:-10%;
-    position:relative;
+    /*width:50%;
+    /*left:50%;
+    margin-left:-10%;*/
+    /*position:relative;
     top: 46%;
-  -webkit-transform: translateY(-50%);
+  /*-webkit-transform: translateY(-50%);*/
 
 /*  -ms-transform: translateY(-50%);
   transform: translateY(-50%);*/
@@ -138,5 +138,6 @@ word-wrap: break-word;
 
 .btn-light, btn-light:hover, btn-light:active, btn-light:focus, btn-light:visited, btn-light:link{
     color:#333333 !important;
+    background-color:#e6e6e6 !important;
     border:none;
 }

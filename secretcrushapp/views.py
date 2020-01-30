@@ -430,8 +430,8 @@ def removeInstagramView(request):
         user_instagramDetails.delete()
     elif user_instagram is not None:
         user_instagram.delete()
-    messages.success(request, 'Your Instagram has been removed successfully and your crush list has been cleared.')
-    return HttpResponseRedirect(reverse('crushList'))
+    messages.success(request, 'Instagram account removed.')
+    return HttpResponseRedirect(reverse('index'))
 
 
 @login_required
@@ -778,19 +778,20 @@ def csrf_failure(request, reason=""):
     return render(request, '403_csrf.html', status=403)
 
 @login_required
-def recievedMessages(request):
-    user_instagram = request.user.instagramDetails.first()
+def receivedMessages(request):
+    instagram_username = getInstagramUsername(request.user)
     context = {
-        'received_messages': getReceivedMessages(user_instagram)
+        'received_messages': getReceivedMessages(instagram_username),
+        'instagram_username': instagram_username,
     }
     if request.user_agent.is_mobile:
         return render(request, 'secretcrushapp/received_messages_m.html', context=context)
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
-def getReceivedMessages(user_instagram):
-    if user_instagram is None:
+def getReceivedMessages(instagram_username):
+    if instagram_username is None:
         return None
-    return list(AnonymousMessage.objects.filter(receiver_instagram_username = user_instagram.instagram_username)
+    return list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
                 .filter(is_abusive = False))
 
 @login_required
@@ -803,10 +804,10 @@ def sentMessages(request):
     return render(request, 'secretcrushapp/sent_messages.html', context=context)
 
 def getSentMessages(user):
-    user_instagram = user.instagramDetails.first()
-    if user_instagram is None:
-        return None
-    return user.anonymousSentMessages
+    #user_instagram = user.instagramDetails.first()
+    #if user_instagram is None:
+    #    return None
+    return user.anonymousSentMessages.all()
 
 @login_required
 def sendMessage(request):
@@ -821,7 +822,7 @@ def sendMessage(request):
         form = SendMessageForm(request.POST)
         if form.is_valid() and validateAndSendMessage(form, request.user):
             messages.success(request, 'Message sent.')
-            return HttpResponseRedirect(reverse('crushList'))
+            return HttpResponseRedirect(reverse('sentMessages'))
     else:
         form = SendMessageForm()
     context = {'form': form,}
@@ -830,26 +831,32 @@ def sendMessage(request):
     return render(request, 'secretcrushapp/send_message.html', context)
 
 def validateForSendMessage(user):
-    user_instagram = user.instagramDetails.first()
-    if user_instagram is None:
-        return 1
+    #user_instagram = user.instagramDetails.first()
+    #if user_instagram is None:
+    #    return 1
     if user.anonymousSentMessages.count() >= 10:
         return 2
     return None
 
 def validateAndSendMessage(form, user):
-    user_instagram = user.instagramDetails.first()
-    if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
-        return False
+    #if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
+    #    form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
+    #    return False
     if user.anonymousSentMessages.count() >= 10:
         form.add_error('__all__', 'You have already sent 10 messages. Delete one of them to send a new one.')
         return False
     new_message = AnonymousMessage(hidento_userid = user,
                                    receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
-                                   sender_instagram_username = user_instagram.instagram_username,
+                                   sender_instagram_username = getInstagramUsername(user),
                                    message = form.cleaned_data['message'],
                                    sender_nickname = form.cleaned_data['sender_nickname'],
                                    added_time = now())
     new_message.save()
     return True
+
+@login_required
+def deleteMessage(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    message_id = request.POST.get('message_id')
+
