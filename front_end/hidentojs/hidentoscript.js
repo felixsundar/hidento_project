@@ -51,3 +51,23 @@ $(".edit_crush_activeClass").change(function() {
         alert("You are about to deactivate this crush.\n\nIf you are matched with this crush currently, your match will be broken.")
     }
 });
+
+$(function() {
+   $(".sentMessageDeleteButton").click(function(){
+      if (confirm("The receiver will not be able to see this message.\n\nAre you sure you want to delete?")){
+         $(this).submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});
+
+$(function() {
+   $(".receivedMessageHideButton").click(function(){
+      if (confirm("You won't be able to see this message again.\n\nAre you sure you want to hide it?")){
+         $(this).submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});

@@ -318,10 +318,10 @@ class FAQ(models.Model):
 class AnonymousMessage(models.Model):
     message_id = models.BigAutoField(primary_key=True, unique=True)
     hidento_userid = models.ForeignKey(HidentoUser, related_name='anonymousSentMessages', on_delete=models.CASCADE)
-    sender_instagram_username = models.CharField(max_length=255, null=True, blank=True)
-    receiver_instagram_username = models.CharField(max_length=50, null=False)
+    sender_instagram_username = models.CharField(max_length=255, null=False)
+    receiver_instagram_username = models.CharField(max_length=30, null=False)
     message = models.TextField(max_length=1000, null=False)
-    sender_nickname = models.CharField(max_length=100, null=False)
+    sender_nickname = models.CharField(max_length=50, null=False)
     added_time = models.DateTimeField(null=False)
     is_hidden = models.BooleanField(default=False)
     is_abusive = models.BooleanField(default=False)

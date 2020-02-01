@@ -34,4 +34,7 @@ urlpatterns = [
     path('messages/sent/', views.sentMessages, name='sentMessages'),
     path('messages/send/', views.sendMessage, name='sendMessage'),
     path('messages/received/', views.receivedMessages, name='receivedMessages'),
+    path('messages/delete/', views.deleteMessage, name='deleteMessage'),
+    path('messages/hide/', views.hideMessage, name='hideMessage'),
+    path('messages/report/', views.reportMessage, name='reportMessage')
 ]

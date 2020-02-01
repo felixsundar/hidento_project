@@ -792,7 +792,8 @@ def getReceivedMessages(instagram_username):
     if instagram_username is None:
         return None
     return list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
-                .filter(is_abusive = False))
+                .filter(is_hidden = False)
+                .order_by('-added_time'))
 
 @login_required
 def sentMessages(request):
@@ -804,9 +805,9 @@ def sentMessages(request):
     return render(request, 'secretcrushapp/sent_messages.html', context=context)
 
 def getSentMessages(user):
-    #user_instagram = user.instagramDetails.first()
-    #if user_instagram is None:
-    #    return None
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        return None
     return user.anonymousSentMessages.all()
 
 @login_required
@@ -821,7 +822,7 @@ def sendMessage(request):
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
         if form.is_valid() and validateAndSendMessage(form, request.user):
-            messages.success(request, 'Message sent.')
+            messages.success(request, 'Compliment sent.')
             return HttpResponseRedirect(reverse('sentMessages'))
     else:
         form = SendMessageForm()
@@ -831,23 +832,24 @@ def sendMessage(request):
     return render(request, 'secretcrushapp/send_message.html', context)
 
 def validateForSendMessage(user):
-    #user_instagram = user.instagramDetails.first()
-    #if user_instagram is None:
-    #    return 1
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        return 1
     if user.anonymousSentMessages.count() >= 10:
         return 2
     return None
 
 def validateAndSendMessage(form, user):
-    #if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-    #    form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
-    #    return False
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
+        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
+        return False
     if user.anonymousSentMessages.count() >= 10:
-        form.add_error('__all__', 'You have already sent 10 messages. Delete one of them to send a new one.')
+        form.add_error('__all__', 'You have already sent 10 compliments. Delete one of them to send a new one.')
         return False
     new_message = AnonymousMessage(hidento_userid = user,
                                    receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
-                                   sender_instagram_username = getInstagramUsername(user),
+                                   sender_instagram_username = user_instagram.instagram_username,
                                    message = form.cleaned_data['message'],
                                    sender_nickname = form.cleaned_data['sender_nickname'],
                                    added_time = now())
@@ -859,4 +861,45 @@ def deleteMessage(request):
     if request.method != 'POST':
         raise PermissionDenied
     message_id = request.POST.get('message_id')
+    try:
+        message = AnonymousMessage.objects.get(message_id=message_id)
+    except AnonymousMessage.DoesNotExist:
+        raise PermissionDenied
+    if message.hidento_userid != request.user:
+        raise PermissionDenied
+    message.delete()
+    messages.success(request, 'Compliment deleted.')
+    return HttpResponseRedirect(reverse('sentMessages'))
 
+@login_required
+def hideMessage(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    try:
+        message_id = request.POST.get('message_id')
+        message = AnonymousMessage.objects.get(message_id=message_id)
+    except AnonymousMessage.DoesNotExist:
+        raise PermissionDenied
+    if message.receiver_instagram_username != getInstagramUsername(request.user):
+        raise PermissionDenied
+    message.is_hidden = True
+    message.save()
+    messages.success(request, 'Compliment hidden.')
+    return HttpResponseRedirect(reverse('receivedMessages'))
+
+@login_required
+def reportMessage(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    try:
+        message_id = request.POST.get('message_id')
+        message = AnonymousMessage.objects.get(message_id=message_id)
+    except AnonymousMessage.DoesNotExist:
+        raise PermissionDenied
+    if message.receiver_instagram_username != getInstagramUsername(request.user):
+        raise PermissionDenied
+    message.is_abusive = True
+    message.is_hidden = True
+    message.save()
+    messages.success(request, 'Message reported.')
+    return HttpResponseRedirect(reverse('receivedMessages'))
