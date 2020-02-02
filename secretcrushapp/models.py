@@ -3,6 +3,7 @@ import threading
 
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
+from django.contrib.postgres.fields import JSONField
 from django.core.mail import send_mail
 from django.db import models, transaction
 
@@ -46,10 +47,10 @@ class HidentoUserManager(BaseUserManager):
 
 class HidentoUser(AbstractBaseUser, PermissionsMixin):
     userid = models.BigAutoField(primary_key=True, unique=True)
-    username = models.CharField(max_length=255, unique=True, blank=False, null=False)
+    username = models.CharField(max_length=35, unique=True, blank=False, null=False)
     email = models.EmailField(verbose_name='Email', max_length=255, unique=True, blank=False, null=False)
-    firstname = models.CharField(max_length=255)
-    fullname = models.CharField(verbose_name='Full Name', max_length=255)
+    firstname = models.CharField(max_length=20)
+    fullname = models.CharField(verbose_name='Full Name', max_length=40)
     gender = models.IntegerField(choices=[(1,'Male'), (2,'Female'), (3,'Other')])
     date_of_birth = models.DateField(verbose_name='Date of Birth', blank=True, null=True)
     is_staff = models.BooleanField(default=False)
@@ -70,8 +71,9 @@ def hidentoUserPreSave(sender, **kwargs):
     hidentoUser = kwargs['instance']
     if hidentoUser.is_superuser or hidentoUser.is_staff:
         if hidentoUser.username != 'hidentosonlysuperuser':
-            raise Exception('Users cannot be upgraded to admins.')
-    hidentoUser.firstname = hidentoUser.fullname.split(' ')[0].capitalize()
+            raise ValueError('Users cannot be upgraded to admins.')
+    firstname = hidentoUser.fullname.split(' ')[0].capitalize()
+    hidentoUser.firstname = firstname[:min(20, len(firstname))]
 
 @receiver(post_save, sender=HidentoUser, dispatch_uid='hidentoUserPostSave')
 def hidentoUserPostSave(sender, **kwargs):
@@ -83,7 +85,7 @@ def hidentoUserPostSave(sender, **kwargs):
             hidentoUser.save()
 
 class Controls(models.Model):
-    control_id = models.CharField(max_length=255, unique=True, primary_key=True)
+    control_id = models.CharField(max_length=40, unique=True, primary_key=True)
     stablization_days = models.IntegerField(default=7)
     stable_days = models.IntegerField(default=14)
     stablizer_thread = models.IntegerField(choices=[(1, 'Do Nothing'), (2, 'Start Stablizer thread')], default=1)
@@ -141,47 +143,47 @@ def stablizer_thread_running():
 
 class InstagramCrush(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='instagramDetails', on_delete=models.CASCADE, primary_key=True)
-    instagram_username = models.CharField(max_length=255, unique=True)
-    crush1_username = models.CharField(max_length=255, blank=True, null=True)
-    crush1_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush1_message = models.TextField(max_length=3000, blank=True, null=True)
+    instagram_username = models.CharField(max_length=40, unique=True)
+    crush1_username = models.CharField(max_length=40, blank=True, null=True)
+    crush1_nickname = models.CharField(max_length=40, blank=True, null=True)
+    crush1_message = models.TextField(max_length=1000, blank=True, null=True)
     crush1_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush1_time = models.DateTimeField(blank=True, null=True)
     crush1_active = models.BooleanField(default=False)
-    crush2_username = models.CharField(max_length=255, blank=True, null=True)
-    crush2_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush2_message = models.TextField(max_length=3000, blank=True, null=True)
+    crush2_username = models.CharField(max_length=40, blank=True, null=True)
+    crush2_nickname = models.CharField(max_length=40, blank=True, null=True)
+    crush2_message = models.TextField(max_length=1000, blank=True, null=True)
     crush2_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush2_time = models.DateTimeField(blank=True, null=True)
     crush2_active = models.BooleanField(default=False)
-    crush3_username = models.CharField(max_length=255, blank=True, null=True)
-    crush3_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush3_message = models.TextField(max_length=3000, blank=True, null=True)
+    crush3_username = models.CharField(max_length=40, blank=True, null=True)
+    crush3_nickname = models.CharField(max_length=40, blank=True, null=True)
+    crush3_message = models.TextField(max_length=1000, blank=True, null=True)
     crush3_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush3_time = models.DateTimeField(blank=True, null=True)
     crush3_active = models.BooleanField(default=False)
-    crush4_username = models.CharField(max_length=255, blank=True, null=True)
-    crush4_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush4_message = models.TextField(max_length=3000, blank=True, null=True)
+    crush4_username = models.CharField(max_length=40, blank=True, null=True)
+    crush4_nickname = models.CharField(max_length=40, blank=True, null=True)
+    crush4_message = models.TextField(max_length=1000, blank=True, null=True)
     crush4_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush4_time = models.DateTimeField(blank=True, null=True)
     crush4_active = models.BooleanField(default=False)
-    crush5_username = models.CharField(max_length=255, blank=True, null=True)
-    crush5_nickname = models.CharField(max_length=255, blank=True, null=True)
-    crush5_message = models.TextField(max_length=3000, blank=True, null=True)
+    crush5_username = models.CharField(max_length=40, blank=True, null=True)
+    crush5_nickname = models.CharField(max_length=40, blank=True, null=True)
+    crush5_message = models.TextField(max_length=1000, blank=True, null=True)
     crush5_whomToInform = models.IntegerField(choices=[(1, 'Choose at random'), (2, 'Inform my crush')], default=1)
     crush5_time = models.DateTimeField(blank=True, null=True)
     crush5_active = models.BooleanField(default=False)
-    match_instagram_username = models.CharField(max_length=255, blank=True, null=True)
+    match_instagram_username = models.CharField(max_length=40, blank=True, null=True)
     match_time = models.DateTimeField(blank=True, null=True)
-    old_match_instagram_username = models.CharField(max_length=255, blank=True, null=True)
+    old_match_instagram_username = models.CharField(max_length=40, blank=True, null=True)
     old_match_time = models.DateTimeField(blank=True, null=True)
     old_match_broken_time = models.DateTimeField(blank=True, null=True)
     match_stablized = models.BooleanField(default=False)
     inform_this_user = models.BooleanField(default=False)
     match_stablized_time = models.DateTimeField(blank=True, null=True)
-    match_nickname = models.CharField(max_length=255, blank=True, null=True)
-    match_message = models.TextField(max_length=3000, blank=True, null=True)
+    match_nickname = models.CharField(max_length=40, blank=True, null=True)
+    match_message = models.TextField(max_length=1000, blank=True, null=True)
 
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in InstagramCrush._meta.fields]
@@ -243,8 +245,8 @@ def userInstagramPostDelete(sender, **kwargs):
 
 class InstagramDetails(models.Model):
     hidento_userid = models.ForeignKey(HidentoUser, related_name='user_instagramDetails', on_delete=models.CASCADE, primary_key=True)
-    instagram_userid = models.CharField(max_length=255, unique=True)
-    instagram_username = models.CharField(max_length=255, unique=True)
+    instagram_userid = models.CharField(max_length=40, unique=True)
+    instagram_username = models.CharField(max_length=40, unique=True)
     ll_access_token = models.CharField(max_length=1000, null=True, blank=True)
     token_expires_in = models.BigIntegerField(null=True, blank=True)
     token_time = models.DateTimeField(null=True, blank=True)
@@ -277,12 +279,12 @@ def userInstagramDetailsPostDelete(sender, **kwargs):
         user_instagram.delete()
 
 class ContactHidento(models.Model):
-    fullname = models.CharField(max_length=255, null=False)
+    fullname = models.CharField(max_length=40, null=False)
     email = models.EmailField(max_length=255, null=False)
-    message = models.TextField(max_length=3000, null=False)
+    message = models.TextField(max_length=2000, null=False)
     contact_time = models.DateTimeField(default=timezone.now)
-    reply_email_subject = models.CharField(max_length=300, null=True, blank=True)
-    reply_email_message = models.TextField(max_length=6000, null=True, blank=True)
+    reply_email_subject = models.CharField(max_length=200, null=True, blank=True)
+    reply_email_message = models.TextField(max_length=3000, null=True, blank=True)
     replied_time = models.DateTimeField(blank=True, null=True)
     is_successfully_replied = models.BooleanField(default=False)
     is_replied = models.BooleanField(default=False)
@@ -304,24 +306,29 @@ class ContactHidento(models.Model):
         super().save(*args, **kwargs)
 
 class HowItWorks(models.Model):
-    heading = models.TextField(max_length=3000, null=False)
-    explanation = models.TextField(max_length=10000, null=False)
+    heading = models.TextField(max_length=100, null=False)
+    explanation = models.TextField(max_length=2000, null=False)
     is_enabled = models.BooleanField(default=True)
     priority_value = models.IntegerField(null=False, default=1)
 
 class FAQ(models.Model):
-    question = models.TextField(max_length=3000, null=False)
-    answer = models.TextField(max_length=10000, null=False)
+    question = models.TextField(max_length=300, null=False)
+    answer = models.TextField(max_length=2000, null=False)
     is_enabled = models.BooleanField(default=True)
     priority_value = models.IntegerField(null=False, default=1)
 
 class AnonymousMessage(models.Model):
     message_id = models.BigAutoField(primary_key=True, unique=True)
     hidento_userid = models.ForeignKey(HidentoUser, related_name='anonymousSentMessages', on_delete=models.CASCADE)
-    sender_instagram_username = models.CharField(max_length=255, null=False)
-    receiver_instagram_username = models.CharField(max_length=30, null=False)
+    sender_instagram_username = models.CharField(max_length=40, null=False)
+    receiver_instagram_username = models.CharField(max_length=40, null=False)
     message = models.TextField(max_length=1000, null=False)
-    sender_nickname = models.CharField(max_length=50, null=False)
+    sender_nickname = models.CharField(max_length=40, null=False)
     added_time = models.DateTimeField(null=False)
     is_hidden = models.BooleanField(default=False)
     is_abusive = models.BooleanField(default=False)
+
+class MessageBlacklist(models.Model):
+    hidento_userid = models.ForeignKey(HidentoUser, related_name='messageBlacklist', on_delete=models.CASCADE, primary_key=True)
+    blacklistJSON = JSONField(null=True, blank=True)
+    last_modified_time = models.DateTimeField(null=False)

@@ -1,3 +1,4 @@
+import json
 import logging
 import threading
 
@@ -18,7 +19,7 @@ from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
 from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails, AnonymousMessage
-from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm, SendMessageForm
+from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm, SendMessageForm, MessageBlacklistForm
 
 from hidento_project import settings
 
@@ -903,3 +904,62 @@ def reportMessage(request):
     message.save()
     messages.success(request, 'Message reported.')
     return HttpResponseRedirect(reverse('receivedMessages'))
+
+@login_required
+def editBlacklistView(request):
+    blacklistObject = request.user.messageBlacklist.first()
+    blacklistFormData = getBlacklistFormData(blacklistObject)
+    form = MessageBlacklistForm(blacklistFormData)
+    if request.method == 'POST':
+        form = MessageBlacklistForm(request.POST)
+        if form.is_valid() and validateAndEditBlacklist(request.user, form, blacklistObject):
+            return HttpResponseRedirect(reverse('blacklist'))
+    context = {
+        'form': form,
+        'modifiable':isModifiable(blacklistObject)
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/blacklist_m.html', context)
+    return render(request, 'secretcrushapp/blacklist.html', context)
+
+def validateAndEditBlacklist(user, form, blacklistObject):
+    pass
+
+def isModifiable(blacklistObject):
+    if blacklistObject is None:
+        return True
+    if time_difference_in_days(blacklistObject.last_modified_time, now()) >= settings.MESSAGE_BLACKLIST_MODIFICATION_TIME:
+        return True
+    return False
+
+def getBlacklistFormData(blacklistObject):
+    if blacklistObject is None:
+        return None
+    blacklistFormData = {}
+    blacklistFormData['username1'] = None
+    blacklistFormData['nickname1'] = None
+    blacklistFormData['username2'] = None
+    blacklistFormData['nickname2'] = None
+    blacklistFormData['username3'] = None
+    blacklistFormData['nickname3'] = None
+    blacklistFormData['username4'] = None
+    blacklistFormData['nickname4'] = None
+    blacklistFormData['username5'] = None
+    blacklistFormData['nickname5'] = None
+    blacklistFormData['username6'] = None
+    blacklistFormData['nickname6'] = None
+    blacklistFormData['username7'] = None
+    blacklistFormData['nickname7'] = None
+    blacklistFormData['username8'] = None
+    blacklistFormData['nickname8'] = None
+    blacklistFormData['username9'] = None
+    blacklistFormData['nickname9'] = None
+    blacklistFormData['username10'] = None
+    blacklistFormData['nickname10'] = None
+    blacklistPythonList = json.loads(blacklistObject.blacklistJSON)
+    i=1
+    for blacklisted in blacklistPythonList:
+        blacklistFormData['username'+str(i)] = blacklisted.get('username')
+        blacklistFormData['nickname'+str(i)] = blacklisted.get('nickname')
+        i+=1
+    return blacklistFormData

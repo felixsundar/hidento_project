@@ -41,6 +41,7 @@ def alphaspace(fullname):
 
 def generateUsername(fullname):
     username = fullname.lower().replace(' ', '_')
+    username = username[:min(25, len(username))]
     number = 0
     newUsername = username
     try:
@@ -132,3 +133,25 @@ class SendMessageForm(ModelForm):
         if ' ' in receiver_instagram_username:
             raise forms.ValidationError('Instagram usernames cannot contain spaces.')
         return receiver_instagram_username
+
+class MessageBlacklistForm(Form):
+    nickname1 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username1 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname2 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username2 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname3 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username3 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname4 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username4 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname5 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username5 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname6 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username6 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname7 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username7 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname8 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username8 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname9 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username9 = forms.CharField(label='Username', max_length=40, required=True)
+    nickname10 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username10 = forms.CharField(label='Username', max_length=40, required=True)
