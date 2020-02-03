@@ -130,6 +130,7 @@ LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
 STABLIZATION_PERIOD = 7
 STABLE_PERIOD = 14
 CONTROLS_RECORD_ID = 'master_controls'
+MESSAGE_BLACKLIST_MODIFICATION_DAYS = 0
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

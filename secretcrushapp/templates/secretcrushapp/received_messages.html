@@ -10,6 +10,7 @@
         {% endif %}
         <h2 class="hidento-title-color"><b>Compliments Received</b></h2>
 
+        <div style="text-align:right"><a href="{% url 'messageBlacklist' %}" class="hidento-heading-color"> My Blacklist </a></div>
         {% if received_messages is None %}
         <div class="mt-3 mb-3">Instagram account not linked. Link your instagram account to see the messages received
             for your Instagram username.

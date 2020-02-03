@@ -18,7 +18,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails, AnonymousMessage
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails, AnonymousMessage, MessageBlacklist
 from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm, SendMessageForm, MessageBlacklistForm
 
 from hidento_project import settings
@@ -908,33 +908,63 @@ def reportMessage(request):
 @login_required
 def editBlacklistView(request):
     blacklistObject = request.user.messageBlacklist.first()
-    blacklistFormData = getBlacklistFormData(blacklistObject)
-    form = MessageBlacklistForm(blacklistFormData)
+    blacklistModifiable = isModifiable(blacklistObject)
     if request.method == 'POST':
         form = MessageBlacklistForm(request.POST)
-        if form.is_valid() and validateAndEditBlacklist(request.user, form, blacklistObject):
-            return HttpResponseRedirect(reverse('blacklist'))
+        if not blacklistModifiable:
+            messages.warning(request, 'Blacklist can be modified only once in ' +
+                             str(settings.MESSAGE_BLACKLIST_MODIFICATION_DAYS) + ' days.')
+            return HttpResponseRedirect(reverse('messageBlacklist'))
+        elif form.is_valid() and editBlacklist(request, form, blacklistObject):
+            return HttpResponseRedirect(reverse('messageBlacklist'))
+    else:
+        blacklistFormData = getBlacklistFormData(blacklistObject)
+        form = MessageBlacklistForm(blacklistFormData)
     context = {
         'form': form,
-        'modifiable':isModifiable(blacklistObject)
+        'modifiable':blacklistModifiable
     }
     if request.user_agent.is_mobile:
-        return render(request, 'secretcrushapp/blacklist_m.html', context)
-    return render(request, 'secretcrushapp/blacklist.html', context)
+        return render(request, 'secretcrushapp/blacklist_edit_m.html', context)
+    return render(request, 'secretcrushapp/blacklist_edit.html', context)
 
-def validateAndEditBlacklist(user, form, blacklistObject):
-    pass
+def editBlacklist(request, form, blacklistObject):
+    blacklistPythonListFromForm = getblacklistPythonListFromForm(form)
+    if blacklistObject is not None:
+        blacklistPythonListFromDb = json.loads(blacklistObject.blacklistJSON)
+    else:
+        blacklistPythonListFromDb = []
+        blacklistObject = MessageBlacklist(hidento_userid=request.user)
+    changecode = getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb)
+    if changecode == 2:
+        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
+        blacklistObject.last_modified_time = now()
+        blacklistObject.save()
+        messages.success(request, 'Blacklist modified.')
+    elif changecode == 1:
+        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
+        blacklistObject.save()
+        messages.success(request, 'Changes saved.')
+    return True
+
+def getblacklistPythonListFromForm(form):
+    blacklistPythonList = []
+    for i in range(1, 11):
+        if form.cleaned_data['username'+str(i)] is not None:
+            blacklistPythonList.append({
+                'username': form.cleaned_data['username'+str(i)],
+                'nickname': form.cleaned_data['nickname'+str(i)]
+            })
+    return blacklistPythonList
 
 def isModifiable(blacklistObject):
     if blacklistObject is None:
         return True
-    if time_difference_in_days(blacklistObject.last_modified_time, now()) >= settings.MESSAGE_BLACKLIST_MODIFICATION_TIME:
+    if time_difference_in_days(blacklistObject.last_modified_time, now()) >= settings.MESSAGE_BLACKLIST_MODIFICATION_DAYS:
         return True
     return False
 
 def getBlacklistFormData(blacklistObject):
-    if blacklistObject is None:
-        return None
     blacklistFormData = {}
     blacklistFormData['username1'] = None
     blacklistFormData['nickname1'] = None
@@ -956,6 +986,8 @@ def getBlacklistFormData(blacklistObject):
     blacklistFormData['nickname9'] = None
     blacklistFormData['username10'] = None
     blacklistFormData['nickname10'] = None
+    if blacklistObject is None:
+        return blacklistFormData
     blacklistPythonList = json.loads(blacklistObject.blacklistJSON)
     i=1
     for blacklisted in blacklistPythonList:
@@ -963,3 +995,18 @@ def getBlacklistFormData(blacklistObject):
         blacklistFormData['nickname'+str(i)] = blacklisted.get('nickname')
         i+=1
     return blacklistFormData
+
+def getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb):
+    if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
+        return 2
+    formUsernameList = [ user.username for user in blacklistPythonListFromForm]
+    dbUsernameList = [user.username for user in blacklistPythonListFromDb]
+    for username in formUsernameList:
+        if username not in dbUsernameList:
+            return 2
+    formNicknameList = [user.nickname for user in blacklistPythonListFromForm]
+    dbNicknameList = [user.nickname for user in blacklistPythonListFromDb]
+    for nickname in formNicknameList:
+        if nickname not in dbNicknameList:
+            return 1
+    return 0

@@ -1,0 +1,50 @@
+{% extends 'secretcrushapp/base_d.html' %}
+
+{% block content %}
+<center>
+    <div style="width:70%;margin-top:2.3rem;margin-bottom:1.8rem">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <h2><b>Compliments Blacklist</b></h2><br>
+        <p>Messages from blacklisted users will not be shown to you. You can blacklist your close friends (by their
+            Instagram usernames), so they don't prank you.
+        </p>
+        <form method="post" id="hidentoform">
+            {% csrf_token %}
+            <br>
+            <table>
+                <tr>
+                    <td class="pr-4">
+                        1.
+                    </td>
+                    <td class="pr-4">
+                        <input type="text" placeholder="Nickname (optional)" name="nickname1"
+                   maxlength="40" value="{% if form.nickname.value %}{{form.nickname.value}}{% endif %}">
+                    </td>
+                    <td>
+                        <input type="text" placeholder="Instagram username" name="username1" id="instagramUsername1"
+                   maxlength="40" value="{% if form.username.value %}{{form.username.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="1"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username1.errors %}
+                        {% for error in form.username1.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <input class="btn btn-primary mr-3" type="submit" value="Save">
+
+            <a href="{% url 'receivedMessages' %}">
+                <button type="button" class="btn btn-primary">Cancel</button>
+            </a>
+        </form>
+    </div>
+</center>
+{% endblock %}

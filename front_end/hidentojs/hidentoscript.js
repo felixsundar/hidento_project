@@ -71,3 +71,21 @@ $(function() {
       }
    });
 });
+
+$(function() {
+   $(".verifyInstagram").click(function(){
+      var buttonid = $(this).attr('id');
+      var usernameid = "#instagramUsername" + buttonid;
+      var instagramUsername = $(usernameid).val();
+      if (!instagramUsername.trim() || instagramUsername.length == 0){
+        alert("Enter an Instagram username to verify.");
+      } else if (hasWhiteSpace(instagramUsername.trim())){
+        alert("Instagram username should not contain spaces.")
+      } else if (hasatsymbol(instagramUsername.trim())){
+        alert("Do not include '@' in Instagram username.")
+      } else{
+        instagramLink = "https://www.instagram.com/" + instagramUsername.trim();
+        window.open(instagramLink, '_blank')
+      }
+   });
+});

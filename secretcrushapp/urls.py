@@ -36,5 +36,6 @@ urlpatterns = [
     path('messages/received/', views.receivedMessages, name='receivedMessages'),
     path('messages/delete/', views.deleteMessage, name='deleteMessage'),
     path('messages/hide/', views.hideMessage, name='hideMessage'),
-    path('messages/report/', views.reportMessage, name='reportMessage')
+    path('messages/report/', views.reportMessage, name='reportMessage'),
+    path('messages/blacklist/', views.editBlacklistView, name='messageBlacklist')
 ]
