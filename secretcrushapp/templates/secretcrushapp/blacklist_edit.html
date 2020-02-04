@@ -2,7 +2,7 @@
 
 {% block content %}
 <center>
-    <div style="width:70%;margin-top:2.3rem;margin-bottom:1.8rem">
+    <div style="width:70%;margin-top:2.3rem;margin-bottom:2.8rem">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
@@ -16,17 +16,27 @@
             {% csrf_token %}
             <br>
             <table>
+                <tr class="pb-3">
+                    <td>
+                    </td>
+                    <td class="pl-2 hidento-row-padding">
+                        <b>Nickname (Optional)</b>
+                    </td>
+                    <td class="pl-2 hidento-row-padding">
+                        <b>Instagram Username</b>
+                    </td>
+                </tr>
                 <tr>
-                    <td class="pr-4">
+                    <td class="pr-3 hidento-row-padding">
                         1.
                     </td>
-                    <td class="pr-4">
-                        <input type="text" placeholder="Nickname (optional)" name="nickname1"
-                   maxlength="40" value="{% if form.nickname.value %}{{form.nickname.value}}{% endif %}">
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname1"
+                   maxlength="40" value="{% if form.nickname1.value %}{{form.nickname1.value}}{% endif %}">
                     </td>
-                    <td>
-                        <input type="text" placeholder="Instagram username" name="username1" id="instagramUsername1"
-                   maxlength="40" value="{% if form.username.value %}{{form.username.value}}{% endif %}">
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username1" id="instagramUsername1"
+                   maxlength="40" value="{% if form.username1.value %}{{form.username1.value}}{% endif %}">
                         &nbsp;
                         <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="1"
                                                           style="font-size:0.7rem">Verify</button>
@@ -37,6 +47,205 @@
                         {% endif %}
                     </td>
                 </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        2.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname2"
+                   maxlength="40" value="{% if form.nickname2.value %}{{form.nickname2.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username2" id="instagramUsername2"
+                   maxlength="40" value="{% if form.username2.value %}{{form.username2.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="2"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username2.errors %}
+                        {% for error in form.username2.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        3.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname3"
+                   maxlength="40" value="{% if form.nickname3.value %}{{form.nickname3.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username3" id="instagramUsername3"
+                   maxlength="40" value="{% if form.username3.value %}{{form.username3.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="3"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username3.errors %}
+                        {% for error in form.username3.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        4.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname4"
+                   maxlength="40" value="{% if form.nickname4.value %}{{form.nickname4.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username4" id="instagramUsername4"
+                   maxlength="40" value="{% if form.username4.value %}{{form.username4.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="4"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username4.errors %}
+                        {% for error in form.username4.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        5.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname5"
+                   maxlength="40" value="{% if form.nickname5.value %}{{form.nickname5.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username5" id="instagramUsername5"
+                   maxlength="40" value="{% if form.username5.value %}{{form.username5.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="5"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username5.errors %}
+                        {% for error in form.username5.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        6.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname6"
+                   maxlength="40" value="{% if form.nickname6.value %}{{form.nickname6.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username6" id="instagramUsername6"
+                   maxlength="40" value="{% if form.username6.value %}{{form.username6.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="6"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username6.errors %}
+                        {% for error in form.username6.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        7.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname7"
+                   maxlength="40" value="{% if form.nickname7.value %}{{form.nickname7.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username7" id="instagramUsername7"
+                   maxlength="40" value="{% if form.username7.value %}{{form.username7.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="7"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username7.errors %}
+                        {% for error in form.username7.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        8.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname8"
+                   maxlength="40" value="{% if form.nickname8.value %}{{form.nickname8.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username8" id="instagramUsername8"
+                   maxlength="40" value="{% if form.username8.value %}{{form.username8.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="8"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username8.errors %}
+                        {% for error in form.username8.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        9.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname9"
+                   maxlength="40" value="{% if form.nickname9.value %}{{form.nickname9.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username9" id="instagramUsername9"
+                   maxlength="40" value="{% if form.username9.value %}{{form.username9.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="9"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username9.errors %}
+                        {% for error in form.username9.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="pr-3 hidento-row-padding">
+                        10.
+                    </td>
+                    <td class="pr-3 pl-2 hidento-row-padding">
+                        <input type="text" placeholder="------" name="nickname10"
+                   maxlength="40" value="{% if form.nickname10.value %}{{form.nickname10.value}}{% endif %}">
+                    </td>
+                    <td class="pl-3 hidento-row-padding">
+                        <input type="text" placeholder="------" name="username10" id="instagramUsername10"
+                   maxlength="40" value="{% if form.username10.value %}{{form.username10.value}}{% endif %}">
+                        &nbsp;
+                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="10"
+                                                          style="font-size:0.7rem">Verify</button>
+                        {% if form.username10.errors %}
+                        {% for error in form.username10.errors %}
+                        <div class="hidento-form-error">{{ error|escape }}</div>
+                        {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+
             </table>
             <br>
             <input class="btn btn-primary mr-3" type="submit" value="Save">

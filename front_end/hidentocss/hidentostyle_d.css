@@ -141,3 +141,8 @@ word-wrap: break-word;
     background-color:#e6e6e6 !important;
     border:none;
 }
+
+.hidento-row-padding{
+padding-top:0.5rem;
+padding-bottom:0.5rem;
+}

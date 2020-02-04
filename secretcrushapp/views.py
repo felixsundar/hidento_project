@@ -848,6 +848,9 @@ def validateAndSendMessage(form, user):
     if user.anonymousSentMessages.count() >= 10:
         form.add_error('__all__', 'You have already sent 10 compliments. Delete one of them to send a new one.')
         return False
+    if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username']:
+        form.add_error('receiver_instagram_username', 'You can\'t send a compliment to yourself.')
+        return False
     new_message = AnonymousMessage(hidento_userid = user,
                                    receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
                                    sender_instagram_username = user_instagram.instagram_username,
@@ -931,7 +934,7 @@ def editBlacklistView(request):
 def editBlacklist(request, form, blacklistObject):
     blacklistPythonListFromForm = getblacklistPythonListFromForm(form)
     if blacklistObject is not None:
-        blacklistPythonListFromDb = json.loads(blacklistObject.blacklistJSON)
+        blacklistPythonListFromDb = getBlacklistPythonListFromDb(blacklistObject)
     else:
         blacklistPythonListFromDb = []
         blacklistObject = MessageBlacklist(hidento_userid=request.user)
@@ -947,14 +950,29 @@ def editBlacklist(request, form, blacklistObject):
         messages.success(request, 'Changes saved.')
     return True
 
+def getBlacklistPythonListFromDb(blacklistObject):
+    print('\n\n\njson from db:\n', blacklistObject.blacklistJSON)
+    listFromDb = json.loads(blacklistObject.blacklistJSON)
+    print('\n\n\njson converted to list:\n', listFromDb)
+    blacklistPythonListFromDb = []
+    for i in listFromDb:
+        if i['username']:
+            blacklistPythonListFromDb.append(i)
+    print('\n\n\nempty removed list:\n',blacklistPythonListFromDb)
+    return blacklistPythonListFromDb
+
 def getblacklistPythonListFromForm(form):
     blacklistPythonList = []
+    print('\n\n\nform values:\n')
     for i in range(1, 11):
-        if form.cleaned_data['username'+str(i)] is not None:
+        print('username'+str(i)+': '+ form.cleaned_data['username'+str(i)])
+        print('nickname' + str(i) + ': ' + form.cleaned_data['nickname' + str(i)])
+        if form.cleaned_data['username'+str(i)]:
             blacklistPythonList.append({
                 'username': form.cleaned_data['username'+str(i)],
                 'nickname': form.cleaned_data['nickname'+str(i)]
             })
+    print('\n\n\nform converted to python list:\n', blacklistPythonList)
     return blacklistPythonList
 
 def isModifiable(blacklistObject):
@@ -988,7 +1006,7 @@ def getBlacklistFormData(blacklistObject):
     blacklistFormData['nickname10'] = None
     if blacklistObject is None:
         return blacklistFormData
-    blacklistPythonList = json.loads(blacklistObject.blacklistJSON)
+    blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
     i=1
     for blacklisted in blacklistPythonList:
         blacklistFormData['username'+str(i)] = blacklisted.get('username')
@@ -999,13 +1017,13 @@ def getBlacklistFormData(blacklistObject):
 def getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb):
     if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
         return 2
-    formUsernameList = [ user.username for user in blacklistPythonListFromForm]
-    dbUsernameList = [user.username for user in blacklistPythonListFromDb]
+    formUsernameList = [ user['username'] for user in blacklistPythonListFromForm]
+    dbUsernameList = [user['username'] for user in blacklistPythonListFromDb]
     for username in formUsernameList:
         if username not in dbUsernameList:
             return 2
-    formNicknameList = [user.nickname for user in blacklistPythonListFromForm]
-    dbNicknameList = [user.nickname for user in blacklistPythonListFromDb]
+    formNicknameList = [user['nickname'] for user in blacklistPythonListFromForm]
+    dbNicknameList = [user['nickname'] for user in blacklistPythonListFromDb]
     for nickname in formNicknameList:
         if nickname not in dbNicknameList:
             return 1

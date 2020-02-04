@@ -155,3 +155,9 @@ class MessageBlacklistForm(Form):
     username9 = forms.CharField(label='Username', max_length=40, required=False)
     nickname10 = forms.CharField(label='Nickname', max_length=40, required=False)
     username10 = forms.CharField(label='Username', max_length=40, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        for i in range(1, 11):
+            if ' ' in cleaned_data['username'+str(i)]:
+                self.add_error('username'+str(i), 'Instagram username cannot contain spaces.')
