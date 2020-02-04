@@ -130,7 +130,7 @@ LOG_FILE_PATH = '/home/ubuntu/logs/secretcrushapp_log.log'
 STABLIZATION_PERIOD = 7
 STABLE_PERIOD = 14
 CONTROLS_RECORD_ID = 'master_controls'
-MESSAGE_BLACKLIST_MODIFICATION_DAYS = 0
+MESSAGE_BLACKLIST_MODIFICATION_DAYS = 15 #this value should be synced those in blacklist_edit.html and hidentoscript.js
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

@@ -2,19 +2,25 @@
 
 {% block content %}
 <center>
-    <div style="width:70%;margin-top:2.3rem;margin-bottom:2.8rem">
+    <div style="width:80%;margin-top:2.3rem;margin-bottom:2.8rem">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
+        <div style="text-align:left"><a href="{% url 'receivedMessages' %}" class="hidento-heading-color"> Back </a></div>
         <h2><b>Compliments Blacklist</b></h2><br>
-        <p>Messages from blacklisted users will not be shown to you. You can blacklist your close friends (by their
-            Instagram usernames), so they don't prank you.
-        </p>
+        <p style="text-align:left">Messages from blacklisted users will not be shown to you. You can blacklist your close friends (by their
+            Instagram usernames), so they don't prank you.</p>
+            <b>Note:</b> Blacklist can be modified only once in 15 days.
         <form method="post" id="hidentoform">
             {% csrf_token %}
             <br>
+            {% if modifiable %}
+            <fieldset>
+                {% else %}
+                <fieldset disabled>
+                    {% endif %}
             <table>
                 <tr class="pb-3">
                     <td>
@@ -38,8 +44,8 @@
                         <input type="text" placeholder="------" name="username1" id="instagramUsername1"
                    maxlength="40" value="{% if form.username1.value %}{{form.username1.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="1"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="1"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username1.errors %}
                         {% for error in form.username1.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -60,8 +66,8 @@
                         <input type="text" placeholder="------" name="username2" id="instagramUsername2"
                    maxlength="40" value="{% if form.username2.value %}{{form.username2.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="2"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="2"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username2.errors %}
                         {% for error in form.username2.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -82,8 +88,8 @@
                         <input type="text" placeholder="------" name="username3" id="instagramUsername3"
                    maxlength="40" value="{% if form.username3.value %}{{form.username3.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="3"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="3"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username3.errors %}
                         {% for error in form.username3.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -104,8 +110,8 @@
                         <input type="text" placeholder="------" name="username4" id="instagramUsername4"
                    maxlength="40" value="{% if form.username4.value %}{{form.username4.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="4"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="4"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username4.errors %}
                         {% for error in form.username4.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -126,8 +132,8 @@
                         <input type="text" placeholder="------" name="username5" id="instagramUsername5"
                    maxlength="40" value="{% if form.username5.value %}{{form.username5.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="5"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="5"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username5.errors %}
                         {% for error in form.username5.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -148,8 +154,8 @@
                         <input type="text" placeholder="------" name="username6" id="instagramUsername6"
                    maxlength="40" value="{% if form.username6.value %}{{form.username6.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="6"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="6"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username6.errors %}
                         {% for error in form.username6.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -170,8 +176,8 @@
                         <input type="text" placeholder="------" name="username7" id="instagramUsername7"
                    maxlength="40" value="{% if form.username7.value %}{{form.username7.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="7"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="7"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username7.errors %}
                         {% for error in form.username7.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -192,8 +198,8 @@
                         <input type="text" placeholder="------" name="username8" id="instagramUsername8"
                    maxlength="40" value="{% if form.username8.value %}{{form.username8.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="8"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="8"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username8.errors %}
                         {% for error in form.username8.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -214,8 +220,8 @@
                         <input type="text" placeholder="------" name="username9" id="instagramUsername9"
                    maxlength="40" value="{% if form.username9.value %}{{form.username9.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="9"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="9"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username9.errors %}
                         {% for error in form.username9.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -236,8 +242,8 @@
                         <input type="text" placeholder="------" name="username10" id="instagramUsername10"
                    maxlength="40" value="{% if form.username10.value %}{{form.username10.value}}{% endif %}">
                         &nbsp;
-                        <button type="button" class="btn btn-primary pt-0 pb-0 verifyInstagram" id="10"
-                                                          style="font-size:0.7rem">Verify</button>
+                        <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="10"
+                                                          style="font-size:0.7rem">Verify</span>
                         {% if form.username10.errors %}
                         {% for error in form.username10.errors %}
                         <div class="hidento-form-error">{{ error|escape }}</div>
@@ -247,10 +253,16 @@
                 </tr>
 
             </table>
+                    </fieldset>
             <br>
-            <input class="btn btn-primary mr-3" type="submit" value="Save">
 
-            <a href="{% url 'receivedMessages' %}">
+                {% if modifiable %}
+            <input class="btn btn-primary mr-3 saveBlacklistButton" type="submit" value="Save">
+                {% else %}
+                <input class="btn btn-primary mr-3 saveBlacklistButton" disabled type="submit" value="Save">
+                    {% endif %}
+
+                <a href="{% url 'receivedMessages' %}">
                 <button type="button" class="btn btn-primary">Cancel</button>
             </a>
         </form>

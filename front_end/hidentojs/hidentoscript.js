@@ -89,3 +89,13 @@ $(function() {
       }
    });
 });
+
+$(function() {
+   $(".saveBlacklistButton").click(function(){
+      if (confirm("Once saved, it can\'t be modified for the next 15 days.\n\nAre you sure you want to save it?")){
+         $(this).submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});

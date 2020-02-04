@@ -951,28 +951,21 @@ def editBlacklist(request, form, blacklistObject):
     return True
 
 def getBlacklistPythonListFromDb(blacklistObject):
-    print('\n\n\njson from db:\n', blacklistObject.blacklistJSON)
     listFromDb = json.loads(blacklistObject.blacklistJSON)
-    print('\n\n\njson converted to list:\n', listFromDb)
     blacklistPythonListFromDb = []
     for i in listFromDb:
         if i['username']:
             blacklistPythonListFromDb.append(i)
-    print('\n\n\nempty removed list:\n',blacklistPythonListFromDb)
     return blacklistPythonListFromDb
 
 def getblacklistPythonListFromForm(form):
     blacklistPythonList = []
-    print('\n\n\nform values:\n')
     for i in range(1, 11):
-        print('username'+str(i)+': '+ form.cleaned_data['username'+str(i)])
-        print('nickname' + str(i) + ': ' + form.cleaned_data['nickname' + str(i)])
         if form.cleaned_data['username'+str(i)]:
             blacklistPythonList.append({
                 'username': form.cleaned_data['username'+str(i)],
                 'nickname': form.cleaned_data['nickname'+str(i)]
             })
-    print('\n\n\nform converted to python list:\n', blacklistPythonList)
     return blacklistPythonList
 
 def isModifiable(blacklistObject):
