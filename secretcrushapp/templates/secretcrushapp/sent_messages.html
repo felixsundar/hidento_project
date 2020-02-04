@@ -16,7 +16,7 @@
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         {% if not sent_messages %}
-        <p class="mt-5">No compliments sent yet.</p>
+        <p class="mt-4">No compliments sent yet.</p>
         {% else %}
         <div style="margin-top:5rem"></div>
         {% for message in sent_messages %}
