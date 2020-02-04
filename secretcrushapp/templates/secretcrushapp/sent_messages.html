@@ -1,0 +1,49 @@
+{% extends 'secretcrushapp/base_d.html' %}
+
+{% block content %}
+<center>
+    <div style="margin-top:2.3rem;width:80%;margin-bottom:3.5rem">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        <h2 class="hidento-title-color"><b>Compliments Sent</b></h2>
+
+        {% if sent_messages is None %}
+        <p>Link your Instagram account to send anonymous compliments to your secret crushes.<br>
+            (Instagram verification needed to avoid pranks from close friends.)</p>
+        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
+        {% else %}
+        {% if not sent_messages %}
+        <p class="mt-4">No compliments sent yet.</p>
+        {% else %}
+        <div style="margin-top:5rem"></div>
+        {% for message in sent_messages %}
+        <p style="text-align:left" class="mb-2"><b>Message: </b>{{ message.message }}</p>
+        <p style="text-align:left" class="mb-2"><b>Receiver Instagram Username:</b>&nbsp;{{message.receiver_instagram_username}}</p>
+        <table style="width:100%;table-layout:fixed">
+            <tr>
+                <td style="text-align:left;width:80%;word-wrap:break-word;">
+                    <b>Sent as: </b>{{message.sender_nickname}}
+                </td>
+                <td style="text-align:right">
+                    <form method="post" action="{% url 'deleteMessage' %}">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{message.message_id}}" name="message_id">
+                        <button class="btn btn-light btn-sm p-0 pl-1 pr-1 sentMessageDeleteButton"
+                                style="font-size:0.65rem;color:red !important" type="submit">
+                            Delete&nbsp;<i class="material-icons" style="font-size:0.65rem;vertical-align:middle;padding-bottom:0.2rem">delete_outline</i></button>
+                    </form>
+                </td>
+            </tr>
+        </table>
+
+        <br><br><br><br>
+        {% endfor %}
+        {% endif %}
+        <a class="btn btn-primary mt-4" href="{% url 'sendMessage' %}"> Send a Compliment </a>
+        {% endif %}
+    </div>
+</center>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'secretcrushapp/base_d.html' %}
+
+{% block content %}
+<center>
+    <div style="width:70%;margin-top:2.3rem;margin-bottom:1.8rem">
+        <h2><b>Send New Compliment</b></h2><br>
+        {% if error is not None%}
+        {% if error == 1 %}
+        <p>Instagram account not linked. Link your Instagram account to send messages.<br>
+            Don't worry, your identity won't be revealed.
+        </p>
+        <a href="{% url 'linkInstagram' %}"> Link Instagram </a>
+        {% elif error == 2 %}
+        <p>You have already sent 10 compliments. Delete one of them to send a new one.</p>
+        <a href="{% url 'sentMessages' %}"> Sent Messages </a>
+        {% endif %}
+        {% else %}
+        <form method="post" id="hidentoform">
+            {% csrf_token %}
+            <!--            {{ form.as_table }}-->
+            <input type="text" class="form-control" placeholder="Instagram username of the receiver" name="receiver_instagram_username"
+                   maxlength="30" required id="id_receiver_instagram_username"
+                   value="{% if form.receiver_instagram_username.value %}{{form.receiver_instagram_username.value}}{% endif %}" autofocus>
+            <table style="width:100%"><tr><td>
+            {% if form.receiver_instagram_username.errors %}
+            {% for error in form.receiver_instagram_username.errors %}
+            <div class="hidento-form-error">{{ error|escape }}</div>
+            {% endfor %}
+                {% endif %}</td>
+                <td>
+                    <div style="text-align:right"><button type="button" class="btn btn-primary pt-0 pb-0" id="instagramVerify"
+                                                          style="font-size:0.7rem">Verify</button></div>
+                </td>
+            </tr></table>
+
+            <textarea class="form-control mt-3" placeholder="Message"
+                      name="message" maxlength="1000" required
+                      id="id_message">{%if form.message.value%}{{form.message.value}}{%endif%}</textarea>
+            {% if form.message.errors %}
+            {% for error in form.message.errors %}
+            <div class="hidento-form-error">{{ error|escape }}</div>
+            {% endfor %}
+                {% endif %}
+
+            <input type="text" class="form-control mt-3"
+                   placeholder="Your pseudo name (visible to receiver)" name="sender_nickname"
+                   maxlength="50" id="id_sender_nickname" required
+                   value="{% if form.sender_nickname.value %}{{form.sender_nickname.value}}{% endif %}">
+            {% if form.sender_nickname.errors %}
+            {% for error in form.sender_nickname.errors %}
+            <div class="hidento-form-error">{{ error|escape }}</div>
+            {% endfor %}
+                {% endif %}
+
+            <br>
+            <input class="btn btn-primary mr-3" type="submit" value="Send">
+
+            <a href="{% url 'sentMessages' %}">
+                <button type="button" class="btn btn-primary">Cancel</button>
+            </a>
+        </form>
+        {% endif %}
+    </div>
+</center>
+{% endblock %}

@@ -2,10 +2,24 @@
 
 {% block content %}
 
-
-<div class="hidento-home-center" id="page-center-div">
-    <a class="btn btn-block btn-light btn-lg" href="{% url 'match' %}"> My Match </a>
-    <a class="btn btn-block btn-light btn-lg" href="{% url 'crushList' %}"> My Crushlist </a>
+<center>
+<div class="hidento-home-center" id="page-center-div" style="width:80%;margin-top:2.3rem;margin-botton:3.5rem">
+    <div></div>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        {% endfor %}
+    <div style="margin-top:3.5rem"></div>
+    {% else %}
+    <div style="margin-top:7.5rem"></div>
+    {% endif %}
+<div style="width:50%">
+    <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'match' %}"> My Match </a>
+    <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'crushList' %}"> My Crushlist </a>
+    <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'receivedMessages' %}"> Compliments Received </a>
+    <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'sentMessages' %}"> Compliments Sent </a>
 </div>
+</div>
+</center>
 
 {% endblock %}
