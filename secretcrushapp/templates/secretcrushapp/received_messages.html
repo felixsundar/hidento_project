@@ -12,14 +12,17 @@
 
         {% if received_messages is None %}
         <div style="text-align:right"><a href="{% url 'messageBlacklist' %}" class="hidento-heading-color"> My Blacklist </a></div>
-        <div class="mt-3 mb-3">Instagram account not linked. Link your instagram account to see the messages received
+        <div class="mt-3 mb-3">Instagram account not linked. Link your Instagram account to be able to see the messages received
             for your Instagram username.
         </div>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         <p>For Instagram username - <b>{{instagram_username}}</b>&nbsp;&nbsp;
-            <span class="badge badge-pill badge-primary">{{received_messages|length}}</span></p>
+            {% if published %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
         <div style="text-align:right"><a href="{% url 'messageBlacklist' %}" class="hidento-heading-color"> My Blacklist </a></div>
+        {% if not published %}
+        <p class="mt-4">Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)</p>
+        {% else %}
         {% if not received_messages %}
         <p class="mt-4">No compliments to show at the moment.</p>
         {% else %}
@@ -44,6 +47,7 @@
         </table>
         <br><br><br>
         {% endfor %}
+        {% endif %}
         {% endif %}
         {% endif %}
     </div>

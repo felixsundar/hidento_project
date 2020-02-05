@@ -1,7 +1,9 @@
 import json
 import logging
 import threading
+from datetime import datetime
 
+import pytz
 import requests
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -781,17 +783,23 @@ def csrf_failure(request, reason=""):
 @login_required
 def receivedMessages(request):
     instagram_username = getInstagramUsername(request.user)
+    is_published = False
+    if now() >= datetime(2020,month=2,day=14, tzinfo=pytz.utc):
+        is_published = True
     context = {
-        'received_messages': getReceivedMessages(instagram_username),
+        'received_messages': getReceivedMessages(instagram_username, is_published),
         'instagram_username': instagram_username,
+        'published': is_published,
     }
     if request.user_agent.is_mobile:
         return render(request, 'secretcrushapp/received_messages_m.html', context=context)
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
-def getReceivedMessages(instagram_username):
+def getReceivedMessages(instagram_username, is_published):
     if instagram_username is None:
         return None
+    if not is_published:
+        return []
     return list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
                 .filter(is_hidden = False)
                 .order_by('-added_time'))
@@ -1010,7 +1018,7 @@ def getBlacklistFormData(blacklistObject):
 def getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb):
     if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
         return 2
-    formUsernameList = [ user['username'] for user in blacklistPythonListFromForm]
+    formUsernameList = [user['username'] for user in blacklistPythonListFromForm]
     dbUsernameList = [user['username'] for user in blacklistPythonListFromDb]
     for username in formUsernameList:
         if username not in dbUsernameList:
