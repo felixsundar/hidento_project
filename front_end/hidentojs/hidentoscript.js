@@ -51,3 +51,51 @@ $(".edit_crush_activeClass").change(function() {
         alert("You are about to deactivate this crush.\n\nIf you are matched with this crush currently, your match will be broken.")
     }
 });
+
+$(function() {
+   $(".sentMessageDeleteButton").click(function(){
+      if (confirm("The receiver will not be able to see this message.\n\nAre you sure you want to delete?")){
+         $(this).submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});
+
+$(function() {
+   $(".receivedMessageHideButton").click(function(){
+      if (confirm("You won't be able to see this message again.\n\nAre you sure you want to hide it?")){
+         $(this).submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});
+
+$(function() {
+   $(".verifyInstagram").click(function(){
+      var buttonid = $(this).attr('id');
+      var usernameid = "#instagramUsername" + buttonid;
+      var instagramUsername = $(usernameid).val();
+      if (!instagramUsername.trim() || instagramUsername.length == 0){
+        alert("Enter an Instagram username to verify.");
+      } else if (hasWhiteSpace(instagramUsername.trim())){
+        alert("Instagram username should not contain spaces.")
+      } else if (hasatsymbol(instagramUsername.trim())){
+        alert("Do not include '@' in Instagram username.")
+      } else{
+        instagramLink = "https://www.instagram.com/" + instagramUsername.trim();
+        window.open(instagramLink, '_blank')
+      }
+   });
+});
+
+$(function() {
+   $(".saveBlacklistButton").click(function(){
+      if (confirm("Once saved, it can\'t be modified for the next 15 days.\n\nAre you sure you want to save it?")){
+         $(this).submit();
+      } else{
+      event.preventDefault();
+      }
+   });
+});

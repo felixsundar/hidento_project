@@ -1,10 +1,19 @@
 {% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
+<center>
+<div class="hidento-home-center" style="margin-top:6rem;margin-bottom:6rem">
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
 
-<div class="hidento-home-center" style="margin-bottom:6rem">
     <a class="btn btn-block btn-light btn-lg" href="{% url 'match' %}"> My Match </a>
     <a class="btn btn-block btn-light btn-lg" href="{% url 'crushList' %}"> My Crushlist </a>
+<!--    <a class="btn btn-block btn-light btn-lg" href="{% url 'receivedMessages' %}"> Compliments Received </a>-->
+<!--    <a class="btn btn-block btn-light btn-lg" href="{% url 'sentMessages' %}"> Compliments Sent </a>-->
 </div>
+</center>
 
 {% endblock %}

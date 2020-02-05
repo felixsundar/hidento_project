@@ -1,6 +1,9 @@
+import json
 import logging
 import threading
+from datetime import datetime
 
+import pytz
 import requests
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -17,8 +20,8 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.timezone import now
-from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails
-from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm
+from secretcrushapp.models import HidentoUser, InstagramCrush, HowItWorks, FAQ, ContactHidento, Controls, InstagramDetails, AnonymousMessage, MessageBlacklist
+from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddCrushForm, EditCrushForm, ContactForm, SendMessageForm, MessageBlacklistForm
 
 from hidento_project import settings
 
@@ -430,8 +433,8 @@ def removeInstagramView(request):
         user_instagramDetails.delete()
     elif user_instagram is not None:
         user_instagram.delete()
-    messages.success(request, 'Your Instagram has been removed successfully and your crush list has been cleared.')
-    return HttpResponseRedirect(reverse('crushList'))
+    messages.success(request, 'Instagram account removed.')
+    return HttpResponseRedirect(reverse('index'))
 
 
 @login_required
@@ -776,3 +779,253 @@ def csrf_failure(request, reason=""):
     if request.user_agent.is_mobile:
         return render(request, '403_csrf_m.html', status=403)
     return render(request, '403_csrf.html', status=403)
+
+@login_required
+def receivedMessages(request):
+    instagram_username = getInstagramUsername(request.user)
+    is_published = False
+    if now() >= datetime(2020,month=2,day=14, tzinfo=pytz.utc):
+        is_published = True
+    context = {
+        'received_messages': getReceivedMessages(instagram_username, is_published),
+        'instagram_username': instagram_username,
+        'published': is_published,
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/received_messages_m.html', context=context)
+    return render(request, 'secretcrushapp/received_messages.html', context=context)
+
+def getReceivedMessages(instagram_username, is_published):
+    if instagram_username is None:
+        return None
+    if not is_published:
+        return []
+    return list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
+                .filter(is_hidden = False)
+                .order_by('-added_time'))
+
+@login_required
+def sentMessages(request):
+    context = {
+        'sent_messages': getSentMessages(request.user)
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/sent_messages_m.html', context=context)
+    return render(request, 'secretcrushapp/sent_messages.html', context=context)
+
+def getSentMessages(user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        return None
+    return user.anonymousSentMessages.all()
+
+@login_required
+def sendMessage(request):
+    error = validateForSendMessage(request.user)
+    if error is not None:
+        context = {'error': error,}
+        if request.user_agent.is_mobile:
+            return render(request, 'secretcrushapp/send_message_m.html', context)
+        return render(request, 'secretcrushapp/send_message.html', context)
+
+    if request.method == 'POST':
+        form = SendMessageForm(request.POST)
+        if form.is_valid() and validateAndSendMessage(form, request.user):
+            messages.success(request, 'Compliment sent.')
+            return HttpResponseRedirect(reverse('sentMessages'))
+    else:
+        form = SendMessageForm()
+    context = {'form': form,}
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/send_message_m.html', context)
+    return render(request, 'secretcrushapp/send_message.html', context)
+
+def validateForSendMessage(user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:
+        return 1
+    if user.anonymousSentMessages.count() >= 10:
+        return 2
+    return None
+
+def validateAndSendMessage(form, user):
+    user_instagram = user.instagramDetails.first()
+    if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
+        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
+        return False
+    if user.anonymousSentMessages.count() >= 10:
+        form.add_error('__all__', 'You have already sent 10 compliments. Delete one of them to send a new one.')
+        return False
+    if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username']:
+        form.add_error('receiver_instagram_username', 'You can\'t send a compliment to yourself.')
+        return False
+    new_message = AnonymousMessage(hidento_userid = user,
+                                   receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
+                                   sender_instagram_username = user_instagram.instagram_username,
+                                   message = form.cleaned_data['message'],
+                                   sender_nickname = form.cleaned_data['sender_nickname'],
+                                   added_time = now())
+    new_message.save()
+    return True
+
+@login_required
+def deleteMessage(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    message_id = request.POST.get('message_id')
+    try:
+        message = AnonymousMessage.objects.get(message_id=message_id)
+    except AnonymousMessage.DoesNotExist:
+        raise PermissionDenied
+    if message.hidento_userid != request.user:
+        raise PermissionDenied
+    message.delete()
+    messages.success(request, 'Compliment deleted.')
+    return HttpResponseRedirect(reverse('sentMessages'))
+
+@login_required
+def hideMessage(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    try:
+        message_id = request.POST.get('message_id')
+        message = AnonymousMessage.objects.get(message_id=message_id)
+    except AnonymousMessage.DoesNotExist:
+        raise PermissionDenied
+    if message.receiver_instagram_username != getInstagramUsername(request.user):
+        raise PermissionDenied
+    message.is_hidden = True
+    message.save()
+    messages.success(request, 'Compliment hidden.')
+    return HttpResponseRedirect(reverse('receivedMessages'))
+
+@login_required
+def reportMessage(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    try:
+        message_id = request.POST.get('message_id')
+        message = AnonymousMessage.objects.get(message_id=message_id)
+    except AnonymousMessage.DoesNotExist:
+        raise PermissionDenied
+    if message.receiver_instagram_username != getInstagramUsername(request.user):
+        raise PermissionDenied
+    message.is_abusive = True
+    message.is_hidden = True
+    message.save()
+    messages.success(request, 'Message reported.')
+    return HttpResponseRedirect(reverse('receivedMessages'))
+
+@login_required
+def editBlacklistView(request):
+    blacklistObject = request.user.messageBlacklist.first()
+    blacklistModifiable = isModifiable(blacklistObject)
+    if request.method == 'POST':
+        form = MessageBlacklistForm(request.POST)
+        if not blacklistModifiable:
+            messages.warning(request, 'Blacklist can be modified only once in ' +
+                             str(settings.MESSAGE_BLACKLIST_MODIFICATION_DAYS) + ' days.')
+            return HttpResponseRedirect(reverse('messageBlacklist'))
+        elif form.is_valid() and editBlacklist(request, form, blacklistObject):
+            return HttpResponseRedirect(reverse('messageBlacklist'))
+    else:
+        blacklistFormData = getBlacklistFormData(blacklistObject)
+        form = MessageBlacklistForm(blacklistFormData)
+    context = {
+        'form': form,
+        'modifiable':blacklistModifiable
+    }
+    if request.user_agent.is_mobile:
+        return render(request, 'secretcrushapp/blacklist_edit_m.html', context)
+    return render(request, 'secretcrushapp/blacklist_edit.html', context)
+
+def editBlacklist(request, form, blacklistObject):
+    blacklistPythonListFromForm = getblacklistPythonListFromForm(form)
+    if blacklistObject is not None:
+        blacklistPythonListFromDb = getBlacklistPythonListFromDb(blacklistObject)
+    else:
+        blacklistPythonListFromDb = []
+        blacklistObject = MessageBlacklist(hidento_userid=request.user)
+    changecode = getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb)
+    if changecode == 2:
+        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
+        blacklistObject.last_modified_time = now()
+        blacklistObject.save()
+        messages.success(request, 'Blacklist modified.')
+    elif changecode == 1:
+        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
+        blacklistObject.save()
+        messages.success(request, 'Changes saved.')
+    return True
+
+def getBlacklistPythonListFromDb(blacklistObject):
+    listFromDb = json.loads(blacklistObject.blacklistJSON)
+    blacklistPythonListFromDb = []
+    for i in listFromDb:
+        if i['username']:
+            blacklistPythonListFromDb.append(i)
+    return blacklistPythonListFromDb
+
+def getblacklistPythonListFromForm(form):
+    blacklistPythonList = []
+    for i in range(1, 11):
+        if form.cleaned_data['username'+str(i)]:
+            blacklistPythonList.append({
+                'username': form.cleaned_data['username'+str(i)],
+                'nickname': form.cleaned_data['nickname'+str(i)]
+            })
+    return blacklistPythonList
+
+def isModifiable(blacklistObject):
+    if blacklistObject is None:
+        return True
+    if time_difference_in_days(blacklistObject.last_modified_time, now()) >= settings.MESSAGE_BLACKLIST_MODIFICATION_DAYS:
+        return True
+    return False
+
+def getBlacklistFormData(blacklistObject):
+    blacklistFormData = {}
+    blacklistFormData['username1'] = None
+    blacklistFormData['nickname1'] = None
+    blacklistFormData['username2'] = None
+    blacklistFormData['nickname2'] = None
+    blacklistFormData['username3'] = None
+    blacklistFormData['nickname3'] = None
+    blacklistFormData['username4'] = None
+    blacklistFormData['nickname4'] = None
+    blacklistFormData['username5'] = None
+    blacklistFormData['nickname5'] = None
+    blacklistFormData['username6'] = None
+    blacklistFormData['nickname6'] = None
+    blacklistFormData['username7'] = None
+    blacklistFormData['nickname7'] = None
+    blacklistFormData['username8'] = None
+    blacklistFormData['nickname8'] = None
+    blacklistFormData['username9'] = None
+    blacklistFormData['nickname9'] = None
+    blacklistFormData['username10'] = None
+    blacklistFormData['nickname10'] = None
+    if blacklistObject is None:
+        return blacklistFormData
+    blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
+    i=1
+    for blacklisted in blacklistPythonList:
+        blacklistFormData['username'+str(i)] = blacklisted.get('username')
+        blacklistFormData['nickname'+str(i)] = blacklisted.get('nickname')
+        i+=1
+    return blacklistFormData
+
+def getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb):
+    if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
+        return 2
+    formUsernameList = [user['username'] for user in blacklistPythonListFromForm]
+    dbUsernameList = [user['username'] for user in blacklistPythonListFromDb]
+    for username in formUsernameList:
+        if username not in dbUsernameList:
+            return 2
+    formNicknameList = [user['nickname'] for user in blacklistPythonListFromForm]
+    dbNicknameList = [user['nickname'] for user in blacklistPythonListFromDb]
+    for nickname in formNicknameList:
+        if nickname not in dbNicknameList:
+            return 1
+    return 0

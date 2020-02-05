@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model, password_validation
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm, Form
 
-from secretcrushapp.models import HidentoUser, ContactHidento
+from secretcrushapp.models import HidentoUser, ContactHidento, AnonymousMessage
 
 class SignUpForm(ModelForm):
     password = forms.CharField(label="Password", strip=False, widget=forms.PasswordInput,)
@@ -41,6 +41,7 @@ def alphaspace(fullname):
 
 def generateUsername(fullname):
     username = fullname.lower().replace(' ', '_')
+    username = username[:min(25, len(username))]
     number = 0
     newUsername = username
     try:
@@ -94,6 +95,7 @@ class AddCrushForm(Form):
         crush_instagram_username = self.cleaned_data['crushUsername']
         if ' ' in crush_instagram_username:
             raise forms.ValidationError('Instagram usernames cannot contain spaces.')
+
         return crush_instagram_username
 
 class EditCrushForm(Form):
@@ -120,3 +122,42 @@ class ContactForm(ModelForm):
     class Meta:
         model = ContactHidento
         fields = ('fullname', 'email', 'message')
+
+class SendMessageForm(ModelForm):
+    class Meta:
+        model = AnonymousMessage
+        fields = ('receiver_instagram_username', 'message', 'sender_nickname')
+
+    def clean_receiver_instagram_username(self):
+        receiver_instagram_username = self.cleaned_data['receiver_instagram_username']
+        if ' ' in receiver_instagram_username:
+            raise forms.ValidationError('Instagram usernames cannot contain spaces.')
+        return receiver_instagram_username
+
+class MessageBlacklistForm(Form):
+    nickname1 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username1 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname2 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username2 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname3 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username3 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname4 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username4 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname5 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username5 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname6 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username6 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname7 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username7 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname8 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username8 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname9 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username9 = forms.CharField(label='Username', max_length=40, required=False)
+    nickname10 = forms.CharField(label='Nickname', max_length=40, required=False)
+    username10 = forms.CharField(label='Username', max_length=40, required=False)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        for i in range(1, 11):
+            if ' ' in cleaned_data['username'+str(i)]:
+                self.add_error('username'+str(i), 'Instagram username cannot contain spaces.')
