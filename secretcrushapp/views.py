@@ -784,7 +784,7 @@ def csrf_failure(request, reason=""):
 def receivedMessages(request):
     instagram_username = getInstagramUsername(request.user)
     is_published = False
-    if now() >= datetime(2020,month=2,day=14, tzinfo=pytz.utc):
+    if now() >= datetime(2020,month=2,day=6, tzinfo=pytz.utc):
         is_published = True
     context = {
         'received_messages': getReceivedMessages(instagram_username, is_published),
@@ -946,16 +946,11 @@ def editBlacklist(request, form, blacklistObject):
     else:
         blacklistPythonListFromDb = []
         blacklistObject = MessageBlacklist(hidento_userid=request.user)
-    changecode = getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb)
-    if changecode == 2:
+    if hasAnythingChanged(blacklistPythonListFromForm, blacklistPythonListFromDb):
         blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
         blacklistObject.last_modified_time = now()
         blacklistObject.save()
         messages.success(request, 'Blacklist modified.')
-    elif changecode == 1:
-        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
-        blacklistObject.save()
-        messages.success(request, 'Changes saved.')
     return True
 
 def getBlacklistPythonListFromDb(blacklistObject):
@@ -971,8 +966,7 @@ def getblacklistPythonListFromForm(form):
     for i in range(1, 11):
         if form.cleaned_data['username'+str(i)]:
             blacklistPythonList.append({
-                'username': form.cleaned_data['username'+str(i)],
-                'nickname': form.cleaned_data['nickname'+str(i)]
+                'username': form.cleaned_data['username'+str(i)]
             })
     return blacklistPythonList
 
@@ -986,46 +980,30 @@ def isModifiable(blacklistObject):
 def getBlacklistFormData(blacklistObject):
     blacklistFormData = {}
     blacklistFormData['username1'] = None
-    blacklistFormData['nickname1'] = None
     blacklistFormData['username2'] = None
-    blacklistFormData['nickname2'] = None
     blacklistFormData['username3'] = None
-    blacklistFormData['nickname3'] = None
     blacklistFormData['username4'] = None
-    blacklistFormData['nickname4'] = None
     blacklistFormData['username5'] = None
-    blacklistFormData['nickname5'] = None
     blacklistFormData['username6'] = None
-    blacklistFormData['nickname6'] = None
     blacklistFormData['username7'] = None
-    blacklistFormData['nickname7'] = None
     blacklistFormData['username8'] = None
-    blacklistFormData['nickname8'] = None
     blacklistFormData['username9'] = None
-    blacklistFormData['nickname9'] = None
     blacklistFormData['username10'] = None
-    blacklistFormData['nickname10'] = None
     if blacklistObject is None:
         return blacklistFormData
     blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
     i=1
     for blacklisted in blacklistPythonList:
         blacklistFormData['username'+str(i)] = blacklisted.get('username')
-        blacklistFormData['nickname'+str(i)] = blacklisted.get('nickname')
         i+=1
     return blacklistFormData
 
-def getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb):
+def hasAnythingChanged(blacklistPythonListFromForm, blacklistPythonListFromDb):
     if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
-        return 2
+        return True
     formUsernameList = [user['username'] for user in blacklistPythonListFromForm]
     dbUsernameList = [user['username'] for user in blacklistPythonListFromDb]
     for username in formUsernameList:
         if username not in dbUsernameList:
-            return 2
-    formNicknameList = [user['nickname'] for user in blacklistPythonListFromForm]
-    dbNicknameList = [user['nickname'] for user in blacklistPythonListFromDb]
-    for nickname in formNicknameList:
-        if nickname not in dbNicknameList:
-            return 1
-    return 0
+            return True
+    return False

@@ -55,7 +55,7 @@ $(".edit_crush_activeClass").change(function() {
 $(function() {
    $(".sentMessageDeleteButton").click(function(){
       if (confirm("The receiver will not be able to see this message.\n\nAre you sure you want to delete?")){
-         $(this).submit();
+         $(this).parents('form').submit();
       } else{
       event.preventDefault();
       }
@@ -65,7 +65,7 @@ $(function() {
 $(function() {
    $(".receivedMessageHideButton").click(function(){
       if (confirm("You won't be able to see this message again.\n\nAre you sure you want to hide it?")){
-         $(this).submit();
+         $(this).parents('form').submit();
       } else{
       event.preventDefault();
       }
@@ -92,8 +92,8 @@ $(function() {
 
 $(function() {
    $(".saveBlacklistButton").click(function(){
-      if (confirm("Once saved, it can\'t be modified for the next 15 days.\n\nAre you sure you want to save it?")){
-         $(this).submit();
+      if (confirm("Once saved, blacklist can\'t be modified for the next 15 days.\n\nAre you sure you want to save it?")){
+         $(this).parents('form').submit();
       } else{
       event.preventDefault();
       }

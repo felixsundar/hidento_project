@@ -135,25 +135,15 @@ class SendMessageForm(ModelForm):
         return receiver_instagram_username
 
 class MessageBlacklistForm(Form):
-    nickname1 = forms.CharField(label='Nickname', max_length=40, required=False)
     username1 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname2 = forms.CharField(label='Nickname', max_length=40, required=False)
     username2 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname3 = forms.CharField(label='Nickname', max_length=40, required=False)
     username3 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname4 = forms.CharField(label='Nickname', max_length=40, required=False)
     username4 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname5 = forms.CharField(label='Nickname', max_length=40, required=False)
     username5 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname6 = forms.CharField(label='Nickname', max_length=40, required=False)
     username6 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname7 = forms.CharField(label='Nickname', max_length=40, required=False)
     username7 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname8 = forms.CharField(label='Nickname', max_length=40, required=False)
     username8 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname9 = forms.CharField(label='Nickname', max_length=40, required=False)
     username9 = forms.CharField(label='Username', max_length=40, required=False)
-    nickname10 = forms.CharField(label='Nickname', max_length=40, required=False)
     username10 = forms.CharField(label='Username', max_length=40, required=False)
 
     def clean(self):

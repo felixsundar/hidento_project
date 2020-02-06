@@ -57,6 +57,12 @@ h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
     background-color:#fff;
 }
 
+.hidento-note-background{
+    background-color:#f4f4f4; /* this should be a slightly darker or lighter version of .hidento-background*/
+    padding:0.6rem;
+    border-radius:1rem;
+}
+
 .hidento-light-color, .hidento-light-color:hover, .hidento-light-color:active, .hidento-light-color:focus, .hidento-light-color:visited, .hidento-light-color:link{
     color:#777777;
     text-decoration:none;
