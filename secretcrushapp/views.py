@@ -783,26 +783,43 @@ def csrf_failure(request, reason=""):
 @login_required
 def receivedMessages(request):
     instagram_username = getInstagramUsername(request.user)
-    is_published = False
-    if now() >= datetime(2020,month=2,day=14, tzinfo=pytz.utc):
-        is_published = True
+    blacklistObject = request.user.messageBlacklist.first()
+    receivedMessageError = getReceivedMessagesError(blacklistObject)
     context = {
-        'received_messages': getReceivedMessages(instagram_username, is_published),
+        'received_messages': getReceivedMessages(receivedMessageError, blacklistObject, instagram_username),
         'instagram_username': instagram_username,
-        'published': is_published,
+        'received_message_error': receivedMessageError
     }
     if request.user_agent.is_mobile:
         return render(request, 'secretcrushapp/received_messages_m.html', context=context)
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
-def getReceivedMessages(instagram_username, is_published):
+def getReceivedMessagesError(blacklistObject):
+    if now() < datetime(2020, month=2, day=14, tzinfo=pytz.utc):
+        return 'Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)'
+    if isModifiable(blacklistObject):
+        return 'Save your blacklist before you can see the received notes.'
+    return None
+
+def getReceivedMessages(receivedMessageError, blacklistObject, instagram_username):
     if instagram_username is None:
         return None
-    if not is_published:
+    if receivedMessageError:
         return []
-    return list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
+    received_all = list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
                 .filter(is_hidden = False)
                 .order_by('-added_time'))
+    return filterBlacklistedUsers(blacklistObject, received_all)
+
+def filterBlacklistedUsers(blacklistObject, received_all):
+    if blacklistObject is None:
+        return received_all
+    blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
+    received_filtered = []
+    for message in received_all:
+        if message.sender_instagram_username not in blacklistPythonList:
+            received_filtered.append(message)
+    return received_filtered
 
 @login_required
 def sentMessages(request):
@@ -941,23 +958,19 @@ def editBlacklistView(request):
 
 def editBlacklist(request, form, blacklistObject):
     blacklistPythonListFromForm = getblacklistPythonListFromForm(form)
-    if blacklistObject is not None:
-        blacklistPythonListFromDb = getBlacklistPythonListFromDb(blacklistObject)
-    else:
-        blacklistPythonListFromDb = []
+    if blacklistObject is None:
         blacklistObject = MessageBlacklist(hidento_userid=request.user)
-    if hasAnythingChanged(blacklistPythonListFromForm, blacklistPythonListFromDb):
-        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
-        blacklistObject.last_modified_time = now()
-        blacklistObject.save()
-        messages.success(request, 'Blacklist modified.')
+    blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
+    blacklistObject.last_modified_time = now()
+    blacklistObject.save()
+    messages.success(request, 'Blacklist saved.')
     return True
 
 def getBlacklistPythonListFromDb(blacklistObject):
     listFromDb = json.loads(blacklistObject.blacklistJSON)
     blacklistPythonListFromDb = []
     for i in listFromDb:
-        if i['username']:
+        if i:
             blacklistPythonListFromDb.append(i)
     return blacklistPythonListFromDb
 
@@ -965,9 +978,7 @@ def getblacklistPythonListFromForm(form):
     blacklistPythonList = []
     for i in range(1, 11):
         if form.cleaned_data['username'+str(i)]:
-            blacklistPythonList.append({
-                'username': form.cleaned_data['username'+str(i)]
-            })
+            blacklistPythonList.append(form.cleaned_data['username'+str(i)])
     return blacklistPythonList
 
 def isModifiable(blacklistObject):
@@ -994,16 +1005,6 @@ def getBlacklistFormData(blacklistObject):
     blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
     i=1
     for blacklisted in blacklistPythonList:
-        blacklistFormData['username'+str(i)] = blacklisted.get('username')
+        blacklistFormData['username'+str(i)] = blacklisted
         i+=1
     return blacklistFormData
-
-def hasAnythingChanged(blacklistPythonListFromForm, blacklistPythonListFromDb):
-    if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
-        return True
-    formUsernameList = [user['username'] for user in blacklistPythonListFromForm]
-    dbUsernameList = [user['username'] for user in blacklistPythonListFromDb]
-    for username in formUsernameList:
-        if username not in dbUsernameList:
-            return True
-    return False
