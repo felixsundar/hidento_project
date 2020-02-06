@@ -148,3 +148,8 @@ word-break: break-all;
 p{
 word-wrap: break-word;
 }
+
+.hidento-row-padding{
+padding-top:0.5rem;
+padding-bottom:0.5rem;
+}

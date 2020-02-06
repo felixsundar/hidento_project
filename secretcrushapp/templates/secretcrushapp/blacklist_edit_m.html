@@ -1,8 +1,8 @@
-{% extends 'secretcrushapp/base_d.html' %}
+{% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
 <center>
-    <div style="width:80%;margin-top:2.3rem;margin-bottom:2.8rem">
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:6rem">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
@@ -36,7 +36,7 @@
                     <td class="pl-3 hidento-row-padding">
                         <input type="text" placeholder="------" name="username1" id="instagramUsername1"
                    maxlength="40" value="{% if form.username1.value %}{{form.username1.value}}{% endif %}">
-                        &nbsp;
+
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="1"
                                                           style="font-size:0.7rem">Verify</span>
                         {% if form.username1.errors %}
