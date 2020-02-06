@@ -784,7 +784,7 @@ def csrf_failure(request, reason=""):
 def receivedMessages(request):
     instagram_username = getInstagramUsername(request.user)
     is_published = False
-    if now() >= datetime(2020,month=2,day=6, tzinfo=pytz.utc):
+    if now() >= datetime(2020,month=2,day=14, tzinfo=pytz.utc):
         is_published = True
     context = {
         'received_messages': getReceivedMessages(instagram_username, is_published),
