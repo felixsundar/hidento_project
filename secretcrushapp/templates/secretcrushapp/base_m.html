@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'hidentocss/hidentostyle.css' %}"/>
 </head>
 <body class="hidento-background">
-<nav class="navbar navbar-expand-md fixed-top navbar-light bg-white p-0">
+<nav class="navbar navbar-dark navbar-expand-md fixed-top bg-white p-0">
 
     <a class="navbar-brand font-weight-bold hidento-heading-color pt-0 pl-2" href="{% url 'index' %}">Hidento</a>
     <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
@@ -63,12 +63,12 @@
                             More
                         </a>
                         <div class="dropdown-menu dropdown-menu-right" id="hidento-nav-dropmenu">
-                            <a class="dropdown-item hidento-title-color" target="_blank"
+                            <a class="dropdown-item hidento-btn-light-color" target="_blank"
                                href="{% url 'about' %}">About</a>
-                            <a class="dropdown-item hidento-title-color" target="_blank" href="{% url 'privacy' %}">Privacy</a>
-                            <a class="dropdown-item hidento-title-color" target="_blank"
+                            <a class="dropdown-item hidento-btn-light-color" target="_blank" href="{% url 'privacy' %}">Privacy</a>
+                            <a class="dropdown-item hidento-btn-light-color" target="_blank"
                                href="{% url 'terms' %}">Terms</a>
-                            <a class="dropdown-item hidento-title-color" target="_blank" href="{% url 'contactUs' %}">Contact</a>
+                            <a class="dropdown-item hidento-btn-light-color" target="_blank" href="{% url 'contactUs' %}">Contact</a>
                         </div>
                     </div>
                 </li>

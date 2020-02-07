@@ -24,15 +24,15 @@
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         <p>For Instagram username - <b>{{instagram_username}}</b>&nbsp;&nbsp;
-            {% if published %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
+            {% if not received_message_error %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
         <div style="text-align:right" class="mt-4">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
                title="You can blacklist your close friends, so they don't prank you.">
                 My Blacklist
             </a>
         </div>
-        {% if not published %}
-        <p class="mt-4">Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)</p>
+        {% if received_message_error %}
+        <p class="mt-4">{{received_message_error}}</p>
         {% else %}
         {% if not received_messages %}
         <p class="mt-4">No compliments to show at the moment.</p>
