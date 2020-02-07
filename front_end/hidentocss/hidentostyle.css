@@ -61,7 +61,7 @@ h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
     background-color:#30000c !important; /*same color as hidento-background*/
 }
 
-div, .hidento-font-color{
+div, .hidento-font-color, .hidento-font-color:hover, .hidento-font-color:active, .hidento-font-color:focus, .hidento-font-color:visited, .hidento-font-color:link{
     color:#fff;
 }
 
