@@ -16,7 +16,7 @@
             {% csrf_token %}
             <!--            {{ form.as_table }}-->
             <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
-                   maxlength="255" required id="id_crushUsername"
+                   maxlength="40" required id="id_crushUsername"
                    value="{% if form.crushUsername.value %}{{form.crushUsername.value}}{% endif %}" autofocus>
             <table style="width:100%"><tr><td>
             {% if form.crushUsername.errors %}
@@ -32,17 +32,17 @@
 
             <input type="text" class="form-control mt-3"
                    placeholder="Nickname for your crush (Optional)" name="crushNickname"
-                   maxlength="255" id="id_crushNickname"
+                   maxlength="40" id="id_crushNickname"
                    value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
             <div style="text-align:right"><a style="font-size:0.7rem;" href="#" data-toggle="tooltip"
-                                             data-placement="right" title="Your crush will be able
+                                             data-placement="bottom" title="Your crush will be able
 to see this nickname, if you get a match with this crush.">How this works</a>
             </div>
             <textarea class="form-control mt-3" placeholder="Message for your crush (Optional)"
-                      name="crushMessage" maxlength="3000"
+                      name="crushMessage" maxlength="1000"
                       id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
             <div style="text-align:right"><a style="font-size:0.7rem;" href="#" data-toggle="tooltip"
-                                             data-placement="right" title="Your crush will be able
+                                             data-placement="bottom" title="Your crush will be able
 to see this message, if you get a match with this crush.">How this works</a>
             </div>
 

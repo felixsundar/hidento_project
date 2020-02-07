@@ -15,7 +15,7 @@
         <form method="post" class="hidento-m-font-size" id="hidentoform">
             {% csrf_token %}
             <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
-                   maxlength="255" required id="id_crushUsername" style="font-size:1.1rem"
+                   maxlength="40" required id="id_crushUsername" style="font-size:1.1rem"
                    value="{% if form.crushUsername.value %}{{form.crushUsername.value}}{% endif %}" autofocus>
             <table style="width:100%"><tr><td>
             {% if form.crushUsername.errors %}
@@ -31,7 +31,7 @@
 
             <input type="text" class="form-control mt-3" style="font-size:1.1rem"
                    placeholder="Nickname for your crush (Optional)" name="crushNickname"
-                   maxlength="255" id="id_crushNickname"
+                   maxlength="40" id="id_crushNickname"
                    value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
 <div style="text-align:right"><a style="font-size:0.8rem;" href="#" data-toggle="tooltip"
                                              data-placement="left" title="Your crush will be able
@@ -40,7 +40,7 @@ to see this nickname, if you get a match with this crush.">How this works</a>
 
 
             <textarea class="form-control mt-3" placeholder="Message for your crush (Optional)"
-                      name="crushMessage" maxlength="3000" rows="2" style="font-size:1.1rem;height:6rem;"
+                      name="crushMessage" maxlength="1000" rows="2" style="font-size:1.1rem;height:6rem;"
                       id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
 <div style="text-align:right"><a style="font-size:0.8rem;" href="#" data-toggle="tooltip"
                                              data-placement="left" title="Your crush will be able
