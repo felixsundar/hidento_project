@@ -27,7 +27,7 @@ body, html{
 }
 
 .dropdown-item:focus, .dropdown-item:hover{
-    color: #30000c; /* same as special-font */
+    color: #30000c !important; /* same as special-font */
     background-color: #c4a747;
 }
 
