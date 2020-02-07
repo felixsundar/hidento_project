@@ -8,20 +8,31 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Compliments Received</b></h2>
+        <h2 class="hidento-title-color"><b>Notes Received</b></h2>
 
         {% if received_messages is None %}
-        <div style="text-align:right" class="mt-4"><a href="{% url 'messageBlacklist' %}" class="hidento-heading-color"> My Blacklist </a></div>
-        <div class="mt-4 mb-4">Instagram account not linked. Link your Instagram account to be able to see the messages received
+        <div style="text-align:right" class="mt-4">
+            <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
+               title="You can blacklist your close friends, so they don't prank you.">
+                My Blacklist
+            </a>
+        </div>
+        <div class="mt-4 mb-4">Instagram account not linked. Link your Instagram account to be able to see the notes
+            received
             for your Instagram username.
         </div>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         <p>For Instagram username - <b>{{instagram_username}}</b>&nbsp;&nbsp;
-            {% if published %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
-        <div style="text-align:right" class="mt-4"><a href="{% url 'messageBlacklist' %}" class="hidento-heading-color"> My Blacklist </a></div>
-        {% if not published %}
-        <p class="mt-4">Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)</p>
+            {% if not received_message_error %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
+        <div style="text-align:right" class="mt-4">
+            <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
+               title="You can blacklist your close friends, so they don't prank you.">
+                My Blacklist
+            </a>
+        </div>
+        {% if received_message_error %}
+        <p class="mt-4">{{received_message_error}}</p>
         {% else %}
         {% if not received_messages %}
         <p class="mt-4">No compliments to show at the moment.</p>
@@ -29,22 +40,23 @@
         <div style="margin-top:3rem"></div>
         {% for message in received_messages %}
         <div class="hidento-note-background">
-        <p style="text-align:left">{{ message.message }}</p>
-        <table style="width:100%;table-layout:fixed">
-            <tr>
-                <td style="text-align:left">
-                    <form method="post" action="{% url 'hideMessage' %}">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{message.message_id}}" name="message_id">
-                        <button class="btn btn-light btn-sm p-0 pl-2 pr-2 receivedMessageHideButton"
-                                style="font-size:0.65rem;" type="submit">Hide</button>
-                    </form>
-                </td>
-                <td style="text-align:right;width:70%;word-wrap:break-word;">
-                    <b>- {{message.sender_nickname}}</b>
-                </td>
-            </tr>
-        </table>
+            <p style="text-align:left">{{ message.message }}</p>
+            <table style="width:100%;table-layout:fixed">
+                <tr>
+                    <td style="text-align:left">
+                        <form method="post" action="{% url 'hideMessage' %}">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{message.message_id}}" name="message_id">
+                            <button class="btn btn-light btn-sm p-0 pl-2 pr-2 receivedMessageHideButton"
+                                    style="font-size:0.65rem;" type="submit">Hide
+                            </button>
+                        </form>
+                    </td>
+                    <td style="text-align:right;width:70%;word-wrap:break-word;">
+                        <b>- {{message.sender_nickname}}</b>
+                    </td>
+                </tr>
+            </table>
         </div>
         <br><br>
         {% endfor %}

@@ -104,7 +104,7 @@ def getInstagramCrushes(user_instagram):
 @transaction.atomic
 def matchView(request):
     user_instagram = request.user.instagramDetails.first()
-    if user_instagram is None or not (user_instagram.match_stablized and user_instagram.inform_this_user):
+    if user_instagram is None or not user_instagram.match_stablized:
         matchDetails = None
     else:
         try:
@@ -795,7 +795,7 @@ def receivedMessages(request):
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
 def getReceivedMessagesError(blacklistObject):
-    if now() < datetime(2020, month=2, day=14, tzinfo=pytz.utc):
+    if now() < datetime(2020, month=2, day=7, tzinfo=pytz.utc):
         return 'Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)'
     if isModifiable(blacklistObject):
         return 'Save your blacklist before you can see the received notes.'

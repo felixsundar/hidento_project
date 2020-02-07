@@ -10,31 +10,31 @@ body, html{
     font-size:2.5rem;
 }
 
-.navbar-light .navbar-brand, .navbar-light .navbar-brand:hover, .navbar-light .navbar-brand:active, .navbar-light .navbar-brand:focus, .navbar-light .navbar-brand:visited, .navbar-light .navbar-brand:link {
-    color: #000099;
+.navbar-dark .navbar-brand, .navbar-dark .navbar-brand:hover, .navbar-dark .navbar-brand:active, .navbar-dark .navbar-brand:focus, .navbar-dark .navbar-brand:visited, .navbar-dark .navbar-brand:link {
+    color: #c4a747;
 }
 
-.navbar-light .navbar-nav .nav-link, .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:active, .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .nav-link:visited, .navbar-light .navbar-nav .nav-link:link {
-    color: #000099;
+.navbar-dark .navbar-nav .nav-link, .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:active, .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:visited, .navbar-dark .navbar-nav .nav-link:link {
+    color: #c4a747;
 }
 
 .dropdown-item, .dropdown-item:active, .dropdown-item.active, .dropdown-item:visited {
-    color: #000099;
+    color: #30000c;
 }
 
 .hidento-heading-color, .hidento-heading-color:active, .hidento-heading-color:hover, .hidento-heading-color:link, .hidento-heading-color:focus, .hidento-heading-color:visited{
-    color:#000099;
+    color:#c4a747;
 }
 
 .dropdown-item:focus, .dropdown-item:hover{
-    color: #ffffff; /* same as special-font */
-    background-color: #000099;
+    color: #30000c; /* same as special-font */
+    background-color: #c4a747;
 }
 
 a, a:hover, a:active, a:focus, a:visited, a:link{
     text-decoration:none;
     border:none;
-    color:#000099;
+    color:#c4a747;
 }
 
 /* above color should be applied for bg-color in btn-primary in desktop and mobile styles */
@@ -42,11 +42,11 @@ a, a:hover, a:active, a:focus, a:visited, a:link{
 /*------------------------------------------------------------------------------------------------------*/
 
 .hidento-title-color, .hidento-title-color:active, .hidento-title-color:hover, .hidento-title-color:link, .hidento-title-color:focus, .hidento-title-color:visited{
-    color:#333333;
+    color:#d7d7d7;
 }
 
 h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
-    color:#333333;
+    color:#d7d7d7;
 }
 
 /*above color should be applied for color in btn-light in desktop and mobile styles*/
@@ -54,17 +54,31 @@ h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
 /*------------------------------------------------------------------------------------------------*/
 
 .hidento-background{
-    background-color:#fff;
+    background-color:#30000c; /* this color should be applied to color in btn-primary */
 }
+
+.bg-white{
+    background-color:#30000c !important; /*same color as hidento-background*/
+}
+
+div, .hidento-font-color, .hidento-font-color:hover, .hidento-font-color:active, .hidento-font-color:focus, .hidento-font-color:visited, .hidento-font-color:link{
+    color:#fff;
+}
+
 
 .hidento-note-background{
     background-color:#f4f4f4; /* this should be a slightly darker or lighter version of .hidento-background*/
+    color:#333333; /* should be same color btn-light font color*/
     padding:0.6rem;
     border-radius:1rem;
 }
 
+.hidento-btn-light-color, .hidento-btn-light-color:hover, .hidento-btn-light-color:active, .hidento-btn-light-color:visited, .hidento-btn-light-color:focus, .hidento-btn-light-color:link{
+    color:#333333; /* should be same color btn-light font color*/
+}
+
 .hidento-light-color, .hidento-light-color:hover, .hidento-light-color:active, .hidento-light-color:focus, .hidento-light-color:visited, .hidento-light-color:link{
-    color:#777777;
+    color:#a00014; /* lighter version of hidento-background */
     text-decoration:none;
 }
 
@@ -77,7 +91,7 @@ h2, h2:active, h2:hover, h2:link, h2:focus, h2:visited{
 
 /*---------------------------------------------------------------------------------------*/
 
-.navbar-light .navbar-toggler {
+.navbar-dark .navbar-toggler {
     border:none;
 }
 

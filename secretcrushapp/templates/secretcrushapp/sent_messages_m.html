@@ -8,21 +8,21 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Compliments Sent</b></h2>
+        <h2 class="hidento-title-color"><b>Notes Sent</b></h2>
 
         {% if sent_messages is None %}
-        <p>Link your Instagram account to send anonymous compliments to your secret crushes.<br>
+        <p>Link your Instagram account to send anonymous notes to your secret crushes.<br>
             (Instagram verification needed to avoid pranks from close friends.)</p>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         {% if not sent_messages %}
-        <p class="mt-4">No compliments sent yet.</p>
+        <p class="mt-4">No notes sent yet.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in sent_messages %}
         <div class="hidento-note-background">
         <p style="text-align:left" class="mb-2"><b>Receiver Instagram:</b>&nbsp;{{message.receiver_instagram_username}}</p>
-        <p style="text-align:left" class="mb-2"><b>Message: </b>{{ message.message }}</p>
+        <p style="text-align:left" class="mb-2"><b>Note: </b>{{ message.message }}</p>
         <table style="width:100%;table-layout:fixed">
             <tr>
                 <td style="text-align:left;width:80%;word-wrap:break-word;">
@@ -43,7 +43,7 @@
         <br><br>
         {% endfor %}
         {% endif %}
-        <a class="btn btn-primary mt-3" href="{% url 'sendMessage' %}"> Send a Compliment </a>
+        <a class="btn btn-primary mt-3" href="{% url 'sendMessage' %}"> Send a Note </a>
         {% endif %}
     </div>
 </center>

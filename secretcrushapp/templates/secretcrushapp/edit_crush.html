@@ -20,7 +20,7 @@
             <!--    button should be disabled after clicking-->
           <div class="hidento-label mb-1" style="text-align:left">Instagram Username of your crush</div>
             <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
-                   maxlength="255" required id="id_crushUsername"
+                   maxlength="40" required id="id_crushUsername"
                    value="{{crushUsername}}" disabled>
             <div style="text-align:right"><button type="button" class="btn btn-primary pt-0 pb-0" id="instagramVerify"
                                                           style="font-size:0.7rem">Verify</button></div>
@@ -28,39 +28,42 @@
           <div class="hidento-label mb-1" style="text-align:left">Nickname for your crush</div>
           <input type="text" class="form-control"
                    placeholder="You haven't added a nickname" name="crushNickname"
-                   maxlength="255" id="id_crushNickname"
+                   maxlength="40" id="id_crushNickname"
                    value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
             <div style="text-align:right"><a style="font-size:0.7rem;" href="#" data-toggle="tooltip"
-                                             data-placement="right" title="Your crush will be able
-to see this nickname, if you get a match with this crush and your crush is chosen to be informed.">How this works</a></div>
+                                             data-placement="bottom" title="Your crush will be able
+to see this nickname, if you get a match with this crush.">How this works</a></div>
 
 
           <div class="hidento-label mb-1" style="text-align:left">Message for your crush</div>
             <textarea class="form-control" placeholder="You haven't added any message"
-                      name="crushMessage" maxlength="3000"
+                      name="crushMessage" maxlength="1000"
                       id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
                 <div style="text-align:right"><a style="font-size:0.7rem;" href="#" data-toggle="tooltip"
-                                             data-placement="right" title="Your crush will be able
-to see this message, if you get a match with this crush and your crush is chosen to be informed.">How this works</a></div>
+                                             data-placement="bottom" title="Your crush will be able
+to see this message, if you get a match with this crush.">How this works</a></div>
 
-          <div style="text-align:left" class="mt-1">
-                <label class="hidento-label pr-3">Who should be informed, if matched?</label>
-                {% if form.whomToInform.value == 2 %}
-                <label for="id_whomToInform_0c" class="mr-3"><input type="radio" name="whomToInform" value="1" required
-                                                                    id="id_whomToInform_0c">
-                    Choose at random</label>
-                <label for="id_whomToInform_1c"><input type="radio" name="whomToInform" value="2" required
-                                                       id="id_whomToInform_1c" checked>
-                    Inform my crush</label>
-                {% else %}
-                <label for="id_whomToInform_0" class="mr-3"><input type="radio" name="whomToInform" value="1" required
-                                                                   id="id_whomToInform_0" checked>
-                    Choose at random</label>
-                <label for="id_whomToInform_1"><input type="radio" name="whomToInform" value="2" required
-                                                      id="id_whomToInform_1">
-                    Inform my crush</label>
-                {% endif %}
-            </div>
+<input type="hidden" name="whomToInform" value="1" id="id_whomToInform">
+
+<!--          <div style="text-align:left" class="mt-1">-->
+<!--                <label class="hidento-label pr-3">Who should be informed, if matched?</label>-->
+<!--                {% if form.whomToInform.value == 2 %}-->
+<!--                <label for="id_whomToInform_0c" class="mr-3"><input type="radio" name="whomToInform" value="1" required-->
+<!--                                                                    id="id_whomToInform_0c">-->
+<!--                    Choose at random</label>-->
+<!--                <label for="id_whomToInform_1c"><input type="radio" name="whomToInform" value="2" required-->
+<!--                                                       id="id_whomToInform_1c" checked>-->
+<!--                    Inform my crush</label>-->
+<!--                {% else %}-->
+<!--                <label for="id_whomToInform_0" class="mr-3"><input type="radio" name="whomToInform" value="1" required-->
+<!--                                                                   id="id_whomToInform_0" checked>-->
+<!--                    Choose at random</label>-->
+<!--                <label for="id_whomToInform_1"><input type="radio" name="whomToInform" value="2" required-->
+<!--                                                      id="id_whomToInform_1">-->
+<!--                    Inform my crush</label>-->
+<!--                {% endif %}-->
+<!--            </div>-->
+
             <div style="text-align:left" class="mt-2">
                 <table>
                     <tr>
