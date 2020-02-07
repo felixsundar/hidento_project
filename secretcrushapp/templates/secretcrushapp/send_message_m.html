@@ -3,16 +3,16 @@
 {% block content %}
 <center>
     <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:6rem">
-        <h2><b>Send New Compliment</b></h2><br>
+        <h2><b>Send New Note</b></h2><br>
         {% if error is not None%}
         {% if error == 1 %}
-        <p>Instagram account not linked. Link your Instagram account to send messages.<br>
+        <p>Instagram account not linked. Link your Instagram account to send notes.<br>
             Don't worry, your identity won't be revealed.
         </p>
         <a href="{% url 'linkInstagram' %}"> Link Instagram </a>
         {% elif error == 2 %}
-        <p>You have already sent 10 compliments. Delete one of them to send a new one.</p>
-        <a href="{% url 'sentMessages' %}"> Sent Messages </a>
+        <p>You have already sent 10 notess. Delete one of them to send a new one.</p>
+        <a href="{% url 'sentMessages' %}"> Sent Notes </a>
         {% endif %}
         {% else %}
         <form method="post" id="hidentoform">
@@ -33,7 +33,7 @@
                 </td>
             </tr></table>
 
-            <textarea class="form-control mt-3" placeholder="Message"
+            <textarea class="form-control mt-3" placeholder="Express your admiration here..."
                       name="message" maxlength="1000" required style="height:6rem;font-size:1.1rem"
                       id="id_message">{%if form.message.value%}{{form.message.value}}{%endif%}</textarea>
             {% if form.message.errors %}
