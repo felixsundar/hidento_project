@@ -6,7 +6,6 @@
 <h2 class="mb-4"><b>My Match</b></h2>
 {% if matchDetails is None %}
         <p>You don't have a match yet.</p>
-<!--        <p class="hidento-light-color">Note: Only one of them is informed, when there is a match.</p>-->
         <a href="{% url 'crushList' %}">Go to Crushlist</a>
 {% else %}
     <h5>Congratulations! You have a match!!!</h5>
@@ -26,14 +25,6 @@
     <dd>{{ matchDetails.match_message_for_user }}</dd>
     {% endif %}
 </dl>
-        <div class="mt-5" style="text-align:left;width:70%">
-            <b>Note:</b><br>
-            <div class="hidento-light-color mt-3" >
-                <p>1. Only you are informed about the match. Your crush doesn't know about it.</p>
-                <p>2. This match will be stable only for the next {{matchDetails.remaining_stable_days}} days.
-                    See 'Destabilization' in <a target="_blank" href="{% url 'howitworks' %}">How It Works</a></p>
-            </div>
-        </div>
 {% endif %}
     </div>
 </center>

@@ -274,9 +274,12 @@ class InstagramDetails(models.Model):
 @receiver(post_delete, sender=InstagramDetails, dispatch_uid='instagramDetailsPostDelete')
 def userInstagramDetailsPostDelete(sender, **kwargs):
     user_instagramDetails = kwargs['instance']
-    user_instagram = user_instagramDetails.hidento_userid.instagramDetails.select_for_update().first()
+    user = user_instagramDetails.hidento_userid
+    user_instagram = user.instagramDetails.select_for_update().first()
     if user_instagram is not None:
         user_instagram.delete()
+    user.anonymousSentMessages.all().delete()
+
 
 class ContactHidento(models.Model):
     fullname = models.CharField(max_length=40, null=False)

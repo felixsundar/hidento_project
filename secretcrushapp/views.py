@@ -104,7 +104,7 @@ def getInstagramCrushes(user_instagram):
 @transaction.atomic
 def matchView(request):
     user_instagram = request.user.instagramDetails.first()
-    if user_instagram is None or not (user_instagram.match_stablized and user_instagram.inform_this_user):
+    if user_instagram is None or not user_instagram.match_stablized:
         matchDetails = None
     else:
         try:
