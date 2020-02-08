@@ -848,7 +848,7 @@ def sendMessage(request):
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
         if form.is_valid() and validateAndSendMessage(form, request.user):
-            messages.success(request, 'Compliment sent.')
+            messages.success(request, 'Note sent.')
             return HttpResponseRedirect(reverse('sentMessages'))
     else:
         form = SendMessageForm()
@@ -868,13 +868,13 @@ def validateForSendMessage(user):
 def validateAndSendMessage(form, user):
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
+        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous notes.')
         return False
     if user.anonymousSentMessages.count() >= 10:
-        form.add_error('__all__', 'You have already sent 10 compliments. Delete one of them to send a new one.')
+        form.add_error('__all__', 'You have already sent 10 notes. Delete one of them to send a new one.')
         return False
     if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username']:
-        form.add_error('receiver_instagram_username', 'You can\'t send a compliment to yourself.')
+        form.add_error('receiver_instagram_username', 'You can\'t send a note to yourself.')
         return False
     new_message = AnonymousMessage(hidento_userid = user,
                                    receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
@@ -897,7 +897,7 @@ def deleteMessage(request):
     if message.hidento_userid != request.user:
         raise PermissionDenied
     message.delete()
-    messages.success(request, 'Compliment deleted.')
+    messages.success(request, 'Note deleted.')
     return HttpResponseRedirect(reverse('sentMessages'))
 
 @login_required
@@ -913,7 +913,7 @@ def hideMessage(request):
         raise PermissionDenied
     message.is_hidden = True
     message.save()
-    messages.success(request, 'Compliment hidden.')
+    messages.success(request, 'Note hidden.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required
@@ -930,7 +930,7 @@ def reportMessage(request):
     message.is_abusive = True
     message.is_hidden = True
     message.save()
-    messages.success(request, 'Message reported.')
+    messages.success(request, 'Note reported.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required
