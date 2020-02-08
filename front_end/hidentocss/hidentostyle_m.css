@@ -4,6 +4,14 @@
     border-radius:5px;
 }
 
+.hidento-background{
+    background-color:#30001c; /* this color should be applied to color in btn-primary */
+}
+
+.bg-white{
+    background-color:#30001c !important; /*same color as hidento-background*/
+}
+
 .hidento-content{
     min-height: 100%;
     padding-top: 5.2rem;
@@ -67,7 +75,7 @@
 .btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
     font-size:1.1rem;
     background-color:#c4a747 !important;
-    color:#30000c !important;
+    color:#30001c !important;
     border:none;
 }
 
