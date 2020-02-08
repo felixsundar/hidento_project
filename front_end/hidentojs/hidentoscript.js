@@ -1,6 +1,8 @@
 $(function() {
    $("#edit_crush_deleteButton").click(function(){
-      if (confirm("If you are matched with this crush currently, your match will be broken.\n\nAre you sure you want to delete?")){
+      if (confirm("You won't be matched with this crush in future.\n"+
+                  "If you are matched with this crush currently, your match will be broken.\n\n"+
+                  "Are you sure you want to delete?")){
          $('form#edit_crush_deleteForm').submit();
       } else{
       event.preventDefault();
@@ -48,14 +50,16 @@ $(function()
 
 $(".edit_crush_activeClass").change(function() {
     if(!this.checked && this.defaultChecked) {
-        alert("You are about to deactivate this crush.\n\nIf you are matched with this crush currently, your match will be broken.")
+        alert("You are about to deactivate this crush.\n\n"+
+        "You won't be matched with this crush in future.\n"+
+        "If you are matched with this crush currently, your match will be broken.")
     }
 });
 
 $(function() {
    $(".sentMessageDeleteButton").click(function(){
       if (confirm("The receiver will not be able to see this message.\n\nAre you sure you want to delete?")){
-         $(this).submit();
+         $(this).parents('form').submit();
       } else{
       event.preventDefault();
       }
@@ -65,7 +69,7 @@ $(function() {
 $(function() {
    $(".receivedMessageHideButton").click(function(){
       if (confirm("You won't be able to see this message again.\n\nAre you sure you want to hide it?")){
-         $(this).submit();
+         $(this).parents('form').submit();
       } else{
       event.preventDefault();
       }
@@ -92,8 +96,8 @@ $(function() {
 
 $(function() {
    $(".saveBlacklistButton").click(function(){
-      if (confirm("Once saved, it can\'t be modified for the next 15 days.\n\nAre you sure you want to save it?")){
-         $(this).submit();
+      if (confirm("Once saved, blacklist can\'t be modified for the next 15 days.\n\nAre you sure you want to save it?")){
+         $(this).parents('form').submit();
       } else{
       event.preventDefault();
       }

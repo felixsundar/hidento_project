@@ -1,16 +1,16 @@
-{% extends 'secretcrushapp/base_d.html' %}
+{% extends 'secretcrushapp/base_m.html' %}
 
 {% block content %}
 <center>
-    <div style="width:80%;margin-top:2.3rem;margin-bottom:2.8rem">
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:6rem">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <div style="text-align:left"><a href="{% url 'receivedMessages' %}" class="hidento-heading-color"> Back </a></div>
-        <h2><b>Notes Blacklist</b></h2><br>
-        <p style="text-align:left">Notes from blacklisted users will not be shown to you. You can blacklist your close friends (by their
+        <div class="mb-3" style="text-align:left"><a href="{% url 'receivedMessages' %}" class="hidento-heading-color"> Back </a></div>
+        <h2><b>Notes Blacklist</b></h2>
+        <p class="mt-4" style="text-align:left">Notes from blacklisted users will not be shown to you. You can blacklist your close friends (by their
             Instagram usernames), so they don't prank you.</p>
             <b>Note:</b> Blacklist can be modified only once in 15 days.
         <form method="post" id="hidentoform">
@@ -25,7 +25,7 @@
                 <tr class="pb-3">
                     <td>
                     </td>
-                    <td class="pl-3 hidento-row-padding">
+                    <td class="pl-1 hidento-row-padding">
                         <b>Instagram Usernames</b>
                     </td>
                 </tr>
@@ -33,10 +33,10 @@
                     <td class=" hidento-row-padding">
                         1.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username1" id="instagramUsername1"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username1" id="instagramUsername1"
                    maxlength="40" value="{% if form.username1.value %}{{form.username1.value}}{% endif %}">
-                        &nbsp;
+&nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="1"
                                                           style="font-size:0.7rem">Verify</span>
                         {% if form.username1.errors %}
@@ -51,8 +51,8 @@
                     <td class=" hidento-row-padding">
                         2.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username2" id="instagramUsername2"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username2" id="instagramUsername2"
                    maxlength="40" value="{% if form.username2.value %}{{form.username2.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="2"
@@ -69,8 +69,8 @@
                     <td class=" hidento-row-padding">
                         3.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username3" id="instagramUsername3"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username3" id="instagramUsername3"
                    maxlength="40" value="{% if form.username3.value %}{{form.username3.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="3"
@@ -87,8 +87,8 @@
                     <td class=" hidento-row-padding">
                         4.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username4" id="instagramUsername4"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username4" id="instagramUsername4"
                    maxlength="40" value="{% if form.username4.value %}{{form.username4.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="4"
@@ -105,8 +105,8 @@
                     <td class=" hidento-row-padding">
                         5.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username5" id="instagramUsername5"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username5" id="instagramUsername5"
                    maxlength="40" value="{% if form.username5.value %}{{form.username5.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="5"
@@ -123,8 +123,8 @@
                     <td class=" hidento-row-padding">
                         6.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username6" id="instagramUsername6"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username6" id="instagramUsername6"
                    maxlength="40" value="{% if form.username6.value %}{{form.username6.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="6"
@@ -141,8 +141,8 @@
                     <td class=" hidento-row-padding">
                         7.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username7" id="instagramUsername7"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username7" id="instagramUsername7"
                    maxlength="40" value="{% if form.username7.value %}{{form.username7.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="7"
@@ -159,8 +159,8 @@
                     <td class=" hidento-row-padding">
                         8.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username8" id="instagramUsername8"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username8" id="instagramUsername8"
                    maxlength="40" value="{% if form.username8.value %}{{form.username8.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="8"
@@ -177,8 +177,8 @@
                     <td class=" hidento-row-padding">
                         9.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username9" id="instagramUsername9"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username9" id="instagramUsername9"
                    maxlength="40" value="{% if form.username9.value %}{{form.username9.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="9"
@@ -195,8 +195,8 @@
                     <td class=" hidento-row-padding">
                         10.
                     </td>
-                    <td class="pl-3 hidento-row-padding">
-                        <input type="text" placeholder="------" name="username10" id="instagramUsername10"
+                    <td class="pl-1 hidento-row-padding">
+                        <input type="text" style="font-size:1.1rem" placeholder="------" name="username10" id="instagramUsername10"
                    maxlength="40" value="{% if form.username10.value %}{{form.username10.value}}{% endif %}">
                         &nbsp;
                         <span class="btn btn-primary pt-0 pb-0 verifyInstagram" id="10"

@@ -1,6 +1,6 @@
 
 .nav-link:active, .hidento-dropdown:active{
-    background-color:#ddd;
+    background-color:#50001c;
     border-radius:5px;
 }
 
@@ -66,8 +66,8 @@
 
 .btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
     font-size:1.1rem;
-    background-color:#000099 !important;
-    color:#ffffff !important;
+    background-color:#c4a747 !important;
+    color:#30000c !important;
     border:none;
 }
 
@@ -147,4 +147,9 @@ word-break: break-all;
 
 p{
 word-wrap: break-word;
+}
+
+.hidento-row-padding{
+padding-top:0.5rem;
+padding-bottom:0.5rem;
 }

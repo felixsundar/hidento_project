@@ -1,6 +1,6 @@
 
 .nav-link:hover, .hidento-dropdown:hover{
-    background-color:#ddd;
+    background-color:#50001c;
     border-radius:5px;
 }
 
@@ -131,8 +131,8 @@ word-wrap: break-word;
 }
 
 .btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
-    background-color:#000099 !important;
-    color:#ffffff !important;
+    background-color:#c4a747 !important;
+    color:#30000c !important;
     border:none;
 }
 

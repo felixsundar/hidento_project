@@ -5,36 +5,30 @@
     <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:6rem">
 <h2 class="mb-4"><b>My Match</b></h2>
 {% if matchDetails is None %}
-        <p>Match results will be available from 14th February, 2020 onwards.</p>
-<!-- <p style="max-height: 999999px;">You don't have a match yet.</p>-->
-<!--        <p class="hidento-light-color">Note: Only one of them is informed, when there is a match.</p>-->
+        <p>You don't have a match yet.</p>
+        <p>Match details will be shown here, if you are matched with any of your secret crushes in your crush list.</p>
         <a href="{% url 'crushList' %}">Go to Crushlist</a>
 {% else %}
     <h5>Congratulations! You have a match!!!</h5>
-    <h3 class="mt-3 mb-4">You are matched with <b><a target="_blank" href="{{ matchDetails.instagramProfileLink }}">
+    <h3 class="mt-3 mb-5">You are matched with <b><a target="_blank" href="{{ matchDetails.instagramProfileLink }}">
         {{ matchDetails.match_instagram_username }}</a>
     {% if matchDetails.user_nickname_for_match %}
         ({{ matchDetails.user_nickname_for_match }})
         {% endif %}</b></h3>
-<dl>
+
+        <div style="width:95%;text-align:left">
     {% if matchDetails.match_nickname_for_user %}
-    <dt>Your match has a nickname for you</dt>
-    <dd>{{ matchDetails.match_nickname_for_user }}</dd>
+        <div class="mb-1"><b>Your match has a nickname for you</b></div>
+    <p class="mb-4">{{ matchDetails.match_nickname_for_user }}</p>
     {% endif %}
 
     {% if matchDetails.match_message_for_user %}
-    <dt>Your match has a message for you</dt>
-    <dd>{{ matchDetails.match_message_for_user }}</dd>
+        <div class="mb-1"><b>Your match has a message for you</b></div>
+    <p style="text-align:justify">{{ matchDetails.match_message_for_user }}</p>
     {% endif %}
-</dl>
-        <div class="mt-5" style="text-align:left">
-            <b>Note</b><br>
-            <div class="hidento-light-color mt-3" >
-                <p>1. Only you are informed about the match. Your crush doesn't know about it.</p>
-                <p>2. This match will be stable only for the next {{matchDetails.remaining_stable_days}} days.
-                    See 'what happens after destablization' in <a target="_blank" href="{% url 'faq' %}">FAQ</a></p>
-            </div>
-        </div>
+</div>
+
+        <div class="mt-5"><h4>Hidento wishes you happy days ahead with your crush!</h4></div>
 {% endif %}
     </div>
 </center>

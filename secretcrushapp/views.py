@@ -104,7 +104,7 @@ def getInstagramCrushes(user_instagram):
 @transaction.atomic
 def matchView(request):
     user_instagram = request.user.instagramDetails.first()
-    if user_instagram is None or not (user_instagram.match_stablized and user_instagram.inform_this_user):
+    if user_instagram is None or not user_instagram.match_stablized:
         matchDetails = None
     else:
         try:
@@ -783,26 +783,43 @@ def csrf_failure(request, reason=""):
 @login_required
 def receivedMessages(request):
     instagram_username = getInstagramUsername(request.user)
-    is_published = False
-    if now() >= datetime(2020,month=2,day=14, tzinfo=pytz.utc):
-        is_published = True
+    blacklistObject = request.user.messageBlacklist.first()
+    receivedMessageError = getReceivedMessagesError(blacklistObject)
     context = {
-        'received_messages': getReceivedMessages(instagram_username, is_published),
+        'received_messages': getReceivedMessages(receivedMessageError, blacklistObject, instagram_username),
         'instagram_username': instagram_username,
-        'published': is_published,
+        'received_message_error': receivedMessageError
     }
     if request.user_agent.is_mobile:
         return render(request, 'secretcrushapp/received_messages_m.html', context=context)
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
-def getReceivedMessages(instagram_username, is_published):
+def getReceivedMessagesError(blacklistObject):
+    if now() < datetime(2020, month=2, day=14, tzinfo=pytz.utc):
+        return 'Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)'
+    if isModifiable(blacklistObject):
+        return 'Save your blacklist before you can see the received notes.'
+    return None
+
+def getReceivedMessages(receivedMessageError, blacklistObject, instagram_username):
     if instagram_username is None:
         return None
-    if not is_published:
+    if receivedMessageError:
         return []
-    return list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
+    received_all = list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
                 .filter(is_hidden = False)
                 .order_by('-added_time'))
+    return filterBlacklistedUsers(blacklistObject, received_all)
+
+def filterBlacklistedUsers(blacklistObject, received_all):
+    if blacklistObject is None:
+        return received_all
+    blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
+    received_filtered = []
+    for message in received_all:
+        if message.sender_instagram_username not in blacklistPythonList:
+            received_filtered.append(message)
+    return received_filtered
 
 @login_required
 def sentMessages(request):
@@ -831,7 +848,7 @@ def sendMessage(request):
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
         if form.is_valid() and validateAndSendMessage(form, request.user):
-            messages.success(request, 'Compliment sent.')
+            messages.success(request, 'Note sent.')
             return HttpResponseRedirect(reverse('sentMessages'))
     else:
         form = SendMessageForm()
@@ -851,13 +868,13 @@ def validateForSendMessage(user):
 def validateAndSendMessage(form, user):
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous messages.')
+        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous notes.')
         return False
     if user.anonymousSentMessages.count() >= 10:
-        form.add_error('__all__', 'You have already sent 10 compliments. Delete one of them to send a new one.')
+        form.add_error('__all__', 'You have already sent 10 notes. Delete one of them to send a new one.')
         return False
     if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username']:
-        form.add_error('receiver_instagram_username', 'You can\'t send a compliment to yourself.')
+        form.add_error('receiver_instagram_username', 'You can\'t send a note to yourself.')
         return False
     new_message = AnonymousMessage(hidento_userid = user,
                                    receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
@@ -880,7 +897,7 @@ def deleteMessage(request):
     if message.hidento_userid != request.user:
         raise PermissionDenied
     message.delete()
-    messages.success(request, 'Compliment deleted.')
+    messages.success(request, 'Note deleted.')
     return HttpResponseRedirect(reverse('sentMessages'))
 
 @login_required
@@ -896,7 +913,7 @@ def hideMessage(request):
         raise PermissionDenied
     message.is_hidden = True
     message.save()
-    messages.success(request, 'Compliment hidden.')
+    messages.success(request, 'Note hidden.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required
@@ -913,7 +930,7 @@ def reportMessage(request):
     message.is_abusive = True
     message.is_hidden = True
     message.save()
-    messages.success(request, 'Message reported.')
+    messages.success(request, 'Note reported.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required
@@ -941,28 +958,19 @@ def editBlacklistView(request):
 
 def editBlacklist(request, form, blacklistObject):
     blacklistPythonListFromForm = getblacklistPythonListFromForm(form)
-    if blacklistObject is not None:
-        blacklistPythonListFromDb = getBlacklistPythonListFromDb(blacklistObject)
-    else:
-        blacklistPythonListFromDb = []
+    if blacklistObject is None:
         blacklistObject = MessageBlacklist(hidento_userid=request.user)
-    changecode = getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb)
-    if changecode == 2:
-        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
-        blacklistObject.last_modified_time = now()
-        blacklistObject.save()
-        messages.success(request, 'Blacklist modified.')
-    elif changecode == 1:
-        blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
-        blacklistObject.save()
-        messages.success(request, 'Changes saved.')
+    blacklistObject.blacklistJSON = json.dumps(blacklistPythonListFromForm)
+    blacklistObject.last_modified_time = now()
+    blacklistObject.save()
+    messages.success(request, 'Blacklist saved.')
     return True
 
 def getBlacklistPythonListFromDb(blacklistObject):
     listFromDb = json.loads(blacklistObject.blacklistJSON)
     blacklistPythonListFromDb = []
     for i in listFromDb:
-        if i['username']:
+        if i:
             blacklistPythonListFromDb.append(i)
     return blacklistPythonListFromDb
 
@@ -970,10 +978,7 @@ def getblacklistPythonListFromForm(form):
     blacklistPythonList = []
     for i in range(1, 11):
         if form.cleaned_data['username'+str(i)]:
-            blacklistPythonList.append({
-                'username': form.cleaned_data['username'+str(i)],
-                'nickname': form.cleaned_data['nickname'+str(i)]
-            })
+            blacklistPythonList.append(form.cleaned_data['username'+str(i)])
     return blacklistPythonList
 
 def isModifiable(blacklistObject):
@@ -986,46 +991,20 @@ def isModifiable(blacklistObject):
 def getBlacklistFormData(blacklistObject):
     blacklistFormData = {}
     blacklistFormData['username1'] = None
-    blacklistFormData['nickname1'] = None
     blacklistFormData['username2'] = None
-    blacklistFormData['nickname2'] = None
     blacklistFormData['username3'] = None
-    blacklistFormData['nickname3'] = None
     blacklistFormData['username4'] = None
-    blacklistFormData['nickname4'] = None
     blacklistFormData['username5'] = None
-    blacklistFormData['nickname5'] = None
     blacklistFormData['username6'] = None
-    blacklistFormData['nickname6'] = None
     blacklistFormData['username7'] = None
-    blacklistFormData['nickname7'] = None
     blacklistFormData['username8'] = None
-    blacklistFormData['nickname8'] = None
     blacklistFormData['username9'] = None
-    blacklistFormData['nickname9'] = None
     blacklistFormData['username10'] = None
-    blacklistFormData['nickname10'] = None
     if blacklistObject is None:
         return blacklistFormData
     blacklistPythonList = getBlacklistPythonListFromDb(blacklistObject)
     i=1
     for blacklisted in blacklistPythonList:
-        blacklistFormData['username'+str(i)] = blacklisted.get('username')
-        blacklistFormData['nickname'+str(i)] = blacklisted.get('nickname')
+        blacklistFormData['username'+str(i)] = blacklisted
         i+=1
     return blacklistFormData
-
-def getchangecode(blacklistPythonListFromForm, blacklistPythonListFromDb):
-    if len(blacklistPythonListFromForm) != len(blacklistPythonListFromDb):
-        return 2
-    formUsernameList = [user['username'] for user in blacklistPythonListFromForm]
-    dbUsernameList = [user['username'] for user in blacklistPythonListFromDb]
-    for username in formUsernameList:
-        if username not in dbUsernameList:
-            return 2
-    formNicknameList = [user['nickname'] for user in blacklistPythonListFromForm]
-    dbNicknameList = [user['nickname'] for user in blacklistPythonListFromDb]
-    for nickname in formNicknameList:
-        if nickname not in dbNicknameList:
-            return 1
-    return 0
