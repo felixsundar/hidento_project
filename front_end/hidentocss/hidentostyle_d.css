@@ -4,6 +4,14 @@
     border-radius:5px;
 }
 
+.hidento-background{
+    background-color:#30000c; /* this color should be applied to color in btn-primary */
+}
+
+.bg-white{
+    background-color:#30000c !important; /*same color as hidento-background*/
+}
+
 .hidento-content{
     min-height: 100%;
     position: relative;
