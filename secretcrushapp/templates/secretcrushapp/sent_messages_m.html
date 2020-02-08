@@ -2,7 +2,7 @@
 
 {% block content %}
 <center>
-    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:6rem">
+    <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:3rem">
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
@@ -12,11 +12,11 @@
 
         {% if sent_messages is None %}
         <p>Link your Instagram account to send anonymous notes to your secret crushes.<br>
-            (Instagram verification needed to avoid pranks from close friends.)</p>
+            (Don't worry, your identity won't be revealed.)</p>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         {% if not sent_messages %}
-        <p class="mt-4">No notes sent yet.</p>
+        <p class="mt-4">You can send anonymous notes to your secret crushes.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in sent_messages %}
