@@ -155,3 +155,5 @@ def cleanInstagramUsername(form, fieldname, instagramUsername):
         form.add_error(fieldname, 'Instagram username can\'t contain spaces.')
     if any(letter.isupper() for letter in instagramUsername):
         form.add_error(fieldname, 'Instagram username can\'t contain uppercase letters.')
+    if '@' in instagramUsername:
+        form.add_error(fieldname, 'Do not include \'@\' in Instagram username.')
