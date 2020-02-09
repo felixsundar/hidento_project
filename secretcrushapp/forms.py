@@ -93,9 +93,7 @@ class AddCrushForm(Form):
 
     def clean_crushUsername(self):
         crush_instagram_username = self.cleaned_data['crushUsername']
-        if ' ' in crush_instagram_username:
-            raise forms.ValidationError('Instagram usernames cannot contain spaces.')
-
+        cleanInstagramUsername(self, 'crushUsername', crush_instagram_username)
         return crush_instagram_username
 
 class EditCrushForm(Form):
@@ -130,8 +128,7 @@ class SendMessageForm(ModelForm):
 
     def clean_receiver_instagram_username(self):
         receiver_instagram_username = self.cleaned_data['receiver_instagram_username']
-        if ' ' in receiver_instagram_username:
-            raise forms.ValidationError('Instagram usernames cannot contain spaces.')
+        cleanInstagramUsername(self, 'receiver_instagram_username', receiver_instagram_username)
         return receiver_instagram_username
 
 class MessageBlacklistForm(Form):
@@ -149,5 +146,12 @@ class MessageBlacklistForm(Form):
     def clean(self):
         cleaned_data = super().clean()
         for i in range(1, 11):
-            if ' ' in cleaned_data['username'+str(i)]:
-                self.add_error('username'+str(i), 'Instagram username cannot contain spaces.')
+            fieldname = 'username'+str(i)
+            instagramUsername = cleaned_data[fieldname]
+            cleanInstagramUsername(self, fieldname, instagramUsername)
+
+def cleanInstagramUsername(form, fieldname, instagramUsername):
+    if ' ' in instagramUsername:
+        form.add_error(fieldname, 'Instagram username can\'t contain spaces.')
+    if any(letter.isupper() for letter in instagramUsername):
+        form.add_error(fieldname, 'Instagram username can\'t contain uppercase letters.')

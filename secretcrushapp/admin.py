@@ -6,7 +6,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.auth.models import Group
 
-from secretcrushapp.models import InstagramCrush, HidentoUser, Controls, ContactHidento, HowItWorks, FAQ, InstagramDetails
+from secretcrushapp.models import InstagramCrush, HidentoUser, Controls, ContactHidento, HowItWorks, FAQ, InstagramDetails, AnonymousMessage
 
 class HidentoUserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
@@ -94,6 +94,10 @@ class InstagramCrushAdmin(admin.ModelAdmin):
     search_fields = ('instagram_username', 'crush1_username', 'crush2_username', 'crush3_username', 'crush4_username', 'crush5_username')
     list_filter = ('match_stablized', 'inform_this_user')
 
+class AnonymousMessageAdmin(admin.ModelAdmin):
+    search_fields = ('sender_instagram_username', 'receiver_instagram_username')
+    list_filter = ('is_abusive', 'is_hidden')
+
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
 admin.site.register(InstagramCrush, InstagramCrushAdmin)
@@ -102,6 +106,7 @@ admin.site.register(ContactHidento, ContactHidentoAdmin)
 admin.site.register(HowItWorks)
 admin.site.register(FAQ)
 admin.site.register(InstagramDetails)
+admin.site.register(AnonymousMessage, AnonymousMessageAdmin)
 # ... and, since we're not using Django's built-in permissions,
 # unregister the Group model from admin.
 admin.site.unregister(Group)
