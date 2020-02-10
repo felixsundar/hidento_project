@@ -12,6 +12,48 @@
     background-color:#30000c !important; /*same color as hidento-background*/
 }
 
+.dropdown-item, .dropdown-item:active, .dropdown-item.active, .dropdown-item:visited, .dropdown-item:link {
+    color: #30000c;
+}
+
+
+.dropdown-item:focus, .dropdown-item:hover{
+    color: #30000c; /* same as special-font */
+    background-color: #c4a747;
+}
+
+.btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
+    background-color:#c4a747 !important;
+    color:#30000c !important;
+    border:none;
+}
+
+.navbar-dark .navbar-brand, .navbar-dark .navbar-brand:hover, .navbar-dark .navbar-brand:active, .navbar-dark .navbar-brand:focus, .navbar-dark .navbar-brand:visited, .navbar-dark .navbar-brand:link {
+    color: #c4a747;
+}
+
+.navbar-dark .navbar-nav .nav-link, .navbar-dark .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .nav-link:active, .navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:visited, .navbar-dark .navbar-nav .nav-link:link {
+    color: #c4a747;
+}
+
+.hidento-heading-color, .hidento-heading-color:active, .hidento-heading-color:hover, .hidento-heading-color:link, .hidento-heading-color:focus, .hidento-heading-color:visited{
+    color:#c4a747;
+}
+
+a, a:hover, a:active, a:focus, a:visited, a:link{
+    text-decoration:none;
+    border:none;
+    color:#c4a747;
+}
+
+.btn-light, btn-light:hover, btn-light:active, btn-light:focus, btn-light:visited, btn-light:link{
+    color:#333333 !important;
+    background-color:#e6e6e6 !important;
+    border:none;
+}
+
+/*--------------------------------------------------------------------------------------------*/
+
 .hidento-content{
     min-height: 100%;
     position: relative;
@@ -136,18 +178,6 @@
 
 p{
 word-wrap: break-word;
-}
-
-.btn-primary, btn-primary:hover, btn-primary:active, btn-primary:focus, btn-primary:visited, btn-primary:link{
-    background-color:#c4a747 !important;
-    color:#30000c !important;
-    border:none;
-}
-
-.btn-light, btn-light:hover, btn-light:active, btn-light:focus, btn-light:visited, btn-light:link{
-    color:#333333 !important;
-    background-color:#e6e6e6 !important;
-    border:none;
 }
 
 .hidento-row-padding{
