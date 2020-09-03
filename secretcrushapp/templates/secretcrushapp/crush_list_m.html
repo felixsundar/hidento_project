@@ -12,9 +12,8 @@
         <h2 class="hidento-title-color"><b>My Crushlist</b></h2>
 
         {% if instagram_crushes is None %}
-        <p class="mt-4" style="text-align:justify">Hidento matches two people if they have secret crush on each other. </p>
-            <p style="text-align:justify">Link your instagram account to register your secret crushes.
-            </p>
+        <p class="mt-4" style="text-align:justify">Hidento lets you find if any of your secret crushes have a crush on you. </p>
+            <p style="text-align:justify">Link your instagram account to add secret crushes.</p>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         {% if not instagram_crushes %}
