@@ -2,7 +2,7 @@
 
 {% block content %}
 <center>
-<div class="hidento-home-center" style="margin-top:6rem;margin-bottom:3rem">
+<div class="hidento-home-center" style="margin-top:5rem;margin-bottom:1.5rem">
     {% if messages %}
         {% for message in messages %}
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
@@ -13,6 +13,12 @@
     <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'crushList' %}"> My Crushlist </a>
     <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'receivedMessages' %}"> Notes Received </a>
     <a class="btn btn-block btn-light btn-lg mb-3" href="{% url 'sentMessages' %}"> Notes Sent </a>
+    <br>
+    <h4 style="text-align:justify" class="hidento-heading-color mt-5"><b>
+        Help your friend find his/her secret crush!
+    </b></h4>
+    <a href="whatsapp://send?text=Find your secret crush @ https://www.hidento.com" class="btn btn-primary btn-sm mt-3"
+    style="color:#FFFFFF !important;background-color:#25D366 !important"><b><i class="fa fa-whatsapp"></i> Share to a Friend</b></a>
 </div>
 </center>
 
