@@ -92,7 +92,7 @@ class ContactHidentoAdmin(admin.ModelAdmin):
 
 class InstagramCrushAdmin(admin.ModelAdmin):
     search_fields = ('instagram_username', 'crush1_username', 'crush2_username', 'crush3_username', 'crush4_username', 'crush5_username')
-    list_filter = ('match_stablized', 'inform_this_user')
+    list_filter = ('match_stablized', 'inform_this_user', 'crush1_active')
 
 class AnonymousMessageAdmin(admin.ModelAdmin):
     search_fields = ('sender_instagram_username', 'receiver_instagram_username')
