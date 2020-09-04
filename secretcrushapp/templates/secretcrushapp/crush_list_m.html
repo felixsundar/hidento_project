@@ -13,8 +13,8 @@
 
         {% if instagram_crushes is None %}
         <p class="mt-4" style="text-align:justify">Hidento lets you find if any of your secret crushes have a crush on you. </p>
-            <p style="text-align:justify">Link your instagram account to add secret crushes.</p>
-        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
+            <p style="text-align:justify">Tell us your Instagram username and add your crushes' Instagram usernames to the list.</p>
+        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Verify Instagram Username </a>
         {% else %}
         {% if not instagram_crushes %}
         <p class="mt-4" style="text-align:justify">Hidento matches two people if they have secret crush on each other.</p> <p>You can add upto 5 secret crushes.</p>
