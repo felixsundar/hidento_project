@@ -58,7 +58,7 @@ $(".edit_crush_activeClass").change(function() {
 
 $(function() {
    $(".sentMessageDeleteButton").click(function(){
-      if (confirm("The receiver will not be able to see this message.\n\nAre you sure you want to delete?")){
+      if (confirm("The suggestion won't be visible to them anymore.\n\nAre you sure you want to delete?")){
          $(this).parents('form').submit();
       } else{
       event.preventDefault();
