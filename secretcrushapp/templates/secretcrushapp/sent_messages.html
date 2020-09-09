@@ -8,15 +8,15 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Notes Sent</b></h2>
+        <h2 class="hidento-title-color"><b>Suggestions Sent</b></h2>
 
         {% if sent_messages is None %}
-        <p class="mt-4">Link your Instagram account to send anonymous notes to your secret crushes.<br>
+        <p class="mt-4">Link your Instagram account to send anonymous match suggestions to your friends.<br>
             (Don't worry, your identity won't be revealed.)</p>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
         {% else %}
         {% if not sent_messages %}
-        <p class="mt-4">You can send anonymous notes to your secret crushes.</p>
+        <p class="mt-4">You can send anonymous match suggestions to your friends.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in sent_messages %}
@@ -43,7 +43,7 @@
         <br><br>
         {% endfor %}
         {% endif %}
-        <a class="btn btn-primary mt-3" href="{% url 'sendMessage' %}"> Send a Note </a>
+        <a class="btn btn-primary mt-3" href="{% url 'sendMessage' %}"> Send New Suggestion </a>
         {% endif %}
     </div>
 </center>
