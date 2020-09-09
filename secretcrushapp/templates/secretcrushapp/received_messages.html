@@ -8,16 +8,16 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Notes Received</b></h2>
+        <h2 class="hidento-title-color"><b>Suggestions Received</b></h2>
 
         {% if received_messages is None %}
         <div style="text-align:right">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="bottom"
-               title="You can blacklist your close friends, so they don't prank you.">
+               title="You can blacklist users from whom you don't want to receive suggestions.">
                 My Blacklist
             </a>
         </div>
-        <div class="mt-3 mb-3" style="text-align:justify">Instagram account not linked. Link your Instagram account to be able to see the notes
+        <div class="mt-3 mb-3" style="text-align:justify">Instagram account not linked. Link your Instagram account to be able to see the match suggestions
             received
             for your Instagram username.
         </div>
@@ -28,15 +28,15 @@
                     class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
         <div style="text-align:right">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="bottom"
-               title="You can blacklist your close friends, so they don't prank you.">
+               title="You can blacklist users from whom you don't want to receive suggestions.">
                 My Blacklist </a>
         </div>
         {% if received_message_error %}
         <p class="mt-4">{{received_message_error}}</p>
         {% else %}
         {% if not received_messages %}
-        <p class="mt-4">Anonymous notes sent to your Instagram username will be shown here.</p>
-        <p class="mt-4">No notes to show at the moment.</p>
+        <p class="mt-4">Match suggestions sent to your Instagram username will be shown here.</p>
+        <p class="mt-4">No suggestions to show at the moment.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in received_messages %}
