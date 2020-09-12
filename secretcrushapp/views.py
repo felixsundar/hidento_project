@@ -798,7 +798,7 @@ def getReceivedMessagesError(blacklistObject):
     if now() < datetime(2020, month=2, day=14, tzinfo=pytz.utc):
         return 'Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)'
     if isModifiable(blacklistObject):
-        return 'Save your blacklist before you can see the received notes.'
+        return 'Save your blacklist before you can see the received suggestions.'
     return None
 
 def getReceivedMessages(receivedMessageError, blacklistObject, instagram_username):
@@ -897,7 +897,7 @@ def deleteMessage(request):
     if message.hidento_userid != request.user:
         raise PermissionDenied
     message.delete()
-    messages.success(request, 'Note deleted.')
+    messages.success(request, 'Suggestion deleted.')
     return HttpResponseRedirect(reverse('sentMessages'))
 
 @login_required
@@ -913,7 +913,7 @@ def hideMessage(request):
         raise PermissionDenied
     message.is_hidden = True
     message.save()
-    messages.success(request, 'Note hidden.')
+    messages.success(request, 'Suggestion removed.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required
