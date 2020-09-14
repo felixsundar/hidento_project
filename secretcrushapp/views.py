@@ -456,7 +456,11 @@ def addCrushView(request):
             messages.success(request, 'New secret crush has been added successfully.')
             return HttpResponseRedirect(reverse('crushList'))
     else:
-        form = AddCrushForm(error_or_lowestPriority)
+        crushUsername = request.GET.get('insta_name')
+        if crushUsername is not None:
+            form = AddCrushForm(error_or_lowestPriority, {'crushUsername':crushUsername})
+        else:
+            form = AddCrushForm(error_or_lowestPriority)
     context = {
         'form': form,
         'lowest_priority': error_or_lowestPriority,
