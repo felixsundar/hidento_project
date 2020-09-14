@@ -124,7 +124,7 @@ class ContactForm(ModelForm):
 class SendMessageForm(ModelForm):
     class Meta:
         model = AnonymousMessage
-        fields = ('receiver_instagram_username', 'message', 'sender_nickname')
+        fields = ('receiver_instagram_username1', 'message')
 
     def clean_receiver_instagram_username(self):
         receiver_instagram_username = self.cleaned_data['receiver_instagram_username']
