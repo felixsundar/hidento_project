@@ -21,8 +21,8 @@
         <div style="margin-top:3rem"></div>
         {% for message in sent_messages %}
         <div class="hidento-note-background">
-        <p style="text-align:left" class="mb-2"><b>His Instagram:</b>&nbsp;{{message.receiver_instagram_username}}</p>
-        <p style="text-align:left" class="mb-2"><b>Her Instagram:</b>&nbsp;{{ message.receiver_instagram_username }}</p>
+        <p style="text-align:left" class="mb-2"><b>His Instagram:</b>&nbsp;{{message.receiver_instagram_username1}}</p>
+        <p style="text-align:left" class="mb-2"><b>Her Instagram:</b>&nbsp;{{ message.receiver_instagram_username2 }}</p>
         <p style="text-align:left" class="mb-2"><b>Your Message:</b>&nbsp;{{ message.message }}</p>
         <table style="width:100%;table-layout:fixed">
             <tr>
@@ -44,7 +44,7 @@
         <br><br>
         {% endfor %}
         {% endif %}
-        <a class="btn btn-primary mt-3" href="{% url 'sendMessage' %}"> Send New Suggestion </a>
+        <a class="btn btn-primary" href="{% url 'sendMessage' %}"> Send New Suggestion </a>
         {% endif %}
     </div>
 </center>

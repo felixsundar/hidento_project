@@ -124,12 +124,17 @@ class ContactForm(ModelForm):
 class SendMessageForm(ModelForm):
     class Meta:
         model = AnonymousMessage
-        fields = ('receiver_instagram_username1', 'message')
+        fields = ('receiver_instagram_username1', 'receiver_instagram_username2', 'message')
 
-    def clean_receiver_instagram_username(self):
-        receiver_instagram_username = self.cleaned_data['receiver_instagram_username']
-        cleanInstagramUsername(self, 'receiver_instagram_username', receiver_instagram_username)
-        return receiver_instagram_username
+    def clean_receiver_instagram_username1(self):
+        receiver_instagram_username1 = self.cleaned_data['receiver_instagram_username1']
+        cleanInstagramUsername(self, 'receiver_instagram_username1', receiver_instagram_username1)
+        return receiver_instagram_username1
+
+    def clean_receiver_instagram_username2(self):
+        receiver_instagram_username2 = self.cleaned_data['receiver_instagram_username2']
+        cleanInstagramUsername(self, 'receiver_instagram_username2', receiver_instagram_username2)
+        return receiver_instagram_username2
 
 class MessageBlacklistForm(Form):
     username1 = forms.CharField(label='Username', max_length=40, required=False)
