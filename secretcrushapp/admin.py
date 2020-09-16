@@ -96,7 +96,7 @@ class InstagramCrushAdmin(admin.ModelAdmin):
 
 class AnonymousMessageAdmin(admin.ModelAdmin):
     search_fields = ('sender_instagram_username', 'receiver_instagram_username')
-    list_filter = ('is_abusive', 'is_hidden')
+    list_filter = ('is_abusive', 'is_hidden1', 'is_hidden2')
 
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)

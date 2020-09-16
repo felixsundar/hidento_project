@@ -328,7 +328,8 @@ class AnonymousMessage(models.Model):
     receiver_instagram_username2 = models.CharField(max_length=40, null=False)
     message = models.TextField(max_length=1000, null=True, blank=True)
     added_time = models.DateTimeField(null=False)
-    is_hidden = models.BooleanField(default=False)
+    is_hidden1 = models.BooleanField(default=False)
+    is_hidden2 = models.BooleanField(default=False)
     is_abusive = models.BooleanField(default=False)
 
 class MessageBlacklist(models.Model):

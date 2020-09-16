@@ -13,6 +13,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
     PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
@@ -799,8 +800,6 @@ def receivedMessages(request):
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
 def getReceivedMessagesError(blacklistObject):
-    if now() < datetime(2020, month=2, day=14, tzinfo=pytz.utc):
-        return 'Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)'
     if isModifiable(blacklistObject):
         return 'Save your blacklist before you can see the received suggestions.'
     return None
@@ -810,10 +809,11 @@ def getReceivedMessages(receivedMessageError, blacklistObject, instagram_usernam
         return None
     if receivedMessageError:
         return []
-    received_all = list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
-                .filter(is_hidden = False)
+    received_all = list(AnonymousMessage.objects.filter(Q(receiver_instagram_username1 = instagram_username) |
+                                                        Q(receiver_instagram_username2 = instagram_username))
                 .order_by('-added_time'))
-    return filterBlacklistedUsers(blacklistObject, received_all)
+    received_blacklist_filtered = filterBlacklistedUsers(blacklistObject, received_all)
+    return removeHiddenAndFindSuggestion(received_blacklist_filtered, instagram_username)
 
 def filterBlacklistedUsers(blacklistObject, received_all):
     if blacklistObject is None:
@@ -824,6 +824,17 @@ def filterBlacklistedUsers(blacklistObject, received_all):
         if message.sender_instagram_username not in blacklistPythonList:
             received_filtered.append(message)
     return received_filtered
+
+def removeHiddenAndFindSuggestion(received, instagram_username):
+    final_received = []
+    for suggestion in received:
+        if suggestion.receiver_instagram_username1 == instagram_username and (not suggestion.is_hidden1):
+            suggestion.suggested_instagram = suggestion.receiver_instagram_username2
+            final_received.append(suggestion)
+        elif suggestion.receiver_instagram_username2 == instagram_username and (not suggestion.is_hidden2):
+            suggestion.suggested_instagram = suggestion.receiver_instagram_username1
+            final_received.append(suggestion)
+    return final_received
 
 @login_required
 def sentMessages(request):
@@ -916,9 +927,12 @@ def hideMessage(request):
         message = AnonymousMessage.objects.get(message_id=message_id)
     except AnonymousMessage.DoesNotExist:
         raise PermissionDenied
-    if message.receiver_instagram_username != getInstagramUsername(request.user):
+    if message.receiver_instagram_username1 == getInstagramUsername(request.user):
+        message.is_hidden1 = True
+    elif message.receiver_instagram_username2 == getInstagramUsername(request.user):
+        message.is_hidden2 = True
+    else:
         raise PermissionDenied
-    message.is_hidden = True
     message.save()
     messages.success(request, 'Suggestion removed.')
     return HttpResponseRedirect(reverse('receivedMessages'))
