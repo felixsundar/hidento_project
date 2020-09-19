@@ -889,10 +889,10 @@ def validateAndSendMessage(form, user):
         form.add_error('__all__', 'You have already sent 10 dating referrals. Delete one of them to send a new one.')
         return False
     if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username1']:
-        form.add_error('receiver_instagram_username1', 'You can\'t suggest yourself to someone.')
+        form.add_error('receiver_instagram_username1', 'You can\'t refer yourself to someone.')
         return False
     if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username2']:
-        form.add_error('receiver_instagram_username2', 'You can\'t suggest yourself to someone.')
+        form.add_error('receiver_instagram_username2', 'You can\'t refer yourself to someone.')
         return False
     new_message = AnonymousMessage(hidento_userid = user,
                                    receiver_instagram_username1 = form.cleaned_data['receiver_instagram_username1'],
