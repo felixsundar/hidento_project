@@ -8,16 +8,16 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Suggestions Received</b></h2>
+        <h2 class="hidento-title-color"><b>Referrals Received</b></h2>
 
         {% if received_messages is None %}
         <div style="text-align:right" class="mt-4">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
-               title="You can blacklist users from whom you don't want to receive suggestions.">
+               title="You can blacklist users from whom you don't want to receive referrals.">
                 My Blacklist
             </a>
         </div>
-        <div class="mt-4 mb-4" style="text-align:justify">Instagram account not linked. Link your Instagram account to be able to see the match suggestions
+        <div class="mt-4 mb-4" style="text-align:justify">Instagram account not linked. Link your Instagram account to be able to see the dating referrals
             received
             for your Instagram username.
         </div>
@@ -27,7 +27,7 @@
             {% if not received_message_error %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
         <div style="text-align:right" class="mt-4">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
-               title="You can blacklist users from whom you don't want to receive suggestions.">
+               title="You can blacklist users from whom you don't want to receive referrals.">
                 My Blacklist
             </a>
         </div>
@@ -35,8 +35,8 @@
         <p class="mt-4" style="text-align:justify">{{received_message_error}}</p>
         {% else %}
         {% if not received_messages %}
-        <p class="mt-4">Match suggestions sent to your Instagram username will be shown here.</p>
-        <p class="mt-4">No suggestions to show at the moment.</p>
+        <p class="mt-4">Dating Referrals sent to your Instagram username will be shown here.</p>
+        <p class="mt-4">No referrals to show at the moment.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in received_messages %}

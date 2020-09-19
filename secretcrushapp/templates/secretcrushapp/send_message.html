@@ -3,20 +3,20 @@
 {% block content %}
 <center>
     <div style="width:70%;margin-top:2.3rem;margin-bottom:1.8rem">
-        <h2><b>Send New Suggestion</b></h2>
+        <h2><b>Send New Referral</b></h2>
         {% if error is not None%}
         <br>
         {% if error == 1 %}
-        <p>Instagram account not linked. Link your Instagram account to send match suggestions.<br>
+        <p>Instagram account not linked. Link your Instagram account to send dating referrals.<br>
             Don't worry, your identity won't be revealed.
         </p>
         <a href="{% url 'linkInstagram' %}"> Link Instagram </a>
         {% elif error == 2 %}
-        <p>You have already sent 10 match suggestions. Delete one of them to send a new one.</p>
-        <a href="{% url 'sentMessages' %}"> Sent Suggestions </a>
+        <p>You have already sent 10 dating referrals. Delete one of them to send a new one.</p>
+        <a href="{% url 'sentMessages' %}"> Sent Referrals </a>
         {% endif %}
         {% else %}
-        <p class="mt-3">Enter the Instagram usernames of the persons you want to match. <br>They will be suggested to each other.</p>
+        <p class="mt-3">Enter the Instagram usernames of the persons you want to match. <br>They will be referred to each other.</p>
         <form method="post" id="hidentoform">
             {% csrf_token %}
             <!--            {{ form.as_table }}-->

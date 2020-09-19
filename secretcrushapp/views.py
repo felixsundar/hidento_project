@@ -801,7 +801,7 @@ def receivedMessages(request):
 
 def getReceivedMessagesError(blacklistObject):
     if isModifiable(blacklistObject):
-        return 'Save your blacklist before you can see the received suggestions.'
+        return 'Save your blacklist before you can see the received referrals.'
     return None
 
 def getReceivedMessages(receivedMessageError, blacklistObject, instagram_username):
@@ -863,7 +863,7 @@ def sendMessage(request):
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
         if form.is_valid() and validateAndSendMessage(form, request.user):
-            messages.success(request, 'Suggestion sent.')
+            messages.success(request, 'Referral sent.')
             return HttpResponseRedirect(reverse('sentMessages'))
     else:
         form = SendMessageForm()
@@ -883,10 +883,10 @@ def validateForSendMessage(user):
 def validateAndSendMessage(form, user):
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send match suggestions.')
+        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send dating referrals.')
         return False
     if user.anonymousSentMessages.count() >= 10:
-        form.add_error('__all__', 'You have already sent 10 match suggestions. Delete one of them to send a new one.')
+        form.add_error('__all__', 'You have already sent 10 dating referrals. Delete one of them to send a new one.')
         return False
     if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username1']:
         form.add_error('receiver_instagram_username1', 'You can\'t suggest yourself to someone.')
@@ -915,7 +915,7 @@ def deleteMessage(request):
     if message.hidento_userid != request.user:
         raise PermissionDenied
     message.delete()
-    messages.success(request, 'Suggestion deleted.')
+    messages.success(request, 'Referral deleted.')
     return HttpResponseRedirect(reverse('sentMessages'))
 
 @login_required
@@ -934,7 +934,7 @@ def hideMessage(request):
     else:
         raise PermissionDenied
     message.save()
-    messages.success(request, 'Suggestion removed.')
+    messages.success(request, 'Referral removed.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required
