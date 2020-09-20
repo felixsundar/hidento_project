@@ -27,13 +27,13 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddC
 from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
-INSTAGRAM_NOT_LINKED = 'Instagram account not linked. Link Instagram account to add secret crush.'
-CRUSH_LIST_FULL = 'You already have 5 secret crushes. Remove one of them to add a new crush.'
-CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty.'
-CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list.'
-CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list. Select one from your crush list.'
-PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist.'
-CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as a crush.'
+INSTAGRAM_NOT_LINKED = 'Instagram username not verified. Verify Instagram Username to add Interests.'
+CRUSH_LIST_FULL = 'You already have 5 Interests. Remove one of them to add a new Interest.'
+CRUSH_LIST_EMPTY = 'There is no Interest to edit. Your Interest list is empty.'
+CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your Interests.'
+CRUSH_NOT_PRESENT = 'This instagram username is not present in your Interests. Select one from your Interests.'
+PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of Interests in the list.'
+CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as an Interest.'
 
 
 class HidentoUserBackend(ModelBackend):
@@ -350,10 +350,10 @@ def authInstagramView(request):
         user_instagram = InstagramCrush(hidento_userid=user)
         user_instagram.instagram_username = user_details_response_data['username']
         user_instagram.save()
-        messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
+        messages.success(request, 'Instagram username verified successfully. You can add Interests now.')
         return HttpResponseRedirect(reverse('crushList'))
     except Exception as e:
-        messages.warning(request, 'Linking Instagram account failed.')
+        messages.warning(request, 'Instagram username verification failed.')
         return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -454,7 +454,7 @@ def addCrushView(request):
     if request.method == 'POST':
         form = AddCrushForm(error_or_lowestPriority, request.POST)
         if form.is_valid() and validateAndAddCrush(form, user_instagram, error_or_lowestPriority):
-            messages.success(request, 'New secret crush has been added successfully.')
+            messages.success(request, 'New Interest has been added successfully.')
             return HttpResponseRedirect(reverse('crushList'))
     else:
         crushUsername = request.GET.get('insta_name')
@@ -703,7 +703,7 @@ def deleteCrushView(request, crushUsername):
             return render(request, 'secretcrushapp/edit_crush_m.html', context)
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
-    messages.success(request, 'Secret crush deleted successfully.')
+    messages.success(request, 'Interest deleted successfully.')
     return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -883,7 +883,7 @@ def validateForSendMessage(user):
 def validateAndSendMessage(form, user):
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send dating referrals.')
+        form.add_error('__all__', 'Instagram username not verified. Verify your Instagram username to send dating referrals.')
         return False
     if user.anonymousSentMessages.count() >= 10:
         form.add_error('__all__', 'You have already sent 10 dating referrals. Delete one of them to send a new one.')
