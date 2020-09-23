@@ -4,16 +4,17 @@
 <center>
     <div style="width:80%;margin-top:2.3rem;margin-bottom:3.5rem">
         <h3 class="mb-3 hidento-title-color"><b>Delete Account Confirmation</b></h3>
-        <p style="text-align:left">Deleting your account will have the following consequences:</p>
-        <ul style="text-align:left">
-            <li>
-                All your data will be deleted permanently, including your sent notes.
-            </li>
-            <li>
-                If you have a match with any of your crushes, it will be broken.
-            </li>
-        </ul>
-        <p style="text-align:left">If you wish to stop matchings temporarily, you can deactivate your crushes from your <a href="{% url 'crushList' %}">crush list</a>.
+        <p style="text-align:left">All Hidento accounts are secret accounts. Nobody can know you have a Hidento account unless
+        you get a match.</p>
+<!--        <ul style="text-align:left">-->
+<!--            <li>-->
+<!--                All your data will be deleted permanently.-->
+<!--            </li>-->
+<!--            <li>-->
+<!--                If you have a match with any of your Interests, it will be broken.-->
+<!--            </li>-->
+<!--        </ul>-->
+        <p style="text-align:left">If you wish to stop matchings temporarily, you can deactivate your Interests from <a href="{% url 'crushList' %}">My Interests.</a>
         </p>
         <p class="mb-4" style="text-align:left">Still want to delete your account? </p>
         <form method="post" action="{% url 'accountDelete' %}" id="hidentoform">
