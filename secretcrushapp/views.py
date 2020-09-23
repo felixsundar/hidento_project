@@ -198,7 +198,7 @@ def accountEditView(request):
         form = HidentoUserChangeFormForUsers(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/account')
+            return HttpResponseRedirect(reverse('account'))
     else:
         form = HidentoUserChangeFormForUsers(instance=user)
     context = {
