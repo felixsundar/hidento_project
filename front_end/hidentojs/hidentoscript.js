@@ -1,7 +1,7 @@
 $(function() {
    $("#edit_crush_deleteButton").click(function(){
-      if (confirm("You won't be matched with this crush in future.\n"+
-                  "If you are matched with this crush currently, your match will be broken.\n\n"+
+      if (confirm("You won't be matched with this Interest in future.\n"+
+                  "If you are matched with this Interest currently, your match will be broken.\n\n"+
                   "Are you sure you want to delete?")){
          $('form#edit_crush_deleteForm').submit();
       } else{
@@ -50,15 +50,15 @@ $(function()
 
 $(".edit_crush_activeClass").change(function() {
     if(!this.checked && this.defaultChecked) {
-        alert("You are about to deactivate this crush.\n\n"+
-        "You won't be matched with this crush in future.\n"+
-        "If you are matched with this crush currently, your match will be broken.")
+        alert("You are about to deactivate this Interest.\n\n"+
+        "You won't be matched with this Interest in future.\n"+
+        "If you are matched with this Interest currently, your match will be broken.")
     }
 });
 
 $(function() {
    $(".sentMessageDeleteButton").click(function(){
-      if (confirm("The suggestion won't be visible to them anymore.\n\nAre you sure you want to delete?")){
+      if (confirm("The referral won't be visible to them anymore.\n\nAre you sure you want to delete?")){
          $(this).parents('form').submit();
       } else{
       event.preventDefault();
@@ -68,7 +68,7 @@ $(function() {
 
 $(function() {
    $(".receivedMessageHideButton").click(function(){
-      if (confirm("You won't be able to see this message again.\n\nAre you sure you want to hide it?")){
+      if (confirm("You won't be able to see this referral again.\n\nAre you sure you want to hide it?")){
          $(this).parents('form').submit();
       } else{
       event.preventDefault();
