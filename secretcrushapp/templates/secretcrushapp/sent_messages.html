@@ -11,9 +11,9 @@
         <h2 class="hidento-title-color"><b>Referrals Sent</b></h2>
 
         {% if sent_messages is None %}
-        <p class="mt-4">Link your Instagram account to send anonymous dating referrals to your friends.<br>
+        <p class="mt-4">Verify your Instagram username to send anonymous dating referrals to your friends.<br>
             (Don't worry, your identity won't be revealed.)</p>
-        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
+        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Verify Instagram Username </a>
         {% else %}
         {% if not sent_messages %}
         <p class="mt-4">You can send anonymous dating referrals to your friends.</p>

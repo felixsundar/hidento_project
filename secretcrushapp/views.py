@@ -27,7 +27,7 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddC
 from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
-INSTAGRAM_NOT_LINKED = 'Instagram username not verified. Verify Instagram Username to add Interests.'
+INSTAGRAM_NOT_LINKED = 'Instagram username not verified. Verify Instagram username to add Interests.'
 CRUSH_LIST_FULL = 'You already have 5 Interests. Remove one of them to add a new Interest.'
 CRUSH_LIST_EMPTY = 'There is no Interest to edit. Your Interest list is empty.'
 CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your Interests.'
