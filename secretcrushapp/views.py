@@ -876,7 +876,7 @@ def validateForSendMessage(user):
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:
         return 1
-    if user.anonymousSentMessages.count() >= 10:
+    if user.anonymousSentMessages.count() >= 30:
         return 2
     return None
 
@@ -885,8 +885,8 @@ def validateAndSendMessage(form, user):
     if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
         form.add_error('__all__', 'Instagram username not verified. Verify your Instagram username to send dating referrals.')
         return False
-    if user.anonymousSentMessages.count() >= 10:
-        form.add_error('__all__', 'You have already sent 10 dating referrals. Delete one of them to send a new one.')
+    if user.anonymousSentMessages.count() >= 30:
+        form.add_error('__all__', 'You have already sent 30 dating referrals. Delete one of them to send a new one.')
         return False
     if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username1']:
         form.add_error('receiver_instagram_username1', 'You can\'t refer yourself to someone.')
