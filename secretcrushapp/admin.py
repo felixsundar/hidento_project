@@ -98,13 +98,21 @@ class AnonymousMessageAdmin(admin.ModelAdmin):
     search_fields = ('sender_instagram_username', 'receiver_instagram_username')
     list_filter = ('is_abusive', 'is_hidden1', 'is_hidden2')
 
+class FAQAdmin(admin.ModelAdmin):
+    list_display = ('priority_value', 'question', 'answer', 'is_enabled')
+    list_filter = ('is_enabled',)
+
+class HowItWorksAdmin(admin.ModelAdmin):
+    list_display = ('priority_value', 'heading', 'explanation', 'is_enabled')
+    list_filter = ('is_enabled',)
+
 # Now register the new UserAdmin...
 admin.site.register(HidentoUser, HidentoUserAdmin)
 admin.site.register(InstagramCrush, InstagramCrushAdmin)
 admin.site.register(Controls)
 admin.site.register(ContactHidento, ContactHidentoAdmin)
-admin.site.register(HowItWorks)
-admin.site.register(FAQ)
+admin.site.register(HowItWorks, HowItWorksAdmin)
+admin.site.register(FAQ, FAQAdmin)
 admin.site.register(InstagramDetails)
 admin.site.register(AnonymousMessage, AnonymousMessageAdmin)
 admin.site.register(MessageBlacklist)
