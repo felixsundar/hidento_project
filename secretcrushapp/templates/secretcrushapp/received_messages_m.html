@@ -8,26 +8,25 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Notes Received</b></h2>
+        <h2 class="hidento-title-color"><b>Referrals Received</b></h2>
 
         {% if received_messages is None %}
         <div style="text-align:right" class="mt-4">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
-               title="You can blacklist your close friends, so they don't prank you.">
+               title="You can blacklist users from whom you don't want to receive referrals.">
                 My Blacklist
             </a>
         </div>
-        <div class="mt-4 mb-4" style="text-align:justify">Instagram account not linked. Link your Instagram account to be able to see the notes
-            received
-            for your Instagram username.
+        <div class="mt-4 mb-4" style="text-align:justify">Instagram username not verified. Verify your Instagram username to see the dating referrals
+            received for your Instagram username.
         </div>
-        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
+        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Verify Instagram Username</a>
         {% else %}
         <p>For Instagram username - <b>{{instagram_username}}</b>&nbsp;&nbsp;
             {% if not received_message_error %}<span class="badge badge-pill badge-primary">{{received_messages|length}}</span>{% endif %}</p>
         <div style="text-align:right" class="mt-4">
             <a href="{% url 'messageBlacklist' %}" data-toggle="tooltip" data-placement="left"
-               title="You can blacklist your close friends, so they don't prank you.">
+               title="You can blacklist users from whom you don't want to receive referrals.">
                 My Blacklist
             </a>
         </div>
@@ -35,29 +34,41 @@
         <p class="mt-4" style="text-align:justify">{{received_message_error}}</p>
         {% else %}
         {% if not received_messages %}
-        <p class="mt-4">Anonymous notes sent to your Instagram username will be shown here.</p>
-        <p class="mt-4">No notes to show at the moment.</p>
+        <p class="mt-4">Dating Referrals sent to your Instagram username will be shown here.</p>
+        <p class="mt-4">No referrals to show at the moment.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in received_messages %}
-        <div class="hidento-note-background">
-            <p style="text-align:left">{{ message.message }}</p>
-            <table style="width:100%;table-layout:fixed">
-                <tr>
-                    <td style="text-align:left">
-                        <form method="post" action="{% url 'hideMessage' %}">
+        <div class="hidento-note-background pb-3">
+            <a href="https://www.instagram.com/{{message.suggested_instagram}}" target="_blank"><h4 style="color:#55000c">{{message.suggested_instagram}}</h4></a>
+            {% if message.message %}
+            <p style="text-align:left"><b>Message:</b>&nbsp;{{ message.message }}</p>
+            {% endif %}
+<!--            <table style="width:100%;table-layout:fixed">-->
+<!--                <tr>-->
+<!--                    <td style="text-align:left">-->
+<!--                        <form method="post" action="{% url 'hideMessage' %}">-->
+<!--                            {% csrf_token %}-->
+<!--                            <input type="hidden" value="{{message.message_id}}" name="message_id">-->
+<!--                            <button class="btn btn-light btn-sm p-0 pl-2 pr-2 receivedMessageHideButton"-->
+<!--                                    style="font-size:0.65rem;" type="submit">Hide-->
+<!--                            </button>-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td style="text-align:right;width:70%;word-wrap:break-word;">-->
+<!--                        <b>- {{message.sender_nickname}}</b>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            </table>-->
+            <form method="post" action="{% url 'hideMessage' %}">
                             {% csrf_token %}
                             <input type="hidden" value="{{message.message_id}}" name="message_id">
-                            <button class="btn btn-light btn-sm p-0 pl-2 pr-2 receivedMessageHideButton"
-                                    style="font-size:0.65rem;" type="submit">Hide
-                            </button>
-                        </form>
-                    </td>
-                    <td style="text-align:right;width:70%;word-wrap:break-word;">
-                        <b>- {{message.sender_nickname}}</b>
-                    </td>
-                </tr>
-            </table>
+                            <button class="btn btn-primary p-1 pl-2 pr-2 mr-3" type="submit">Remove</button>
+
+            <a href="{% url 'addCrush' %}?insta_name={{message.suggested_instagram}}">
+                            <button type="button" class="btn btn-primary pl-2 pr-2 p-1">Add to Likes</button>
+                        </a>
+            </form>
         </div>
         <br><br>
         {% endfor %}

@@ -4,19 +4,23 @@
 <center>
     <div class="hidento-m-font-size" style="padding-left:1rem;padding-right:1rem;margin-bottom:3rem">
         <div class="mt-3 mb-5">
-            <h3 class="mb-4 hidento-title-color" style="text-align:leftr">Find your secret crush!</h3>
-            <h4 style="text-align:justify" class="mt-4"><b>
+            <h3 class="mb-4 hidento-title-color" style="text-align:leftr">Dating Referrals!</h3>
+            <h5 style="text-align:justify" class="mt-4"><b>
 <!--                Hidento lets you find if any of your secret crushes have a crush on you, based on Instagram usernames.-->
-            Have a secret crush on someone? Nervous about expressing it to them?
-            </b></h4>
+<!--            Have a secret crush on someone? Nervous about expressing it to them?-->
+                Who would be a good match for you? Your friends know better than dating sites.
+Get dating referrals from your friends and social circle!
+            </b></h5>
 
-            <h4 style="text-align:justify" class="mt-4"><b>
-                No worries! Hidento will act as your middleman.
-                </b></h4>
+            <h5 style="text-align:justify" class="mt-4"><b>
+<!--                No worries! Hidento will act as your middleman.-->
+                Know someone who would be a perfect match for your friend? Refer them to each other.
+                </b></h5>
 
-            <h4 style="text-align:justify" class="mt-4"><b>
-                Create a secret account and add your secret crushes to your crushlist.
-                </b></h4>
+            <h5 style="text-align:justify" class="mt-4"><b>
+<!--                Create a secret account and add your secret crushes to your crushlist.-->
+                No need for a public profile. Send and receive referrals using Instagram usernames! All referrals are anonymous.
+                </b></h5>
 
 <!--            <p class="mt-3" style="text-align:left"><b>-->
 <!--                Indirectly let them know about this site.-->
@@ -37,18 +41,18 @@
 <!--                When a stable match is formed, Hidento informs one of the users in the match.-->
 <!--                Notes received will be visible from 14th February, 2020 onwards.-->
 <!--            </b></p>-->
-            <a href="{% url 'howitworks' %}" class="btn btn-primary btn-sm mt-4"><b>See How It Works</b></a>
+<!--            <a href="{% url 'howitworks' %}" class="btn btn-primary btn-sm mt-4"><b>See How It Works</b></a>-->
 
-            <h4 style="text-align:justify" class="hidento-heading-color mt-5"><b>
-                Help your friend find his/her secret crush!
-                </b></h4>
-            <a href="whatsapp://send?text=Find your secret crush @ https://www.hidento.com" class="btn btn-primary btn-sm mt-3"
-        style="color:#FFFFFF !important;background-color:#25D366 !important"><b><i class="fa fa-whatsapp"></i> Share to a Friend</b></a>
+<!--            <h4 style="text-align:justify" class="hidento-heading-color mt-5"><b>-->
+<!--                Help your friend find his/her secret crush!-->
+<!--                </b></h4>-->
+<!--            <a href="whatsapp://send?text=Find your secret crush @ https://www.hidento.com" class="btn btn-primary btn-sm mt-3"-->
+<!--        style="color:#FFFFFF !important;background-color:#25D366 !important"><b><i class="fa fa-whatsapp"></i> Share to a Friend</b></a>-->
         </div>
 
         <div class="mb-5">
 
-<h4 class="mb-3 hidento-title-color">Create an Account</h4>
+<h3 class="mb-3 hidento-title-color">Create an Account</h3>
             <form method="post" action="{% url 'signup' %}" class="hidento-m-font-size" id="hidentoform">
 
                 {% csrf_token %}

@@ -8,25 +8,26 @@
         <div class="alert alert-{{message.level_tag}}">{{ message }}</div>
         {% endfor %}
         {% endif %}
-        <h2 class="hidento-title-color"><b>Notes Sent</b></h2>
+        <h2 class="hidento-title-color"><b>Referrals Sent</b></h2>
 
         {% if sent_messages is None %}
-        <p class="mt-4" style="text-align:justify">Link your Instagram account to send anonymous notes to your secret crushes.<br>
+        <p class="mt-4" style="text-align:justify">Verify your Instagram username to send anonymous dating referrals to your friends.<br>
             (Don't worry, your identity won't be revealed.)</p>
-        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Link Instagram </a>
+        <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Verify Instagram Username </a>
         {% else %}
         {% if not sent_messages %}
-        <p class="mt-4">You can send anonymous notes to your secret crushes.</p>
+        <p class="mt-4">You can send anonymous dating referrals to your friends.</p>
         {% else %}
         <div style="margin-top:3rem"></div>
         {% for message in sent_messages %}
         <div class="hidento-note-background">
-        <p style="text-align:left" class="mb-2"><b>Receiver Instagram:</b>&nbsp;{{message.receiver_instagram_username}}</p>
-        <p style="text-align:left" class="mb-2"><b>Note: </b>{{ message.message }}</p>
+        <p style="text-align:left" class="mb-2"><b>His Instagram:</b>&nbsp;{{message.receiver_instagram_username1}}</p>
+        <p style="text-align:left" class="mb-2"><b>Her Instagram:</b>&nbsp;{{ message.receiver_instagram_username2 }}</p>
+        <p style="text-align:left" class="mb-2"><b>Your Message:</b>&nbsp;{{ message.message }}</p>
         <table style="width:100%;table-layout:fixed">
             <tr>
                 <td style="text-align:left;width:80%;word-wrap:break-word;">
-                    <b>Sent as: </b>{{message.sender_nickname}}
+<!--                    <b>Sent as: </b>{{message.sender_nickname}}-->
                 </td>
                 <td style="text-align:right">
                     <form method="post" action="{% url 'deleteMessage' %}">
@@ -43,7 +44,7 @@
         <br><br>
         {% endfor %}
         {% endif %}
-        <a class="btn btn-primary mt-3" href="{% url 'sendMessage' %}"> Send a Note </a>
+        <a class="btn btn-primary" href="{% url 'sendMessage' %}"> Send New Referral </a>
         {% endif %}
     </div>
 </center>

@@ -9,15 +9,17 @@
         {% endfor %}
         {% endif %}
 
-        <h2 class="hidento-title-color"><b>My Crushlist</b></h2>
+        <h2 class="hidento-title-color"><b>My Interests</b></h2>
 
         {% if instagram_crushes is None %}
-        <p class="mt-4" style="text-align:justify">Hidento lets you find if any of your secret crushes have a crush on you. </p>
-            <p style="text-align:justify">Tell us your Instagram username and add your crushes' Instagram usernames to the list.</p>
+        <p class="mt-4" style="text-align:justify">Hidento matches two people if they are interested in each other.</p>
+            <p style="text-align:justify">Verify your Instagram username and add the Instagram usernames of the people you are interested in.</p>
         <a href="{% url 'linkInstagram' %}" class="hidento-heading-color"> Verify Instagram Username </a>
         {% else %}
         {% if not instagram_crushes %}
-        <p class="mt-4" style="text-align:justify">Hidento matches two people if they have secret crush on each other.</p> <p>You can add upto 5 secret crushes.</p>
+        <p class="mt-4" style="text-align:justify">Hidento matches two people if they are interested in each other.</p>
+        <p>Add Interests directly or from referrals received.</p>
+        <p>You can add upto 5 Interests.</p>
         {% else %}
         <div class="mt-2 mb-3" style="font-size:0.9rem">Ordered by Priority: High to Low</div>
         <table class="hidento-m-font-size">
@@ -39,7 +41,7 @@
             {% endfor %}
         </table>
         {% endif %}
-        <a class="btn btn-primary mt-4" href="{% url 'addCrush' %}" style="font-size:1.1rem"> Add Secret Crush </a><br>
+        <a class="btn btn-primary mt-4" href="{% url 'addCrush' %}" style="font-size:1.1rem"> Add Interest </a><br>
         {% endif %}
     </div>
 </center>

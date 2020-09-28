@@ -13,6 +13,7 @@ from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView,
     PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import render
 
 # Create your views here.
@@ -26,13 +27,13 @@ from secretcrushapp.forms import SignUpForm, HidentoUserChangeFormForUsers, AddC
 from hidento_project import settings
 
 logging.basicConfig(filename=settings.LOG_FILE_PATH, level=logging.DEBUG)
-INSTAGRAM_NOT_LINKED = 'Instagram account not linked. Link Instagram account to add secret crush.'
-CRUSH_LIST_FULL = 'You already have 5 secret crushes. Remove one of them to add a new crush.'
-CRUSH_LIST_EMPTY = 'There is no crush to edit. Your crush list is empty.'
-CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your crush list.'
-CRUSH_NOT_PRESENT = 'This instagram username is not present in your crush list. Select one from your crush list.'
-PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of crushes in the crushlist.'
-CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as a crush.'
+INSTAGRAM_NOT_LINKED = 'Instagram username not verified. Verify Instagram username to add Interests.'
+CRUSH_LIST_FULL = 'You already have 5 Interests. Remove one of them to add a new Interest.'
+CRUSH_LIST_EMPTY = 'There is no Interest to edit. Your Interest list is empty.'
+CRUSH_ALREADY_PRESENT = 'This Instagram username is already present in your Interests.'
+CRUSH_NOT_PRESENT = 'This instagram username is not present in your Interests. Select one from your Interests.'
+PRIORITY_EXCEEDS_LIMIT = 'Priority Position should be within the total number of Interests in the list.'
+CRUSH_AND_YOURNAME_SAME = 'You can\'t enter your own Instagram username as an Interest.'
 
 
 class HidentoUserBackend(ModelBackend):
@@ -197,7 +198,7 @@ def accountEditView(request):
         form = HidentoUserChangeFormForUsers(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/account')
+            return HttpResponseRedirect(reverse('account'))
     else:
         form = HidentoUserChangeFormForUsers(instance=user)
     context = {
@@ -349,10 +350,10 @@ def authInstagramView(request):
         user_instagram = InstagramCrush(hidento_userid=user)
         user_instagram.instagram_username = user_details_response_data['username']
         user_instagram.save()
-        messages.success(request, 'Instagram account linked successfully. You can add secret crushes now.')
+        messages.success(request, 'Instagram username verified successfully. You can add Interests now.')
         return HttpResponseRedirect(reverse('crushList'))
     except Exception as e:
-        messages.warning(request, 'Linking Instagram account failed.')
+        messages.warning(request, 'Instagram username verification failed.')
         return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -453,10 +454,14 @@ def addCrushView(request):
     if request.method == 'POST':
         form = AddCrushForm(error_or_lowestPriority, request.POST)
         if form.is_valid() and validateAndAddCrush(form, user_instagram, error_or_lowestPriority):
-            messages.success(request, 'New secret crush has been added successfully.')
+            messages.success(request, 'New Interest has been added successfully.')
             return HttpResponseRedirect(reverse('crushList'))
     else:
-        form = AddCrushForm(error_or_lowestPriority)
+        crushUsername = request.GET.get('insta_name')
+        if crushUsername is not None:
+            form = AddCrushForm(error_or_lowestPriority, {'crushUsername':crushUsername})
+        else:
+            form = AddCrushForm(error_or_lowestPriority)
     context = {
         'form': form,
         'lowest_priority': error_or_lowestPriority,
@@ -698,7 +703,7 @@ def deleteCrushView(request, crushUsername):
             return render(request, 'secretcrushapp/edit_crush_m.html', context)
         return render(request, 'secretcrushapp/edit_crush.html', context)
     deleteCrush(user_instagram, crushUsername)
-    messages.success(request, 'Secret crush deleted successfully.')
+    messages.success(request, 'Interest deleted successfully.')
     return HttpResponseRedirect(reverse('crushList'))
 
 
@@ -795,10 +800,8 @@ def receivedMessages(request):
     return render(request, 'secretcrushapp/received_messages.html', context=context)
 
 def getReceivedMessagesError(blacklistObject):
-    if now() < datetime(2020, month=2, day=14, tzinfo=pytz.utc):
-        return 'Received notes will be visible from 14th February, 2020 onwards. (UTC timezone)'
     if isModifiable(blacklistObject):
-        return 'Save your blacklist before you can see the received notes.'
+        return 'Save your blacklist before you can see the received referrals.'
     return None
 
 def getReceivedMessages(receivedMessageError, blacklistObject, instagram_username):
@@ -806,10 +809,11 @@ def getReceivedMessages(receivedMessageError, blacklistObject, instagram_usernam
         return None
     if receivedMessageError:
         return []
-    received_all = list(AnonymousMessage.objects.filter(receiver_instagram_username = instagram_username)
-                .filter(is_hidden = False)
+    received_all = list(AnonymousMessage.objects.filter(Q(receiver_instagram_username1 = instagram_username) |
+                                                        Q(receiver_instagram_username2 = instagram_username))
                 .order_by('-added_time'))
-    return filterBlacklistedUsers(blacklistObject, received_all)
+    received_blacklist_filtered = filterBlacklistedUsers(blacklistObject, received_all)
+    return removeHiddenAndFindSuggestion(received_blacklist_filtered, instagram_username)
 
 def filterBlacklistedUsers(blacklistObject, received_all):
     if blacklistObject is None:
@@ -820,6 +824,17 @@ def filterBlacklistedUsers(blacklistObject, received_all):
         if message.sender_instagram_username not in blacklistPythonList:
             received_filtered.append(message)
     return received_filtered
+
+def removeHiddenAndFindSuggestion(received, instagram_username):
+    final_received = []
+    for suggestion in received:
+        if suggestion.receiver_instagram_username1 == instagram_username and (not suggestion.is_hidden1):
+            suggestion.suggested_instagram = suggestion.receiver_instagram_username2
+            final_received.append(suggestion)
+        elif suggestion.receiver_instagram_username2 == instagram_username and (not suggestion.is_hidden2):
+            suggestion.suggested_instagram = suggestion.receiver_instagram_username1
+            final_received.append(suggestion)
+    return final_received
 
 @login_required
 def sentMessages(request):
@@ -848,7 +863,7 @@ def sendMessage(request):
     if request.method == 'POST':
         form = SendMessageForm(request.POST)
         if form.is_valid() and validateAndSendMessage(form, request.user):
-            messages.success(request, 'Note sent.')
+            messages.success(request, 'Referral sent.')
             return HttpResponseRedirect(reverse('sentMessages'))
     else:
         form = SendMessageForm()
@@ -868,19 +883,22 @@ def validateForSendMessage(user):
 def validateAndSendMessage(form, user):
     user_instagram = user.instagramDetails.first()
     if user_instagram is None:  # this check is already done in validateForSendMessage. it is redundant but for safety
-        form.add_error('__all__', 'Instagram not linked. Link your Instagram to send anonymous notes.')
+        form.add_error('__all__', 'Instagram username not verified. Verify your Instagram username to send dating referrals.')
         return False
     if user.anonymousSentMessages.count() >= 10:
-        form.add_error('__all__', 'You have already sent 10 notes. Delete one of them to send a new one.')
+        form.add_error('__all__', 'You have already sent 10 dating referrals. Delete one of them to send a new one.')
         return False
-    if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username']:
-        form.add_error('receiver_instagram_username', 'You can\'t send a note to yourself.')
+    if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username1']:
+        form.add_error('receiver_instagram_username1', 'You can\'t refer yourself to someone.')
+        return False
+    if user_instagram.instagram_username == form.cleaned_data['receiver_instagram_username2']:
+        form.add_error('receiver_instagram_username2', 'You can\'t refer yourself to someone.')
         return False
     new_message = AnonymousMessage(hidento_userid = user,
-                                   receiver_instagram_username = form.cleaned_data['receiver_instagram_username'],
+                                   receiver_instagram_username1 = form.cleaned_data['receiver_instagram_username1'],
+                                   receiver_instagram_username2 = form.cleaned_data['receiver_instagram_username2'],
                                    sender_instagram_username = user_instagram.instagram_username,
                                    message = form.cleaned_data['message'],
-                                   sender_nickname = form.cleaned_data['sender_nickname'],
                                    added_time = now())
     new_message.save()
     return True
@@ -897,7 +915,7 @@ def deleteMessage(request):
     if message.hidento_userid != request.user:
         raise PermissionDenied
     message.delete()
-    messages.success(request, 'Note deleted.')
+    messages.success(request, 'Referral deleted.')
     return HttpResponseRedirect(reverse('sentMessages'))
 
 @login_required
@@ -909,11 +927,14 @@ def hideMessage(request):
         message = AnonymousMessage.objects.get(message_id=message_id)
     except AnonymousMessage.DoesNotExist:
         raise PermissionDenied
-    if message.receiver_instagram_username != getInstagramUsername(request.user):
+    if message.receiver_instagram_username1 == getInstagramUsername(request.user):
+        message.is_hidden1 = True
+    elif message.receiver_instagram_username2 == getInstagramUsername(request.user):
+        message.is_hidden2 = True
+    else:
         raise PermissionDenied
-    message.is_hidden = True
     message.save()
-    messages.success(request, 'Note hidden.')
+    messages.success(request, 'Referral removed.')
     return HttpResponseRedirect(reverse('receivedMessages'))
 
 @login_required

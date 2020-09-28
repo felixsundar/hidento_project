@@ -322,13 +322,14 @@ class FAQ(models.Model):
 
 class AnonymousMessage(models.Model):
     message_id = models.BigAutoField(primary_key=True, unique=True)
-    hidento_userid = models.ForeignKey(HidentoUser, related_name='anonymousSentMessages', on_delete=models.CASCADE)
+    hidento_userid = models.ForeignKey(HidentoUser, related_name='anonymousSentMessages', on_delete=models.DO_NOTHING)
     sender_instagram_username = models.CharField(max_length=40, null=False)
-    receiver_instagram_username = models.CharField(max_length=40, null=False)
-    message = models.TextField(max_length=1000, null=False)
-    sender_nickname = models.CharField(max_length=40, null=False)
+    receiver_instagram_username1 = models.CharField(max_length=40, null=False)
+    receiver_instagram_username2 = models.CharField(max_length=40, null=False)
+    message = models.TextField(max_length=1000, null=True, blank=True)
     added_time = models.DateTimeField(null=False)
-    is_hidden = models.BooleanField(default=False)
+    is_hidden1 = models.BooleanField(default=False)
+    is_hidden2 = models.BooleanField(default=False)
     is_abusive = models.BooleanField(default=False)
 
 class MessageBlacklist(models.Model):

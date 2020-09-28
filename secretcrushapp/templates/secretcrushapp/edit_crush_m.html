@@ -3,45 +3,45 @@
 {% block content %}
 <center>
     <div style="padding-left:1rem;padding-right:1rem;margin-top:0.5rem;margin-bottom:3rem">
-        <h2 class="mb-3"><b>Edit Crush</b></h2>
+        <h2 class="mb-3"><b>Edit Interest</b></h2>
         {% if error is not None%}
         <p>{{error.message}}</p>
         {% if error.code == 1 %}
-        <a href="{% url 'linkInstagram' %}"> LinkInstagram </a>
+        <a href="{% url 'linkInstagram' %}"> Verify Instagram Username </a>
         {% elif error.code == 2 %}
-        <a href="{% url 'addCrush' %}"> Add Secret Crush </a>
+        <a href="{% url 'addCrush' %}"> Add Interest </a>
         {% elif error.code == 3 %}
-        <a href="{% url 'index' %}"> Go to Crushlist </a>
+        <a href="{% url 'index' %}"> Go to Interests </a>
         {% endif %}
         {% else %}
         <form method="post" class="hidento-m-font-size" id="hidentoform">
             {% csrf_token %}
 <!--                {{ form.as_p }}-->
             <!--    button should be disabled after clicking-->
-          <div class="hidento-label mt-1 mb-1" style="text-align:left">Instagram Username of your crush</div>
-            <input type="text" class="form-control" placeholder="Instagram Username of your crush" name="crushUsername"
+          <div class="hidento-label mt-1 mb-1" style="text-align:left">Instagram Username of your Interest</div>
+            <input type="text" class="form-control" placeholder="Instagram Username of your Interest" name="crushUsername"
                    maxlength="40" required id="id_crushUsername" style="font-size:1.1rem"
                    value="{{crushUsername}}" disabled>
             <div style="text-align:right"><button type="button" class="btn btn-primary pt-0 pb-0" id="instagramVerify"
                                                           style="font-size:0.7rem">Verify</button></div>
 
-          <div class="hidento-label mt-1 mb-1" style="text-align:left">Nickname for your crush</div>
+          <div class="hidento-label mt-1 mb-1" style="text-align:left">Nickname for your Interest</div>
           <input type="text" class="form-control"
                    placeholder="You haven't added a nickname" name="crushNickname"
                    maxlength="40" id="id_crushNickname" style="font-size:1.1rem"
                    value="{% if form.crushNickname.value %}{{form.crushNickname.value}}{% endif %}">
             <div style="text-align:right"><a style="font-size:0.7rem;" href="#" data-toggle="tooltip"
-                                             data-placement="right" title="Your crush will be able
-to see this nickname, if you get a match with this crush.">How this works</a></div>
+                                             data-placement="right" title="Your Interest will be able
+to see this nickname, if you get a match with this Interest.">How this works</a></div>
 
 
-          <div class="hidento-label mt-1 mb-1" style="text-align:left">Message for your crush</div>
+          <div class="hidento-label mt-1 mb-1" style="text-align:left">Message for your Interest</div>
             <textarea class="form-control" placeholder="You haven't added any message"
                       name="crushMessage" maxlength="1000" style="height:6rem;font-size:1.1rem"
                       id="id_crushMessage">{%if form.crushMessage.value%}{{form.crushMessage.value}}{%endif%}</textarea>
             <div style="text-align:right"><a style="font-size:0.7rem;" href="#" data-toggle="tooltip"
-                                             data-placement="right" title="Your crush will be able
-to see this message, if you get a match with this crush.">How this works</a></div>
+                                             data-placement="right" title="Your Interest will be able
+to see this message, if you get a match with this Interest.">How this works</a></div>
 
 <input type="hidden" name="whomToInform" value="1" id="id_whomToInform">
 
@@ -100,7 +100,7 @@ to see this message, if you get a match with this crush.">How this works</a></di
         </form>
             <form id="edit_crush_deleteForm" method="post" action="{% url 'deleteCrush' crushUsername %}">
                 {% csrf_token %}
-                <button id="edit_crush_deleteButton" class="btn mt-4" style="color:red" type="submit">Delete Crush</button>
+                <button id="edit_crush_deleteButton" class="btn mt-4" style="color:red" type="submit">Delete Interest</button>
             </form>
 
         {% endif %}
