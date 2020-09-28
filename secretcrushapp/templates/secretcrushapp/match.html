@@ -6,7 +6,7 @@
 <h2 class="mb-4"><b>My Match</b></h2>
 {% if matchDetails is None %}
         <p>You don't have a match yet.</p>
-        <p>Match details will be shown here, if any of your secret crushes have crush on you.</p>
+        <p>Match details will be shown here, if you are matched with any of your Interests.</p>
         <a href="{% url 'crushList' %}">Go to Crushlist</a>
 {% else %}
     <h5>Congratulations! You have a match!!!</h5>
@@ -28,7 +28,7 @@
     {% endif %}
 </div>
 
-        <div class="mt-5"><h4>Hidento wishes you happy days ahead with your crush!</h4></div>
+        <div class="mt-5"><h4>Hidento wishes you happy days ahead with your match!</h4></div>
 {% endif %}
     </div>
 </center>
