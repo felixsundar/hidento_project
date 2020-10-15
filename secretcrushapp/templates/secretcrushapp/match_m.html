@@ -7,7 +7,7 @@
 {% if matchDetails is None %}
         <p>You don't have a match yet.</p>
         <p style="text-align:justify">Match details will be shown here, if you are matched with any of your Interests.</p>
-        <a href="{% url 'crushList' %}">Go to My Interests</a>
+        <a href="{% url 'crushList' %}">Go to My Crushlist</a>
 {% else %}
     <h5>Congratulations! You have a match!!!</h5>
     <h3 class="mt-3 mb-5">You are matched with <b><a target="_blank" href="{{ matchDetails.instagramProfileLink }}">
